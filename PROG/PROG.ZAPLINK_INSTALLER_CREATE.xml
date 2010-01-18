@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="B51E26BF19D6E55AA9B41392ED86674F" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="D79FC623C052F3D124B5C25EDCC478F2" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY SRCSYSTEM="OD4" AUTHOR="TBENSIAL" DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAIN NAME="ZAPLINK_INSTALLER_CREATE" EDTX="X" VARCL="X" SUBC="1" CNAM="TBENSIAL" CDAT="20090922" UNAM="TBENSIAL" UDAT="20100114" VERN="000060" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" SDATE="20100114" STIME="181256" IDATE="20100114" ITIME="174400" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" CNAM="TBENSIAL" CDAT="20090922" UNAM="TBENSIAL" UDAT="20100118" VERN="000065" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" SDATE="20100118" STIME="105647" IDATE="20100118" ITIME="105647" UCCHECK="X"/>
   <SOURCE>*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
 *&amp;
@@ -12,18 +12,22 @@
 *&amp;---------------------------------------------------------------------*
 
 REPORT  zaplink_installer_create.
+TABLES: tdevc.
 
 PARAMETERS p_incl   TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER_CLASSES&apos;.
 PARAMETERS p_overw  TYPE flag AS CHECKBOX.
 PARAMETERS p_prog   TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER&apos;.
 PARAMETERS p_master TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER_MASTER&apos;.
-PARAMETERS p_trkorr TYPE trkorr OBLIGATORY DEFAULT &apos;ED4K902739&apos;.
+PARAMETERS p_trkorr TYPE trkorr.
+SELECT-OPTIONS:
+  s_pack FOR tdevc-devclass.
 PARAMETERS p_devc   TYPE devclass OBLIGATORY DEFAULT &apos;ZAPLINK-INSTALLER&apos;.
 PARAMETERS p_fn     TYPE zaplink_file=&gt;t_filename LOWER CASE.
 
 *CONSTANTS c_exists TYPE ZAPLINK_DATATYPES=&gt;td_exists VALUE ZAPLINK_DATATYPES=&gt;exists-exists.
 
 TYPES t_obj_list TYPE zaplink_list=&gt;tt_compkeys.
+TYPES tr_pack    TYPE zaplink_gui=&gt;tr_packages.
 DATA t_conns     TYPE t_obj_list.
 DATA o_generator TYPE REF TO zaplink_installer_generator.
 DATA o_objects   TYPE REF TO zaplink_list.
@@ -45,6 +49,16 @@ FIELD-SYMBOLS:
   &lt;o&gt; LIKE LINE OF o_generator-&gt;order.
 
 INITIALIZATION.
+  DATA t_pack LIKE LINE OF s_pack.
+
+  t_pack-sign = &apos;I&apos;.  t_pack-option = &apos;EQ&apos;.
+  t_pack-low = &apos;ZAPLINK&apos;.  APPEND t_pack TO s_pack.
+  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+  t_pack-low = &apos;ZAPLINK-FRAMEWORK-DEVTOOLS&apos;.  APPEND t_pack TO s_pack.
+  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+  t_pack-low = &apos;ZAPLINK-TUTORIALS&apos;.  APPEND t_pack TO s_pack.
+  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+  t_pack-low = &apos;ZAPLINK-INSTALLER&apos;.  APPEND t_pack TO s_pack.
   TRY.
       IF NOT o_file IS BOUND. CREATE OBJECT o_file. ENDIF.
       IF sy-batch IS INITIAL.
@@ -90,6 +104,7 @@ START-OF-SELECTION.
   o_generator-&gt;add_object( &apos;ZAPLINK_MESSAGE_COLLECTOR&apos; ).
   o_generator-&gt;add_source( abapcode ).
   PERFORM getobj_list USING p_trkorr
+                            s_pack[]
 *                   CHANGING t_objects t_conns
                    CHANGING t_conns
                      .
@@ -162,7 +177,7 @@ START-OF-SELECTION.
   _oname = _prog.
   CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
     EXPORTING
-      object                  = &apos;PROG&apos;
+      object                  = &apos;REPS&apos;
       obj_name                = _oname
 *         DELETED_FLAG            = &apos; &apos;
 *       IMPORTING
@@ -182,7 +197,7 @@ START-OF-SELECTION.
 *  _prog-fixpt = &apos;X&apos;.
   _prog-rstat = &apos;T&apos;.
   _prog-vern = 1.
-  _prog-subc = &apos;I&apos;.    &quot;INCLUDE
+  _prog-subc = &apos;1&apos;.    &quot;Executable program
   _prog-unam = _prog-cnam = sy-uname.
   _prog-sdate = _prog-idate = _prog-udat = _prog-cdat = sy-datum.
   _prog-stime = _prog-itime = sy-uzeit.
@@ -226,20 +241,32 @@ END-OF-SELECTION.
 *&amp;      Form  GETOBJ_LIST
 *&amp;---------------------------------------------------------------------*
 FORM getobj_list  USING    p_trkorr  TYPE trkorr
+                           s_pack    TYPE tr_pack
                   CHANGING t_connectors TYPE t_obj_list
   .
 
   DATA so_tr   TYPE zaplink_gui=&gt;tr_tr.
   DATA _tr     LIKE LINE OF so_tr.
   DATA _count  TYPE i.
+  DATA t_objs  TYPE t_obj_list.
 
-  _tr-sign = &apos;I&apos;. _tr-option = &apos;EQ&apos;.
-  _tr-low = p_trkorr. APPEND _tr TO so_tr.
+  IF NOT p_trkorr IS INITIAL.
+    _tr-sign = &apos;I&apos;. _tr-option = &apos;EQ&apos;.
+    _tr-low = p_trkorr. APPEND _tr TO so_tr.
 
-  t_connectors = zaplink_gui=&gt;get_keys_from_tr( so_tr ).
-
+    t_connectors = zaplink_gui=&gt;get_keys_from_tr( so_tr ).
+  ENDIF.
+  t_objs = zaplink_gui=&gt;get_keys_from_package( packages = s_pack
+                                               ext      = abap_true ).
+  APPEND LINES OF t_objs TO t_connectors.
+  SORT t_connectors.
+  DELETE ADJACENT DUPLICATES FROM t_connectors.
   TRY.
       CREATE OBJECT o_objects.
+*      t_objs = t_connectors.
+*      delete t_objs where type &lt;&gt; &apos;DEVC&apos;.
+*      o_objects-&gt;add_keys( t_objs ).
+*      delete  t_connectors where type = &apos;DEVC&apos;.
       o_objects-&gt;add_keys( t_connectors ).
       o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
 
@@ -247,7 +274,7 @@ FORM getobj_list  USING    p_trkorr  TYPE trkorr
       _cx-&gt;write( ).
   ENDTRY.
   SORT t_connectors BY type.
-  DELETE ADJACENT DUPLICATES FROM t_connectors.
+  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING type.
 
 ENDFORM.                    &quot; GETOBJ_LIST
 *&amp;---------------------------------------------------------------------*
@@ -262,14 +289,14 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
   FIELD-SYMBOLS:
     &lt;c&gt; LIKE LINE OF t_connectors.
 
-  zaplink_connectors=&gt;clear_connectors( ). &quot; remove ABAP class connector to add only local ones
 *  SORT t_connectors BY classname.
 *  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING classname.
+  _line = &apos;zaplink_connectors=&gt;clear_connectors( ).&apos;. APPEND _line TO ac_loadlocal. &quot; remove ABAP class connector to add only local ones
   _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.
   _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.
-  CREATE OBJECT _comp.
   LOOP AT t_connectors ASSIGNING &lt;c&gt;.
     TRY.
+        CREATE OBJECT _comp.
         _comp-&gt;set_type( &lt;c&gt;-type ).
         o_conn = _comp-&gt;connector( ).
         _classname = zaplink_connectors=&gt;get_classname( o_conn ).
@@ -388,6 +415,11 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
      <ITEM LANGU="E" ENTRY="Auto installer generator" LENGTH="24 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="S" KEY="P_DEVC">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="        Program&apos;s package" LENGTH="25 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="S" KEY="P_FN">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        File Name" LENGTH="17 "/>
@@ -403,6 +435,11 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
      <ITEM LANGU="E" ENTRY="        Master Name" LENGTH="19 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="S" KEY="P_OVERW">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="        Overwrite Program" LENGTH="25 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="S" KEY="P_PROG">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="20 "/>
@@ -411,6 +448,11 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
    <ITEM ID="S" KEY="P_TRKORR">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="20 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_PACK">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="        Package of components" LENGTH="29 "/>
     </TEXTS>
    </ITEM>
   </TEXTSPOOL>
