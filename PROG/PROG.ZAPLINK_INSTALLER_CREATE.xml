@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="160A9A8D049AB5A9A2160864E21D2A7B" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="A551CE6A16481D43C2CCB317AE764C48" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000065" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000066" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
 *&amp;
@@ -256,11 +256,16 @@ FORM getobj_list  USING    p_trkorr  TYPE trkorr
 
     t_connectors = zaplink_gui=&gt;get_keys_from_tr( so_tr ).
   ENDIF.
-  t_objs = zaplink_gui=&gt;get_keys_from_package( packages = s_pack
-                                               ext      = abap_true ).
-  APPEND LINES OF t_objs TO t_connectors.
+
+  IF NOT s_pack[] IS INITIAL.
+    t_objs = zaplink_gui=&gt;get_keys_from_package( packages = s_pack
+                                                 ext      = abap_true ).
+    APPEND LINES OF t_objs TO t_connectors.
+  ENDIF.
+
   SORT t_connectors.
   DELETE ADJACENT DUPLICATES FROM t_connectors.
+
   TRY.
       CREATE OBJECT o_objects.
 *      t_objs = t_connectors.
