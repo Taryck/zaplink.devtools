@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A551CE6A16481D43C2CCB317AE764C48" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="45DD56D37CA9D3969FEE825A2893F720" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000066" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000071" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
 *&amp;
@@ -16,13 +16,14 @@ TABLES: tdevc.
 
 PARAMETERS p_incl   TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER_CLASSES&apos;.
 PARAMETERS p_overw  TYPE flag AS CHECKBOX.
-PARAMETERS p_prog   TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER&apos;.
+PARAMETERS p_prog   TYPE programm DEFAULT &apos;ZAPLINK_INSTALLER&apos;.
 PARAMETERS p_master TYPE programm OBLIGATORY DEFAULT &apos;ZAPLINK_INSTALLER_MASTER&apos;.
 PARAMETERS p_trkorr TYPE trkorr.
 SELECT-OPTIONS:
   s_pack FOR tdevc-devclass.
-PARAMETERS p_devc   TYPE devclass OBLIGATORY DEFAULT &apos;ZAPLINK-INSTALLER&apos;.
-PARAMETERS p_fn     TYPE zaplink_file=&gt;t_filename LOWER CASE.
+PARAMETERS p_devc   TYPE devclass DEFAULT &apos;ZAPLINK-INSTALLER&apos;.
+PARAMETERS p_fn     TYPE zaplink_file=&gt;t_filename LOWER CASE OBLIGATORY.
+PARAMETERS p_ifn    TYPE zaplink_file=&gt;t_filename LOWER CASE.
 
 *CONSTANTS c_exists TYPE ZAPLINK_DATATYPES=&gt;td_exists VALUE ZAPLINK_DATATYPES=&gt;exists-exists.
 
@@ -45,6 +46,7 @@ DATA m_index     TYPE sy-tabix.
 DATA idx_init    TYPE sy-tabix.
 DATA _prog       TYPE progdir.
 DATA _oname      TYPE e071-obj_name.
+DATA d_source    TYPE string.
 FIELD-SYMBOLS:
   &lt;o&gt; LIKE LINE OF o_generator-&gt;order.
 
@@ -78,6 +80,11 @@ AT SELECTION-SCREEN ON p_prog.
     PERFORM check_prog_notexists USING p_prog.
   ENDIF.
 
+AT SELECTION-SCREEN ON p_devc.
+  IF NOT p_prog IS INITIAL AND p_devc is INITIAL.
+    MESSAGE &apos;Specify program&apos;&apos;s devlopement class&apos;(pdc) TYPE &apos;E&apos;.
+  ENDIF.
+
 AT SELECTION-SCREEN ON p_incl.
   PERFORM check_prog_notexists USING p_incl.
 
@@ -90,6 +97,14 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fn.
   TRY.
       o_file-&gt;save_dialog( p_fn ).
       p_fn = o_file-&gt;get_filename( ).
+    CATCH zaplink_cx INTO _cx.
+      _cx-&gt;write( ).
+  ENDTRY.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_ifn.
+  TRY.
+      o_file-&gt;save_dialog( p_ifn ).
+      p_ifn = o_file-&gt;get_filename( ).
     CATCH zaplink_cx INTO _cx.
       _cx-&gt;write( ).
   ENDTRY.
@@ -138,13 +153,14 @@ START-OF-SELECTION.
     ENDCASE.
   ENDLOOP.
 
-  CALL FUNCTION &apos;RS_CORR_INSERT&apos;
-    EXPORTING
-      object                         = p_prog
-      object_class                   = &apos;ABAP&apos;
-      mode                           = &apos;I&apos;    &quot; Insert
+  IF NOT p_prog IS INITIAL.
+    CALL FUNCTION &apos;RS_CORR_INSERT&apos;
+      EXPORTING
+        object                         = p_prog
+        object_class                   = &apos;ABAP&apos;
+        mode                           = &apos;I&apos;    &quot; Insert
 *         GLOBAL_LOCK                    = &apos; &apos;
-      devclass                       = p_devc
+        devclass                       = p_devc
 *         KORRNUM                        = &apos; &apos;
 *         USE_KORRNUM_IMMEDIATEDLY       = &apos; &apos;
 *         AUTHOR                         = &apos; &apos;
@@ -164,54 +180,66 @@ START-OF-SELECTION.
 *         AUTHOR                         =
 *         TRANSPORT_KEY                  =
 *         NEW_EXTEND                     =
-    EXCEPTIONS
-      cancelled                      = 1
-      permission_failure             = 2
-      unknown_objectclass            = 3
-      OTHERS                         = 4.
-  IF sy-subrc &lt;&gt; 0.
-    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.
+      EXCEPTIONS
+        cancelled                      = 1
+        permission_failure             = 2
+        unknown_objectclass            = 3
+        OTHERS                         = 4.
+    IF sy-subrc &lt;&gt; 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+              WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
 
-  _oname = _prog.
-  CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
-    EXPORTING
-      object                  = &apos;REPS&apos;
-      obj_name                = _oname
+    _oname = _prog.
+    CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
+      EXPORTING
+        object                  = &apos;REPS&apos;
+        obj_name                = _oname
 *         DELETED_FLAG            = &apos; &apos;
 *       IMPORTING
 *         OBJECT_INSERTED         =
-    EXCEPTIONS
-      wrong_object_name       = 1
-      OTHERS                  = 2.
-  IF sy-subrc &lt;&gt; 0.
-    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+      EXCEPTIONS
+        wrong_object_name       = 1
+        OTHERS                  = 2.
+    IF sy-subrc &lt;&gt; 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+              WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
+
+    _prog-name = p_prog.
+    _prog-state = &apos;I&apos;.
+    _prog-edtx = &apos;X&apos;.
+    _prog-varcl = &apos;X&apos;.
+*  _prog-fixpt = &apos;X&apos;.
+    _prog-rstat = &apos;T&apos;.
+    _prog-vern = 1.
+    _prog-subc = &apos;1&apos;.    &quot;Executable program
+    _prog-unam = _prog-cnam = sy-uname.
+    _prog-sdate = _prog-idate = _prog-udat = _prog-cdat = sy-datum.
+    _prog-stime = _prog-itime = sy-uzeit.
+    _prog-rmand = sy-mandt.
+    _prog-rload = sy-langu.
+    MODIFY progdir FROM _prog.
+*  INSERT progdir FROM _prog.
+    INSERT REPORT _prog-name FROM m_code STATE _prog-state.
+    _prog-state = &apos;A&apos;.
+    MODIFY progdir FROM _prog.
+*  INSERT progdir FROM _prog.
+    INSERT REPORT _prog-name FROM m_code STATE _prog-state.
+
+    COMMIT WORK AND WAIT.
   ENDIF.
 
-  _prog-name = p_prog.
-  _prog-state = &apos;I&apos;.
-  _prog-edtx = &apos;X&apos;.
-  _prog-varcl = &apos;X&apos;.
-*  _prog-fixpt = &apos;X&apos;.
-  _prog-rstat = &apos;T&apos;.
-  _prog-vern = 1.
-  _prog-subc = &apos;1&apos;.    &quot;Executable program
-  _prog-unam = _prog-cnam = sy-uname.
-  _prog-sdate = _prog-idate = _prog-udat = _prog-cdat = sy-datum.
-  _prog-stime = _prog-itime = sy-uzeit.
-  _prog-rmand = sy-mandt.
-  _prog-rload = sy-langu.
-  MODIFY progdir FROM _prog.
-*  INSERT progdir FROM _prog.
-  INSERT REPORT _prog-name FROM m_code STATE _prog-state.
-  _prog-state = &apos;A&apos;.
-  MODIFY progdir FROM _prog.
-*  INSERT progdir FROM _prog.
-  INSERT REPORT _prog-name FROM m_code STATE _prog-state.
-
-  COMMIT WORK AND WAIT.
+  IF NOT p_ifn IS INITIAL.
+    d_source = zaplink_installer_generator=&gt;source_2_string( m_code ).
+    TRY.
+        o_file-&gt;set_filename( p_ifn ).
+        o_file-&gt;set_filecontent( d_source ).
+        o_file-&gt;save( ).
+      CATCH zaplink_cx INTO _cx.
+        _cx-&gt;write( ).
+    ENDTRY.
+  ENDIF.
 
   WRITE sy-uline.
   TRY.
@@ -351,7 +379,7 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS
 *&amp;      Form  CHECK_PROG_EXISTS
 *&amp;---------------------------------------------------------------------*
 FORM check_prog_include  USING  p_prog
-                                p_incl
+                                value(p_incl)
                       CHANGING  _index   TYPE sy-tabix
                                 abapcode TYPE zaplink_installer_generator=&gt;td_sourcecode.
   DATA: _search TYPE string.
@@ -386,7 +414,7 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS
 *      --&gt;_INDEX     text
 *----------------------------------------------------------------------*
 FORM check_prog_pos  USING  abapcode TYPE zaplink_installer_generator=&gt;td_sourcecode
-                            p_text   TYPE string
+                       value(p_text) TYPE string
                   CHANGING  _index   TYPE sy-tabix.
   DATA tmp TYPE string.
 
@@ -427,7 +455,12 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
    </ITEM>
    <ITEM ID="S" KEY="P_FN">
     <TEXTS>
-     <ITEM LANGU="E" ENTRY="        File Name" LENGTH="17 "/>
+     <ITEM LANGU="E" ENTRY="        XML Container File Name" LENGTH="31 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="P_IFN">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="        Installer Source Code Filename" LENGTH="38 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="P_INCL">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A9BDE3B9CB39E37C38C220C056ACA635" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="BF311D16E6C318332C0601A29784EAC3" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -361,6 +361,11 @@
     </TEXTS>
    </ITEM>
   </ATTRIBUTS>
+  <DEFERRED>
+   <CLASSES>
+    <ITEM TYPEGROUP="ZAPLINK_FILE" VERSION="1" TPUTYPE="1" IMPLICIT="X"/>
+   </CLASSES>
+  </DEFERRED>
   <INTERFACES>
    <ITEM REFCLSNAME="ZAPLINK_DATATYPES" VERSION="1" EXPOSURE="2" STATE="1" RELTYPE="1"/>
   </INTERFACES>
@@ -378,7 +383,7 @@
 </MACROS>
   </LOCAL>
   <METHODS>
-   <ITEM CMPNAME="CLASS_CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDTYPE="2" MTDDECLTYP="1">
+   <ITEM CMPNAME="CLASS_CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDTYPE="2" MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CLASS_CONSTRUCTOR"/>
     </TEXTS>
@@ -398,7 +403,7 @@
   ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDTYPE="2">
+   <ITEM CMPNAME="CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDTYPE="2">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CONSTRUCTOR"/>
     </TEXTS>
@@ -419,7 +424,7 @@
   ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FILENAME" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="4 ">
+   <ITEM CMPNAME="CREATE_FILENAME" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="3 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Generate XML filename"/>
     </TEXTS>
@@ -442,7 +447,7 @@
     </PARAMETERS>
     <SOURCE>  CONCATENATE type ext_sep name ext_sep file_ext INTO result.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FULLPATH" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="5 ">
+   <ITEM CMPNAME="CREATE_FULLPATH" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="4 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Generate XML full file path"/>
     </TEXTS>
@@ -473,19 +478,24 @@
   ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="DO_DEVC_OFF" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="2 ">
+   <ITEM CMPNAME="DO_PACKAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Extrac all components of A devclass"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="O_PACK" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100114" PARPASSTYP="1" TYPTYPE="3" TYPE="IF_PACKAGE">
+     <ITEM SCONAME="O_PACK" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="3" TYPE="IF_PACKAGE">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Package"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100114" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Client Directory"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="WITH_TREE" VERSION="1" CMPTYPE="1" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL" PARVALUE="ABAP_TRUE">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="PAckege is organized as tree"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
@@ -582,6 +592,7 @@
 
 * Initialize Interator
     TRY.
+        o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
         o_list-&gt;init_sel_iter( ).
         o_list-&gt;display_progress = abap_true.
         o_comp = o_list-&gt;get_next( ).
@@ -674,7 +685,7 @@
   ELSEIF NOT packages IS INITIAL.
     LOOP AT packages ASSIGNING &lt;pack&gt;.
       TRY.
-        CALL METHOD do_devc_off
+        CALL METHOD do_package
           EXPORTING
             target_dir = directory
             o_pack     = &lt;pack&gt;.
@@ -686,17 +697,46 @@
 *=============================================================================================
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="DO_EXTRACTION" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 ">
+   <ITEM CMPNAME="EXTRACT_BY_PACKAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 ">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Extrac all package components"/>
+     <ITEM LANGU="E" DESCRIPT="Extrac all package components by package heirachy"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="PACKAGE" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100111" CHANGEDBY="TBENSIAL" CHANGEDON="20100114" PARPASSTYP="1" TYPTYPE="1" TYPE="TR_PACKAGES">
+     <ITEM SCONAME="PACKAGE" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TR_PACKAGES">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Package"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100111" CHANGEDBY="TBENSIAL" CHANGEDON="20100114" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Client Directory"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>*  Data o_pack  TYPE REF TO IF_PACKAGE.
+*  DATA packages    TYPE scompaklis.
+*
+*  FIELD-SYMBOLS:
+*    &lt;pack&gt; LIKE LINE OF packages.
+*
+*  o_pack = load_devc( package ).
+*  CALL METHOD do_devc
+*    EXPORTING
+*      target_dir = target_dir
+*      o_pack     = o_pack.
+</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="EXTRACT_BY_TYPE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 ">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Extrac all package components by types"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="PACKAGE" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TR_PACKAGES">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Package"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Client Directory"/>
       </TEXTS>
@@ -724,11 +764,8 @@
   DATA _cx_list TYPE REF TO zaplink_cx_list.
 
   FIELD-SYMBOLS:
-    &lt;k&gt;    LIKE LINE OF t_keys,
-    &lt;pack&gt; LIKE LINE OF packages.
+    &lt;k&gt;    LIKE LINE OF t_keys.
 
-*  s_pack-sign = &apos;I&apos;. s_pack-option = &apos;EQ&apos;.
-*  s_pack-low = package. APPEND s_pack TO t_pack.
   t_keys = zaplink_gui=&gt;get_keys_from_package( packages = package
                                                ext      = abap_true ).
 
@@ -771,6 +808,7 @@
 
 * Initialize Interator
     TRY.
+        o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
         o_list-&gt;init_sel_iter( ).
         o_list-&gt;display_progress = abap_true.
         o_comp = o_list-&gt;get_next( ).
@@ -866,32 +904,157 @@
       ENDTRY.
     ENDWHILE.
   ENDIF.
-
-*  o_pack = load_devc( package ).
-*  CALL METHOD do_devc
-*    EXPORTING
-*      target_dir = target_dir
-*      o_pack     = o_pack.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="LOAD_DEVC_OFF" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
+   <ITEM CMPNAME="EXTRACT_CONNECTORS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Load IF_Package"/>
+     <ITEM LANGU="E" DESCRIPT="Extract connectors"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="KEY" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100114" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PACKAGE">
+     <ITEM SCONAME="TARGET_DIR" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="Package"/>
-      </TEXTS>
-     </ITEM>
-     <ITEM SCONAME="OBJ" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100114" PARDECLTYP="3" TYPTYPE="3" TYPE="IF_PACKAGE">
-      <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="Interface for Packages"/>
+       <ITEM LANGU="E" DESCRIPT="Client Directory"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
-     <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" VERSION="1" LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100114">
+     <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" VERSION="1" LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>  DATA _cx        TYPE REF TO cx_root.
+  DATA directory   TYPE string.
+  DATA filename    TYPE td_filename.
+  DATA packages    TYPE scompaklis.
+  DATA t_keys      TYPE tt_compkeys.
+  DATA rc          TYPE sy-subrc.
+  DATA o_list      TYPE to_list.
+  DATA o_comp      TYPE to_component.
+  DATA o_conn      TYPE to_connector.
+  DATA o_cnx_clean TYPE to_connector_cleaner.
+  DATA o_raw       TYPE REF TO zaplink_raw.
+  DATA _comp       TYPE zaplink_component=&gt;ts_component.
+
+  DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
+  DATA _cx_comp TYPE REF TO zaplink_cx_component.
+  DATA _cx_list TYPE REF TO zaplink_cx_list.
+
+  o_list = zaplink_connectors_4extractor=&gt;get_connectorlist( ).
+  o_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+
+* Initialize Interator
+  TRY.
+      o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+      o_list-&gt;init_sel_iter( ).
+      o_list-&gt;display_progress = abap_true.
+      o_comp = o_list-&gt;get_next( ).
+    CATCH zaplink_cx_list INTO _cx_list.
+* Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
+      CREATE OBJECT o_mycx
+        EXPORTING
+          textid  = zaplink_cx_component=&gt;invalid_exception
+          prev_cx = _cx_list.
+      o_mycx-&gt;update( ).
+      RAISE EXCEPTION o_mycx.
+  ENDTRY.
+
+  WHILE o_comp IS BOUND.
+    TRY.
+        _comp = o_comp-&gt;get_key( ).
+        o_conn = o_comp-&gt;connector( ).
+      CATCH zaplink_cx_component INTO _cx_comp.
+        CREATE OBJECT _cx_cnx
+          EXPORTING
+            textid  = zaplink_cx_container=&gt;add_failed
+            prev_cx = _cx_comp.
+        _cx_cnx-&gt;update( ).
+        o_comp-&gt;set_exception( _cx_cnx ).
+* Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
+        RAISE EXCEPTION TYPE zaplink_cx_container
+                   EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+                               type = _comp-type
+                               name = _comp-name.
+    ENDTRY.
+
+    IF o_conn IS BOUND.
+* Extract Component
+      TRY.
+          o_raw = o_conn-&gt;read_from_sap( o_comp ).
+          TRY.
+              CLEAR o_cnx_clean.
+              o_cnx_clean ?= o_conn.
+            CATCH cx_root.
+          ENDTRY.
+          IF o_cnx_clean IS BOUND.
+            o_cnx_clean-&gt;anonymize( o_raw ).
+          ENDIF.
+          o_raw-&gt;connector = o_conn-&gt;uuid.
+          o_raw-&gt;version = o_conn-&gt;version.
+        CATCH zaplink_cx_connector INTO _cx_cnx.
+          o_comp-&gt;set_exception( _cx_cnx ).
+          TRY.
+              o_comp-&gt;set_msg_coll( o_conn-&gt;application_log ).
+            CATCH cx_root.
+          ENDTRY.
+      ENDTRY.
+      IF NOT o_raw IS BOUND.
+** Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
+*        RAISE EXCEPTION TYPE zaplink_cx_container
+*                   EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+*                               type = _comp-type
+*                               name = _comp-name.
+      ELSE.
+        TRY.
+            CREATE OBJECT o_conn TYPE (_comp-name).
+          CATCH cx_root INTO _cx.
+            RAISE EXCEPTION TYPE zaplink_cx_connector
+                       EXPORTING textid = zaplink_cx=&gt;system_error
+                               previous = _cx.
+        ENDTRY.
+        filename = o_conn-&gt;uuid.
+        CONCATENATE filename ext_sep o_conn-&gt;version ext_sep file_ext INTO filename.
+        filename = create_fullpath( directory = target_dir
+                                     filename = filename ).
+        CALL METHOD save_file
+          EXPORTING
+            o_raw    = o_raw
+            filename = filename.
+      ENDIF.
+    ENDIF.
+
+    TRY.
+        o_comp = o_list-&gt;get_next( ).
+      CATCH zaplink_cx_list INTO _cx_list.
+        EXIT.
+    ENDTRY.
+  ENDWHILE.
+</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="LOAD_PACKAGE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Load IF_Package"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="KEY" VERSION="1" CMPTYPE="1" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PACKAGE">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Package"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="OBJ" VERSION="1" CMPTYPE="1" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARDECLTYP="3" TYPTYPE="3" TYPE="IF_PACKAGE">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Interface for Packages"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="WITH_TREE" VERSION="1" CMPTYPE="1" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20100125" PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL" PARVALUE="ABAP_TRUE">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="PAckege is organized as tree"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" VERSION="1" LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20100125">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors"/>
       </TEXTS>
@@ -943,7 +1106,7 @@
 *            msg = &apos;Object Locked&apos;.
       WHEN OTHERS.
 * Unexpected error on &amp;1-&gt;&amp;2
-        IF 1 = 2. MESSAGE E008(ZAPLINK_PACKAGE). ENDIF.
+        IF 1 = 2. MESSAGE E008(ZAPLINK_PACKAGE) with space space. ENDIF.
         application_log-&gt;add_warning( id_msgno = 008
                      id_msgv1 = &apos;ZAPLINK_PACKAGE&apos;
                      id_msgv2 = &apos;LOAD_DEVC&apos; ).
@@ -953,7 +1116,7 @@
     ENDCASE.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="RAW_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="6 ">
+   <ITEM CMPNAME="RAW_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="5 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert RAW to XML"/>
     </TEXTS>
@@ -983,7 +1146,7 @@
 
   result = o_xml.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SAVE_FILE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="3 ">
+   <ITEM CMPNAME="SAVE_FILE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="2 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Save raw data to file (in XML)"/>
     </TEXTS>
@@ -1073,7 +1236,7 @@
   ENDTRY.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SET_CHECKSUM" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="8 ">
+   <ITEM CMPNAME="SET_CHECKSUM" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="7 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Set Checksum on RAW data"/>
     </TEXTS>
@@ -1128,7 +1291,7 @@
 
   result = _md5.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="STRING_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="9 ">
+   <ITEM CMPNAME="STRING_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="8 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert string to XML Document"/>
     </TEXTS>
@@ -1148,7 +1311,6 @@
   DATA o_stream         TYPE REF TO if_ixml_istream.
   DATA o_parser         TYPE REF TO if_ixml_parser.
   DATA _tempstring      TYPE string.
-  DATA o_printxmldoc    TYPE REF TO cl_xml_document.
   DATA _rc              TYPE sysubrc.
   data o_doc            type to_xml.
 
@@ -1170,7 +1332,7 @@
   ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="XML_2_STRING" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="7 ">
+   <ITEM CMPNAME="XML_2_STRING" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="6 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert XML to string"/>
     </TEXTS>
@@ -1211,6 +1373,9 @@
   result = _tempstring.</SOURCE>
    </ITEM>
   </METHODS>
+  <TYPEGROUPS>
+   <ITEM TYPEGROUP="ABAP" VERSION="1" IMPLICIT="X"/>
+  </TYPEGROUPS>
   <TYPES>
    <ITEM CMPNAME="TD_DIRECTORYNAME" VERSION="1" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="TD_FILENAME">
     <TEXTS>
