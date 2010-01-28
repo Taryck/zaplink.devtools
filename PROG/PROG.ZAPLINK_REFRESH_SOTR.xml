@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="18D3A8446ACE867D545A4BFBBC8CB43C" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_REFRESH_SOTR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="E1C24E9B1671DF6EA70DE4554BE60E16" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_REFRESH_SOTR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000005" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
-  <SOURCE>*&amp;---------------------------------------------------------------------*
+  <SOURCE>
+*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_REFRESH_SOTR
 *&amp;
 *&amp;---------------------------------------------------------------------*

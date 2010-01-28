@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="017A5F9D820D86AFC70F44883669E278" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_GENERATOR" TYPE="CLAS" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="4F64BC2E0469B69C75718625F117B398" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_GENERATOR" TYPE="CLAS" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="4E09064B8305595DE1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -62,7 +62,7 @@
    </ITEM>
    <ITEM CMPNAME="O_OBJECT" VERSION="1" STATE="1" EDITORDER="1 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TO_OBJECT">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="SapLink Class &amp; Interface Installer"/>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink Class &amp; Interface connector"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="SOFTCOMPONENTS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="11 " ATTDECLTYP="1" ATTRDONLY="X" TYPTYPE="1" TYPE="R_DLVUNIT">
@@ -106,13 +106,16 @@
    <ITEM REFCLSNAME="ZAPLINK_TYPES" VERSION="1" EXPOSURE="2" STATE="1" RELTYPE="1"/>
   </INTERFACES>
   <LOCAL>
-   <TYPES>*&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
+   <TYPES>
+*&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
 *&quot;* definitions, interfaces or data types) you need for method
 *&quot;* IMPLEMENTATION OR PRIVATE METHOD&apos;S SIGNATURE</TYPES>
-   <IMPLEMENTATIONS>*&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
+   <IMPLEMENTATIONS>
+*&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
 *&quot;* LOCAL HELPER CLASSES</IMPLEMENTATIONS>
-   <MACROS>*&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
+   <MACROS>
+*&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
 *&quot;* IN THE IMPLEMENTATION PART OF THE CLASS</MACROS>
   </LOCAL>
   <METHODS>
@@ -134,7 +137,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _name TYPE string.
+    <SOURCE>
+DATA _name TYPE string.
   FIELD-SYMBOLS:
     &lt;a&gt; LIKE LINE OF attributs.
 
@@ -158,23 +162,24 @@
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
-     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" DESCRIPT="Object already in list" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object already in list"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" DESCRIPT="Failed to add" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Failed to add"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" DESCRIPT="Object does not exists in SAP" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object does not exists in SAP"/>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>  DATA _codes      LIKE LINE OF classes.
+    <SOURCE>
+  DATA _codes      LIKE LINE OF classes.
   DATA o_raw       TYPE to_raw.
   DATA o_data      TYPE to_class.
   DATA _component  TYPE to_component.
@@ -279,7 +284,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _obj      LIKE LINE OF deferred_declaration.
+    <SOURCE>
+DATA _obj      LIKE LINE OF deferred_declaration.
   DATA _line     LIKE LINE OF abapcode.
 
   READ TABLE deferred_declaration TRANSPORTING NO FIELDS
@@ -318,7 +324,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _key        TYPE td_name.
+    <SOURCE>
+DATA _key        TYPE td_name.
   FIELD-SYMBOLS:
     &lt;i&gt; LIKE LINE OF interfaces.
 
@@ -339,23 +346,24 @@
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
-     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" DESCRIPT="Object already in list" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object already in list"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" DESCRIPT="Failed to add" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Failed to add"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" DESCRIPT="Object does not exists in SAP" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object does not exists in SAP"/>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>  DATA _codes LIKE LINE OF classes.
+    <SOURCE>
+  DATA _codes LIKE LINE OF classes.
   data o_raw       type to_raw.
   DATA o_data      TYPE To_interface.
   DATA _component  TYPE zaplink_connector=&gt;to_component.
@@ -438,7 +446,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _name TYPE string.
+    <SOURCE>
+DATA _name TYPE string.
   DATA _key        TYPE td_name.
   FIELD-SYMBOLS:
     &lt;m&gt; LIKE LINE OF methods,
@@ -478,7 +487,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA ref_objs    TYPE td_sourcecode.
+    <SOURCE>
+DATA ref_objs    TYPE td_sourcecode.
   DATA static_objs TYPE td_sourcecode.
   DATA _key        TYPE td_name.
   DATA _code       TYPE string.
@@ -531,23 +541,24 @@
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
-     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" DESCRIPT="Object already in list" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="EXISTS" VERSION="1" LANGU="E" EDITORDER="2 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object already in list"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" DESCRIPT="Failed to add" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Failed to add"/>
       </TEXTS>
      </ITEM>
-     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" DESCRIPT="Object does not exists in SAP" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
+     <ITEM SCONAME="NOT_EXISTING" VERSION="1" LANGU="E" EDITORDER="3 " AUTHOR="TBENSIAL" CREATEDON="20091120">
       <TEXTS>
        <ITEM LANGU="E" DESCRIPT="Object does not exists in SAP"/>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _key   TYPE seoclskey.
+    <SOURCE>
+DATA _key   TYPE seoclskey.
   DATA o_type TYPE seoclstype.
   DATA o_desc TYPE REF TO cl_abap_typedescr.
   DATA _name  TYPE td_name.
@@ -629,7 +640,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _code TYPE string.
+    <SOURCE>
+DATA _code TYPE string.
   FIELD-SYMBOLS:
     &lt;f&gt; LIKE LINE OF code.
   LOOP AT code ASSIGNING &lt;f&gt;.
@@ -655,7 +667,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _name TYPE string.
+    <SOURCE>
+DATA _name TYPE string.
   FIELD-SYMBOLS:
     &lt;t&gt; LIKE LINE OF types.
 
@@ -679,7 +692,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _tg LIKE LINE OF me-&gt;typegroups.
+    <SOURCE>
+DATA _tg LIKE LINE OF me-&gt;typegroups.
   FIELD-SYMBOLS:
     &lt;t&gt; LIKE LINE OF typergroups.
   LOOP AT typergroups ASSIGNING &lt;t&gt;.
@@ -691,7 +705,8 @@
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CLASS_CONSTRUCTOR"/>
     </TEXTS>
-    <SOURCE>DATA _softcomp LIKE LINE OF softcomponents.
+    <SOURCE>
+DATA _softcomp LIKE LINE OF softcomponents.
 
   _softcomp-sign = &apos;I&apos;. _softcomp-option = &apos;EQ&apos;.
   _softcomp-low = space. APPEND _softcomp TO softcomponents.
@@ -704,7 +719,8 @@
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Clean up data"/>
     </TEXTS>
-    <SOURCE>DATA inv_order  TYPE tt_order.
+    <SOURCE>
+DATA inv_order  TYPE tt_order.
 
   inv_order = inverse_order( order ).
   DELETE ADJACENT DUPLICATES FROM inv_order COMPARING type name.
@@ -728,7 +744,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>  target = source.
+    <SOURCE>
+  target = source.
 * Convert also constants &apos;#document&apos; =&gt; &apos;#DOCUMENT&apos;.
 *  TRANSLATE target TO UPPER CASE.  &quot;#EC SYNTCHAR
   REPLACE ALL OCCURRENCES OF cl_abap_char_utilities=&gt;horizontal_tab IN target WITH ` `.</SOURCE>
@@ -749,7 +766,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>  FIELD-SYMBOLS:
+    <SOURCE>
+  FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF targetcode.
   targetcode = sourcecode.
   LOOP AT targetcode ASSIGNING &lt;l&gt;.
@@ -774,7 +792,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>  FIELD-SYMBOLS:
+    <SOURCE>
+  FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF targetcode.
   targetcode = sourcecode.
   LOOP AT targetcode ASSIGNING &lt;l&gt;.
@@ -807,7 +826,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>CONSTANTS:
+    <SOURCE>
+CONSTANTS:
     c_crlf TYPE string VALUE line_separator,
     c_commentedline TYPE string VALUE &apos;*&apos;,
     c_commentscheme TYPE string VALUE &apos;*&quot;*&apos;,
@@ -951,7 +971,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _tmp_code TYPE ts_source.
+    <SOURCE>
+DATA _tmp_code TYPE ts_source.
 *  DATA _done     TYPE tt_sources.
   DATA _line     LIKE LINE OF _tmp_code-def.
   DATA _tmp      TYPE td_sourcecode.
@@ -1039,7 +1060,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>  DATA o_source    TYPE REF TO cl_oo_source.
+    <SOURCE>
+  DATA o_source    TYPE REF TO cl_oo_source.
   DATA _clskey     TYPE seoclskey.
   DATA _pos        TYPE sy-tabix.
   DATA t_code      TYPE td_sourcecode.
@@ -1150,7 +1172,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>  DATA _key    TYPE seoclsname.
+    <SOURCE>
+  DATA _key    TYPE seoclsname.
   DATA _prog   TYPE program.
   DATA _line   LIKE LINE OF codes-def.
   DATA _pos        TYPE sy-tabix.
@@ -1207,7 +1230,8 @@
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>DATA _key   TYPE seoclskey.
+    <SOURCE>
+DATA _key   TYPE seoclskey.
   DATA o_type TYPE seoclstype.
 
   _key-clsname = name.
@@ -1255,7 +1279,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>FIELD-SYMBOLS:
+    <SOURCE>
+FIELD-SYMBOLS:
     &lt;o&gt; LIKE LINE OF order_in.
 
   LOOP AT order_in ASSIGNING &lt;o&gt;.
@@ -1283,7 +1308,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _key        TYPE td_name.
+    <SOURCE>
+DATA _key        TYPE td_name.
   DATA _obj        TYPE string.
   DATA _type       TYPE string.
   DATA _up_src     TYPE string.
@@ -1319,7 +1345,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>  DATA t_upcode    TYPE td_sourcecode.
+    <SOURCE>
+  DATA t_upcode    TYPE td_sourcecode.
   FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF t_upcode,
     &lt;m&gt; LIKE LINE OF codes-def.
@@ -1378,7 +1405,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>  FIELD-SYMBOLS:
+    <SOURCE>
+  FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF data.
   LOOP AT data ASSIGNING &lt;l&gt;.
     IF result IS INITIAL.
@@ -1399,7 +1427,8 @@
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>DATA _item TYPE string.
+    <SOURCE>
+DATA _item TYPE string.
   _item = item.
   INSERT _item INTO context INDEX 1.</SOURCE>
    </ITEM>
@@ -1407,7 +1436,8 @@
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove stack entry"/>
     </TEXTS>
-    <SOURCE>IF NOT context IS INITIAL.
+    <SOURCE>
+IF NOT context IS INITIAL.
     DELETE context INDEX 1.
   ENDIF.</SOURCE>
    </ITEM>
@@ -1450,7 +1480,7 @@
    </ITEM>
    <ITEM CMPNAME="TO_OBJECT" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="4 " TYPTYPE="3" TYPE="ZAPLINK_OBJECT">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="SapLink Class &amp; Interface Installer"/>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink Class &amp; Interface connector"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="4" SRCROW1="28 " SRCCOLUMN1="4 " SRCROW2="30 " SRCCOLUMN2="21 " TYPESRC_LENG="74 ">
