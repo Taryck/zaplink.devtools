@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="45DD56D37CA9D3969FEE825A2893F720" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="92CC34805A7082E4161A2089F7272FA6" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000071" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
-  <SOURCE>*&amp;---------------------------------------------------------------------*
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000072" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <SOURCE>
+*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
 *&amp;
 *&amp;---------------------------------------------------------------------*
@@ -81,7 +82,7 @@ AT SELECTION-SCREEN ON p_prog.
   ENDIF.
 
 AT SELECTION-SCREEN ON p_devc.
-  IF NOT p_prog IS INITIAL AND p_devc is INITIAL.
+  IF NOT p_prog IS INITIAL AND p_devc IS INITIAL.
     MESSAGE &apos;Specify program&apos;&apos;s devlopement class&apos;(pdc) TYPE &apos;E&apos;.
   ENDIF.
 
@@ -225,6 +226,7 @@ START-OF-SELECTION.
     _prog-state = &apos;A&apos;.
     MODIFY progdir FROM _prog.
 *  INSERT progdir FROM _prog.
+    m_code = zaplink_installer_generator=&gt;clean_code( m_code ).
     INSERT REPORT _prog-name FROM m_code STATE _prog-state.
 
     COMMIT WORK AND WAIT.

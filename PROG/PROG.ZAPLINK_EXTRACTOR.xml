@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="7E9596070EA67BA9FF8748F3F81DAD3A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="DCE2D7C2745982FD15DA53046D46E608" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000007" RSTAT="K" RMAND="001" RLOAD="E" FIXPT="X" UCCHECK="X"/>
-  <SOURCE>*&amp;---------------------------------------------------------------------*
+  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000008" RSTAT="K" RMAND="001" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <SOURCE>
+*&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_EXTRACTOR
 *&amp;---------------------------------------------------------------------*
 
@@ -65,7 +66,8 @@ START-OF-SELECTION.
   ELSEIF NOT em_cnx IS INITIAL.
     CALL METHOD o_extract-&gt;extract_connectors
       EXPORTING
-        target_dir = p_path.
+        target_dir = p_path
+        package    = r_pack.
   ENDIF.
 
 END-OF-SELECTION.</SOURCE>
