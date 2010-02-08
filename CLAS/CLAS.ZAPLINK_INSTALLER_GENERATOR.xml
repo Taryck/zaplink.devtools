@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="8E15528304DF3D26B77C7BFBEC7D679F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_GENERATOR" TYPE="CLAS" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="58A6B281D49355C761848F8357B662D0" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_GENERATOR" TYPE="CLAS" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="4E09064B8305595DE1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -34,6 +34,7 @@
      <ITEM LANGU="E" DESCRIPT="Include list"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="MESSAGES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="14 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_MESSAGE_IDS"/>
    <ITEM CMPNAME="ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_ORDER">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
@@ -223,6 +224,7 @@ DATA _name TYPE string.
   o_data ?= o_raw-&gt;raw.
 
   append_typegroups( o_data-&gt;typegroups ).
+  append_message( o_data-&gt;a0_maindata-msg_id ).
 
   IF NOT o_data-&gt;a0_maindata-inheritance-refclsname IS INITIAL.
     _key = o_data-&gt;a0_maindata-inheritance-refclsname.
@@ -625,7 +627,7 @@ DATA _code TYPE string.
   ENDLOOP.
   add_method_source( _code ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="ADD_TYPES" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="11 ">
+   <ITEM CMPNAME="ADD_TYPES" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="9 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Add types"/>
     </TEXTS>
@@ -649,7 +651,19 @@ DATA _name TYPE string.
     unstack( ).
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="APPEND_TYPEGROUPS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="12 ">
+   <ITEM CMPNAME="APPEND_MESSAGE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="10 ">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Add message"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="DATA" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_MESSAGE"/>
+    </PARAMETERS>
+    <SOURCE>
+  DATA s_msg LIKE LINE OF messages.
+  s_msg-name = data.
+  APPEND s_msg TO messages.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="APPEND_TYPEGROUPS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="11 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Add type groups"/>
     </TEXTS>
@@ -657,7 +671,7 @@ DATA _name TYPE string.
      <ITEM SCONAME="TYPERGROUPS" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="ZAPLINK_OBJECT_DATA=&gt;TT_TYPEGROUPS"/>
     </PARAMETERS>
     <SOURCE>
-DATA _tg LIKE LINE OF me-&gt;typegroups.
+  DATA _tg LIKE LINE OF me-&gt;typegroups.
   FIELD-SYMBOLS:
     &lt;t&gt; LIKE LINE OF typergroups.
   LOOP AT typergroups ASSIGNING &lt;t&gt;.
@@ -704,7 +718,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
 *    IF d_line IS INITIAL. DELETE code. ENDIF.
 *  ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONVERT_LINE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="15 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CONVERT_LINE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="13 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert code line : remove tabs"/>
     </TEXTS>
@@ -726,7 +740,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
 *  TRANSLATE target TO UPPER CASE.  &quot;#EC SYNTCHAR
   REPLACE ALL OCCURRENCES OF cl_abap_char_utilities=&gt;horizontal_tab IN target WITH ` `.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONVERT_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="16 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CONVERT_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="14 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert source code : remove tabs"/>
     </TEXTS>
@@ -752,7 +766,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
     &lt;l&gt; = convert_line( &lt;l&gt; ).
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONVERT_SOURCE_UPCASE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="17 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CONVERT_SOURCE_UPCASE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="15 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert source code to upcase"/>
     </TEXTS>
@@ -776,7 +790,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
     TRANSLATE &lt;l&gt; TO UPPER CASE.  &quot;#EC SYNTCHAR
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="EXTRACT_STRINGS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="18 " MTDDECLTYP="1">
+   <ITEM CMPNAME="EXTRACT_STRINGS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="16 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Extract strings from source code"/>
     </TEXTS>
@@ -1010,7 +1024,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
   APPEND LINES OF _tmp_code-impl TO code.
   code = clean_code( code ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="GET_CLASS_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 " MTDDECLTYP="1">
+   <ITEM CMPNAME="GET_CLASS_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="17 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Get Class source codes"/>
     </TEXTS>
@@ -1118,7 +1132,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
 
   codes-name = name.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="GET_INTERFACE_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="22 " MTDDECLTYP="1">
+   <ITEM CMPNAME="GET_INTERFACE_SOURCE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="18 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Get interface source codes"/>
     </TEXTS>
@@ -1224,7 +1238,7 @@ DATA _key   TYPE seoclskey.
     codes = get_interface_source( name ).
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="INVERSE_ORDER" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="24 " MTDDECLTYP="1">
+   <ITEM CMPNAME="INVERSE_ORDER" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="19 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Inverse table order"/>
     </TEXTS>
@@ -1248,7 +1262,7 @@ FIELD-SYMBOLS:
     INSERT &lt;o&gt; INTO order_out INDEX 1.
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="25 ">
+   <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="20 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Process type."/>
     </TEXTS>
@@ -1295,7 +1309,7 @@ DATA _key        TYPE td_name.
   CHECK NOT _key IS INITIAL.
   CALL METHOD add_object( _key ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="REMOVE_DEF_LOAD" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="26 " MTDDECLTYP="1">
+   <ITEM CMPNAME="REMOVE_DEF_LOAD" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove definition load"/>
     </TEXTS>
@@ -1421,7 +1435,7 @@ DATA _key        TYPE td_name.
     ENDIF.
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="STACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="28 ">
+   <ITEM CMPNAME="STACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="22 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Add context to context stack"/>
     </TEXTS>
@@ -1437,7 +1451,7 @@ DATA _item TYPE string.
   _item = item.
   INSERT _item INTO context INDEX 1.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="UNSTACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="29 ">
+   <ITEM CMPNAME="UNSTACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="23 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove stack entry"/>
     </TEXTS>
@@ -1446,7 +1460,7 @@ IF NOT context IS INITIAL.
     DELETE context INDEX 1.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="_CLEAN_UP" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="14 ">
+   <ITEM CMPNAME="_CLEAN_UP" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="12 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Clean up data"/>
     </TEXTS>
@@ -1459,7 +1473,9 @@ IF NOT context IS INITIAL.
   SORT typegroups.
   DELETE ADJACENT DUPLICATES FROM typegroups.
   SORT includes.
-  DELETE ADJACENT DUPLICATES FROM includes.</SOURCE>
+  DELETE ADJACENT DUPLICATES FROM includes.
+  SORT messages.
+  DELETE ADJACENT DUPLICATES FROM messages.</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
@@ -1472,6 +1488,7 @@ IF NOT context IS INITIAL.
      <ITEM LANGU="E" DESCRIPT="Class type"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="TD_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="14 " TYPTYPE="1" TYPE="SEOCLASSDF-MSG_ID"/>
    <ITEM CMPNAME="TD_NAME" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="SEOCLSNAME">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
@@ -1511,15 +1528,19 @@ IF NOT context IS INITIAL.
      <ITEM LANGU="E" DESCRIPT="Range of package"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="4" SRCROW1="30 " SRCCOLUMN1="4 " SRCROW2="32 " SRCCOLUMN2="25 " TYPESRC_LENG="84 ">
+   <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="4" SRCROW1="30 " SRCCOLUMN1="4 " SRCROW2="32 " SRCCOLUMN2="27 " TYPESRC_LENG="88 ">
     BEGIN OF ts_list,
-              name    TYPE td_name,
-            END OF ts_list
+                name    TYPE td_name,
+              END OF ts_list
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="TS_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="15 " TYPTYPE="4" SRCROW1="54 " SRCCOLUMN1="4 " SRCROW2="56 " SRCCOLUMN2="22 " TYPESRC_LENG="78 ">BEGIN OF ts_message,
+        name TYPE td_message,
+      END OF ts_message
+</ITEM>
    <ITEM CMPNAME="TS_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="8 " TYPTYPE="4" SRCROW1="34 " SRCCOLUMN1="4 " SRCROW2="39 " SRCCOLUMN2="22 " TYPESRC_LENG="215 ">
     BEGIN OF ts_order.
     INCLUDE TYPE ts_list.
@@ -1532,22 +1553,22 @@ IF NOT context IS INITIAL.
      <ITEM LANGU="E" DESCRIPT="Class/interface, type and flag"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="4" SRCROW1="21 " SRCCOLUMN1="4 " SRCROW2="26 " SRCCOLUMN2="27 " TYPESRC_LENG="209 ">
+   <ITEM CMPNAME="TS_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="4" SRCROW1="21 " SRCCOLUMN1="4 " SRCROW2="26 " SRCCOLUMN2="29 " TYPESRC_LENG="219 ">
     BEGIN OF ts_source,
-              name  TYPE td_name,
-              def   TYPE td_sourcecode,
-              macro TYPE td_sourcecode,
-              impl  TYPE td_sourcecode,
-            END OF ts_source
+                name  TYPE td_name,
+                def   TYPE td_sourcecode,
+                macro TYPE td_sourcecode,
+                impl  TYPE td_sourcecode,
+              END OF ts_source
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface sources codes"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_TYPEGROUP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " TYPTYPE="4" SRCROW1="47 " SRCCOLUMN1="4 " SRCROW2="49 " SRCCOLUMN2="26 " TYPESRC_LENG="86 ">
+   <ITEM CMPNAME="TS_TYPEGROUP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " TYPTYPE="4" SRCROW1="47 " SRCCOLUMN1="4 " SRCROW2="49 " SRCCOLUMN2="24 " TYPESRC_LENG="82 ">
     BEGIN OF ts_typegroup,
-          name TYPE seotpuname,
-        END OF ts_typegroup
+        name TYPE seotpuname,
+      END OF ts_typegroup
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="a Type Group"/>
@@ -1574,6 +1595,8 @@ IF NOT context IS INITIAL.
      <ITEM LANGU="E" DESCRIPT="Class/interface list"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="TT_MESSAGE_IDS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="16 " TYPTYPE="4" SRCROW1="58 " SRCCOLUMN1="4 " SRCROW2="58 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">tt_message_ids TYPE STANDARD TABLE OF ts_message WITH DEFAULT KEY
+</ITEM>
    <ITEM CMPNAME="TT_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="11 " TYPTYPE="4" SRCROW1="45 " SRCCOLUMN1="4 " SRCROW2="45 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">
     tt_order TYPE STANDARD TABLE OF ts_order WITH NON-UNIQUE KEY name
 

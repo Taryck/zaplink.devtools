@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FF905D61722E576FC0E7CEC85EBE3C8D" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="400518F71050A905D50EB7E617B13C5E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -87,7 +87,7 @@
      <ITEM LANGU="E" DESCRIPT="Message Collector: Standard Implementation"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="BALLOG_SUBOBJECT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTDECLTYP="2" ATTVALUE="&apos;EXTRACTOR&apos;" TYPTYPE="1" TYPE="BALSUBOBJ">
+   <ITEM CMPNAME="BALLOG_SUBOBJECT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 " ATTDECLTYP="2" ATTVALUE="&apos;EXTRACTOR&apos;" TYPTYPE="1" TYPE="BALSUBOBJ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Application Log: Subobject"/>
     </TEXTS>
@@ -95,6 +95,11 @@
    <ITEM CMPNAME="FILE_SEP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="1" ATTRDONLY="X" TYPTYPE="1" TYPE="C">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="File/directory Separator"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="O_CX" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="3" TYPE="ZAPLINK_CX">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="ZAPlink Framework : Root exception class"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="O_MYCX" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="3" TYPE="ZAPLINK_CX">
@@ -559,6 +564,7 @@
 
     WHILE o_comp IS BOUND.
       TRY.
+          o_comp-&gt;set_with_subcomp( abap_false ).
           _comp = o_comp-&gt;get_key( ).
           o_conn = o_comp-&gt;connector( ).
         CATCH zaplink_cx_component INTO _cx_comp.
@@ -610,14 +616,14 @@
 *                               type = _comp-type
 *                               name = _comp-name.
         ELSE.
-* Special cleanning on DEVC
-          IF o_raw-&gt;raw IS BOUND AND _comp-type = &apos;DEVC&apos;.
-            TRY.
-                o_pack_raw ?= o_raw-&gt;raw.
-                CLEAR o_pack_raw-&gt;packages.
-              CATCH cx_root.
-            ENDTRY.
-          ENDIF.
+* Special cleanning on DEVC =&gt; Without sub object
+*          IF o_raw-&gt;raw IS BOUND AND _comp-type = &apos;DEVC&apos;.
+*            TRY.
+*                o_pack_raw ?= o_raw-&gt;raw.
+*                CLEAR o_pack_raw-&gt;packages.
+*              CATCH cx_root.
+*            ENDTRY.
+*          ENDIF.
           filename = _comp-type.
           directory = create_fullpath( directory = target_dir
                                         filename = filename ) .
@@ -675,6 +681,7 @@
   DATA o_list      TYPE to_list.
   DATA o_file      TYPE to_file.
   DATA o_cnxlist   TYPE to_list.
+  DATA o_contlist  TYPE to_list.
   DATA o_cont      TYPE to_container.
   DATA o_comp      TYPE to_component.
   DATA o_cnxcomp   TYPE to_component.
@@ -687,7 +694,9 @@
   DATA _cx_comp TYPE REF TO zaplink_cx_component.
   DATA _cx_list TYPE REF TO zaplink_cx_list.
   DATA s_cnxdata   TYPE ts_contdata.
+  DATA d_msg       TYPE string.
   FIELD-SYMBOLS:
+    &lt;m&gt; LIKE LINE OF o_generator-&gt;messages,
     &lt;i&gt; LIKE LINE OF o_generator-&gt;includes,
     &lt;c&gt; LIKE LINE OF o_generator-&gt;classes.
 
@@ -717,6 +726,7 @@
     CREATE OBJECT o_file.
 
     TRY.
+        o_comp-&gt;set_with_subcomp( abap_false ).
         _comp = o_comp-&gt;get_key( ).
 * Load previous file
         TRY.
@@ -752,30 +762,67 @@
           o_cnxcomp-&gt;set_type( &apos;CLAS&apos; ).
           _comp-name = &lt;c&gt;-name.
           o_cnxcomp-&gt;set_name( _comp-name ).
-          o_cnxlist-&gt;add( o_cnxcomp ).
+          TRY.
+              o_cnxlist-&gt;add( o_cnxcomp ).
+            CATCH zaplink_cx INTO o_cx.
+              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+          ENDTRY.
         ENDLOOP.
         LOOP AT o_generator-&gt;includes ASSIGNING &lt;i&gt;.
           CREATE OBJECT o_cnxcomp.
           o_cnxcomp-&gt;set_type( &apos;PROG&apos; ).
           _comp-name = &lt;i&gt;.
           o_cnxcomp-&gt;set_name( _comp-name ).
-          o_cnxlist-&gt;add( o_cnxcomp ).
+          TRY.
+              o_cnxlist-&gt;add( o_cnxcomp ).
+            CATCH zaplink_cx INTO o_cx.
+              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+          ENDTRY.
+        ENDLOOP.
+        LOOP AT o_generator-&gt;messages ASSIGNING &lt;m&gt;.
+          CREATE OBJECT o_cnxcomp.
+          o_cnxcomp-&gt;set_type( &apos;MSAG&apos; ).
+          _comp-name = &lt;m&gt;-name.
+          o_cnxcomp-&gt;set_name( _comp-name ).
+          TRY.
+              o_cnxlist-&gt;add( o_cnxcomp ).
+            CATCH zaplink_cx INTO o_cx.
+              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+          ENDTRY.
         ENDLOOP.
 
         o_cnxlist-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
 
         IF NOT o_cont IS BOUND.
 * No previous file
+          _comp = o_comp-&gt;get_key( ).
           s_cnxdata-name = _comp-name.
           o_cont = zaplink_container=&gt;create_new( o_file = o_file
                                                     data = s_cnxdata ).
-          o_cont-&gt;add_components( o_cnxlist ).
-        ELSE.
-* Previous file exist
-          o_cont-&gt;add_components( o_cnxlist ).
         ENDIF.
+        o_cont-&gt;add_components( o_cnxlist ).
 
         o_cont-&gt;save_to_file( ).
+* Change detected for connector : &amp;1 (&amp;2) in file &amp;3
+        MESSAGE w002 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
+        WRITE:/ icon_green_light AS ICON, d_msg.
+        o_contlist = o_cont-&gt;get_content( ).
+        o_contlist-&gt;init_iter( ).
+        o_cnxcomp = o_contlist-&gt;get_next( ).
+        WHILE o_cnxcomp IS BOUND.
+          _comp = o_cnxcomp-&gt;get_key( ).
+          IF o_cnxlist-&gt;search( o_cnxcomp ) IS BOUND.
+* Component (&amp;1) &amp;2 has changed and has been updated
+            MESSAGE w004 WITH _comp-type _comp-name INTO d_msg.
+            WRITE:/ space, space, icon_green_light AS ICON, d_msg.
+          ELSE.
+* Component (&amp;1) &amp;2 haven&apos;t change
+            MESSAGE w003 WITH _comp-type _comp-name INTO d_msg.
+            WRITE:/ space, space,icon_yellow_light AS ICON, d_msg.
+          ENDIF.
+          o_cnxcomp = o_contlist-&gt;get_next( ).
+        ENDWHILE.
+        WRITE:/ .
 
       CATCH zaplink_cx_component INTO _cx_comp.
         CREATE OBJECT _cx_cnx
