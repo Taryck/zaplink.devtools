@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="400518F71050A905D50EB7E617B13C5E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="2CDC180EFA489D82E0598393D1D4BDDE" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -981,6 +981,8 @@
       CLEAR _tempstring.
   ENDTRY.
 
+  d_name = o_raw-&gt;get_name( ).    &quot; Issue 32
+  d_type = o_raw-&gt;get_type( ).    &quot; Issue 32
   IF NOT _tempstring IS INITIAL.  &quot; file allready exists =&gt; check checksum
     o_xml = string_2_xml( _tempstring ).
 
@@ -1008,8 +1010,6 @@
       ENDTRY.
       CLEAR o_xml.
       o_raw-&gt;set_checksum( ).
-      d_name = o_raw-&gt;get_name( ).
-      d_type = o_raw-&gt;get_type( ).
       IF o_raw-&gt;get_checksum( ) = o_file_raw-&gt;get_checksum( ). &quot; no change =&gt; skip file
 * No change detected on (&amp;1) &amp;2 comparing with file &amp;3
         MESSAGE w000 WITH d_type d_name filename INTO d_msg.
