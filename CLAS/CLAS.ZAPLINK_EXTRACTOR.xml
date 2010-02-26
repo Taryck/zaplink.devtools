@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="456F050118FA3F7BC7B9980095D201AF" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="942E7677F24D98AB8472C496B7C1614D" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -675,7 +675,7 @@
      </ITEM>
     </EXCEPTIONS>
     <SOURCE>
-  DATA o_generator TYPE REF TO zaplink_installer_generator.
+  DATA o_generator TYPE REF TO zaplink_standalone_generator.
   DATA _cx         TYPE REF TO cx_root.
   DATA directory   TYPE string.
   DATA filename    TYPE td_filename.
@@ -691,7 +691,7 @@
   DATA o_cnxcomp   TYPE to_component.
   DATA o_conn      TYPE to_connector.
   DATA o_cnx_clean TYPE to_connector_cleaner.
-  DATA d_classname TYPE zaplink_installer_generator=&gt;td_name.
+  DATA d_classname TYPE zaplink_standalone_generator=&gt;td_name.
   DATA o_raw       TYPE REF TO zaplink_raw.
   DATA _comp       TYPE zaplink_component=&gt;ts_component.
   DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
