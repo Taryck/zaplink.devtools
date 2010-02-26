@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="92CC34805A7082E4161A2089F7272FA6" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="CE1AC0C1EEAC8A1893B7D1A8F8C36D34" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000072" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000074" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>
 *&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
@@ -30,8 +30,9 @@ PARAMETERS p_ifn    TYPE zaplink_file=&gt;t_filename LOWER CASE.
 
 TYPES t_obj_list TYPE zaplink_list=&gt;tt_compkeys.
 TYPES tr_pack    TYPE zaplink_gui=&gt;tr_packages.
+TYPES td_sourcecode TYPE zaplink_standalone_generator=&gt;td_sourcecode.
 DATA t_conns     TYPE t_obj_list.
-DATA o_generator TYPE REF TO zaplink_installer_generator.
+DATA o_generator TYPE REF TO zaplink_standalone_generator.
 DATA o_objects   TYPE REF TO zaplink_list.
 DATA o_comp      TYPE REF TO zaplink_component.
 DATA o_file      TYPE REF TO zaplink_file.
@@ -40,9 +41,9 @@ DATA t_type      TYPE zaplink_component=&gt;td_comptype.
 DATA t_name      TYPE zaplink_component=&gt;td_compname.
 DATA t_data      TYPE zaplink_container=&gt;ts_contdata.
 DATA _cx         TYPE REF TO zaplink_cx.
-DATA abapcode    TYPE zaplink_installer_generator=&gt;td_sourcecode.
-DATA ac_loadlocal TYPE zaplink_installer_generator=&gt;td_sourcecode.
-DATA m_code      TYPE zaplink_installer_generator=&gt;td_sourcecode.
+DATA abapcode    TYPE td_sourcecode.
+DATA ac_loadlocal TYPE td_sourcecode.
+DATA m_code      TYPE td_sourcecode.
 DATA m_index     TYPE sy-tabix.
 DATA idx_init    TYPE sy-tabix.
 DATA _prog       TYPE progdir.
@@ -145,9 +146,11 @@ START-OF-SELECTION.
 
   LOOP AT o_generator-&gt;order ASSIGNING &lt;o&gt;.
     CASE &lt;o&gt;-type.
-      WHEN zaplink_installer_generator=&gt;ot_class.
+      WHEN zaplink_standalone_generator=&gt;objtype-exception_class.
+        WRITE :/ &apos;CXCL&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
+      WHEN zaplink_standalone_generator=&gt;objtype-class.
         WRITE :/ &apos;CLAS&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
-      WHEN zaplink_installer_generator=&gt;ot_interface.
+      WHEN zaplink_standalone_generator=&gt;objtype-interface.
         WRITE :/ &apos;INTF&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
       WHEN OTHERS.
         WRITE :/ &lt;o&gt;-type, &lt;o&gt;-name, &lt;o&gt;-defered.
@@ -226,14 +229,14 @@ START-OF-SELECTION.
     _prog-state = &apos;A&apos;.
     MODIFY progdir FROM _prog.
 *  INSERT progdir FROM _prog.
-    m_code = zaplink_installer_generator=&gt;clean_code( m_code ).
+    m_code = zaplink_standalone_generator=&gt;clean_code( m_code ).
     INSERT REPORT _prog-name FROM m_code STATE _prog-state.
 
     COMMIT WORK AND WAIT.
   ENDIF.
 
   IF NOT p_ifn IS INITIAL.
-    d_source = zaplink_installer_generator=&gt;source_2_string( m_code ).
+    d_source = zaplink_standalone_generator=&gt;source_2_string( m_code ).
     TRY.
         o_file-&gt;set_filename( p_ifn ).
         o_file-&gt;set_filecontent( d_source ).
@@ -383,7 +386,7 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS
 FORM check_prog_include  USING  p_prog
                                 value(p_incl)
                       CHANGING  _index   TYPE sy-tabix
-                                abapcode TYPE zaplink_installer_generator=&gt;td_sourcecode.
+                                abapcode TYPE td_sourcecode.
   DATA: _search TYPE string.
   DATA tmp TYPE string.
 
@@ -415,7 +418,7 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS
 *      --&gt;P_TEXT     text
 *      --&gt;_INDEX     text
 *----------------------------------------------------------------------*
-FORM check_prog_pos  USING  abapcode TYPE zaplink_installer_generator=&gt;td_sourcecode
+FORM check_prog_pos  USING  abapcode TYPE td_sourcecode
                        value(p_text) TYPE string
                   CHANGING  _index   TYPE sy-tabix.
   DATA tmp TYPE string.
