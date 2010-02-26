@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="411EE7E5FD2A184B438D7B32EBCD94B7" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="21C383026E7258555FC22BB7EE1AFD12" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000009" RSTAT="K" RMAND="001" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000011" RSTAT="K" RMAND="001" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>
 *&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_EXTRACTOR
@@ -10,12 +10,20 @@
 
 REPORT  zaplink_extractor MESSAGE-ID zaplink.
 
-TABLES: tdevc.
+TABLES: tadir.
 
 PARAMETERS:
   p_path TYPE zaplink_extractor=&gt;td_directoryname OBLIGATORY.
 SELECT-OPTIONS:
-  s_pack FOR tdevc-devclass.
+  s_srcs FOR tadir-srcsystem,
+  s_type FOR tadir-object,
+  s_name FOR tadir-obj_name,
+  s_pack FOR tadir-devclass.
+PARAMETERS:
+  p_ext TYPE abap_bool AS CHECKBOX default abap_true.
+SELECT-OPTIONS:
+  s_author FOR tadir-author DEFAULT sy-uname.
+
 SELECTION-SCREEN BEGIN OF BLOCK mode WITH FRAME TITLE text-mod.
 PARAMETERS em_type TYPE c RADIOBUTTON GROUP r3 DEFAULT &apos;X&apos;.
 PARAMETERS em_pack TYPE c RADIOBUTTON GROUP r3.
@@ -57,12 +65,22 @@ START-OF-SELECTION.
     CALL METHOD o_extract-&gt;extract_by_type
       EXPORTING
         target_dir = p_path
-        package    = r_pack.
+        srcsystem  = s_srcs[]
+        type       = s_type[]
+        name       = s_name[]
+        packages   = s_pack[]
+        ext        = p_ext
+        author     = s_author[].
   ELSEIF NOT em_pack IS INITIAL.
     CALL METHOD o_extract-&gt;extract_by_package
       EXPORTING
         target_dir = p_path
-        package    = r_pack.
+        srcsystem  = s_srcs[]
+        type       = s_type[]
+        name       = s_name[]
+        packages   = s_pack[]
+        ext        = p_ext
+        author     = s_author[].
   ELSEIF NOT em_cnx IS INITIAL.
     CALL METHOD o_extract-&gt;extract_connectors
       EXPORTING
@@ -97,14 +115,39 @@ END-OF-SELECTION.</SOURCE>
      <ITEM LANGU="E" ENTRY="        Components by type Hier." LENGTH="32 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="S" KEY="P_EXT">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="        Extend to sub-packages" LENGTH="30 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="S" KEY="P_PATH">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        Local store directory" LENGTH="29 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="S" KEY="S_AUTHOR">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="9 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_NAME">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="9 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="S" KEY="S_PACK">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="15 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_SRCS">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="9 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_TYPE">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="9 "/>
     </TEXTS>
    </ITEM>
   </TEXTSPOOL>
