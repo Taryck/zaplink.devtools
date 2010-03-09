@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="3AFD0CEA4879A523482925BDFAFFAAEF" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="7296BD01E7B71E88D3A5868BD86AC0BC" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="5B83874B283E9376E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -1655,7 +1655,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
     APPEND s_order TO me-&gt;order.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="INVERSE_ORDER" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="28 " MTDDECLTYP="1">
+   <ITEM CMPNAME="INVERSE_ORDER" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="27 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Inverse table order"/>
     </TEXTS>
@@ -1671,36 +1671,13 @@ DATA _softcomp LIKE LINE OF softcomponents.
   FIELD-SYMBOLS:
     &lt;o&gt; TYPE ANY.
 
+  CHECK NOT order IS INITIAL.
   x = LINES( order ) + 1.
   LOOP AT order ASSIGNING &lt;o&gt;.
     IF sy-tabix &gt;= x.   EXIT.   ENDIF.
     INSERT &lt;o&gt; INTO order INDEX x.
   ENDLOOP.
-  SUBTRACT 1 FROM x. DELETE ORDER FROM 1 TO x.</SOURCE>
-   </ITEM>
-   <ITEM CMPNAME="INVERSE_ORDER_OLD" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 " MTDDECLTYP="1">
-    <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Inverse table order"/>
-    </TEXTS>
-    <PARAMETERS>
-     <ITEM SCONAME="ORDER_IN" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_ORDER">
-      <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
-      </TEXTS>
-     </ITEM>
-     <ITEM SCONAME="ORDER_OUT" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_ORDER">
-      <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
-      </TEXTS>
-     </ITEM>
-    </PARAMETERS>
-    <SOURCE>
-  FIELD-SYMBOLS:
-    &lt;o&gt; LIKE LINE OF order_in.
-
-  LOOP AT order_in ASSIGNING &lt;o&gt;.
-    INSERT &lt;o&gt; INTO order_out INDEX 1.
-  ENDLOOP.</SOURCE>
+  SUBTRACT 1 FROM x.    CHECK x &gt; 0.   DELETE ORDER FROM 1 TO x.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="IS_EXCLUDED_CLASS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="2 ">
     <TEXTS>
@@ -1742,7 +1719,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
   IF d_devclass IN packages AND d_softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="22 ">
+   <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Process type."/>
     </TEXTS>
@@ -1790,7 +1767,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
   CHECK NOT _key IS INITIAL.
   add_object_to_list( name = _key   full = full   source = ctx-context ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="REMOVE_DEF_LOAD" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="23 " MTDDECLTYP="1">
+   <ITEM CMPNAME="REMOVE_DEF_LOAD" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="22 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove definition load"/>
     </TEXTS>
@@ -1869,7 +1846,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
     LOOP AT new_order ASSIGNING &lt;o&gt;.    WRITE:/ &lt;o&gt;-name.   ENDLOOP.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SEARCH_FOR_INCLUDE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="24 ">
+   <ITEM CMPNAME="SEARCH_FOR_INCLUDE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="23 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Search include into source code"/>
     </TEXTS>
@@ -1940,7 +1917,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
     ENDIF.
   ENDLOOP.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="STACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="25 ">
+   <ITEM CMPNAME="STACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="24 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Add context to context stack"/>
     </TEXTS>
@@ -1957,7 +1934,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
   DATA s_ctx LIKE LINE OF context.
   s_ctx-context = context.   s_ctx-type = type.    s_ctx-full_def = full.   INSERT s_ctx INTO me-&gt;context INDEX 1.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="UNSTACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="26 ">
+   <ITEM CMPNAME="UNSTACK" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="25 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove stack entry"/>
     </TEXTS>
@@ -1965,7 +1942,7 @@ DATA _softcomp LIKE LINE OF softcomponents.
   IF NOT context IS INITIAL. DELETE context INDEX 1. ENDIF.
   IF context IS INITIAL. CLEAR: circular_ref_on, circular_context. ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="_CLEAN_UP" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="27 ">
+   <ITEM CMPNAME="_CLEAN_UP" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="26 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Clean up data"/>
     </TEXTS>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A5E9F654C82763AFA93B90741D27312B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="6984BA294B548390A237F1A185ABBF3B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -164,7 +164,7 @@
   ENDIF.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONCATENATE_PATH" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="9 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CONCATENATE_PATH" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="8 " MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Generate XML full file path"/>
     </TEXTS>
@@ -1049,59 +1049,7 @@
   ENDTRY.
 </SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SET_CHECKSUM_OFF" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="7 ">
-    <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Set Checksum on RAW data"/>
-    </TEXTS>
-    <PARAMETERS>
-     <ITEM SCONAME="O_RAW" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TO_RAW">
-      <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="RAW component with data"/>
-      </TEXTS>
-     </ITEM>
-     <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_CHECKSUM"/>
-    </PARAMETERS>
-    <SOURCE>
-*  DATA ez_xml          TYPE to_ez_xml.
-*  DATA o_xml           TYPE to_xml.
-*  DATA _tempstring     TYPE string.
-*  DATA _len            TYPE i.
-*  DATA _md5            TYPE md5_fields-hash.
-*  DATA _rc             TYPE sysubrc.
-**  Data _regex          type string.
-*
-*  CHECK o_raw IS BOUND.
-*  CLEAR o_raw-&gt;checksum.
-*  o_xml = RAW_2_XML( o_raw ).
-*
-*  CHECK o_xml IS BOUND.
-*  _tempstring = xml_2_string( o_xml ).
-**  _regex = &apos;&lt;\?.*\?&gt;&apos;.
-**  replace FIRST OCCURRENCE OF REGEX _regex IN _tempstring with ``.
-*  replace FIRST OCCURRENCE OF REGEX &apos;&lt;\?.*\?&gt;&apos; IN _tempstring with ``.
-*  _len = STRLEN( _tempstring ).
-*  CALL FUNCTION &apos;MD5_CALCULATE_HASH_FOR_CHAR&apos;
-*    EXPORTING
-*      data                 = _tempstring
-*      length               = _len
-**     VERSION              = 1
-*    IMPORTING
-*      hash                 = _md5
-**   TABLES
-**     DATA_TAB             =
-*    EXCEPTIONS
-*      no_data              = 1
-*      internal_error       = 2
-*      OTHERS               = 3.
-*  IF sy-subrc &lt;&gt; 0.
-*    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-*            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-*  ENDIF.
-*  o_raw-&gt;checksum = _md5.
-*
-*  result = _md5.</SOURCE>
-   </ITEM>
-   <ITEM CMPNAME="STRING_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="8 ">
+   <ITEM CMPNAME="STRING_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="7 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert string to XML Document"/>
     </TEXTS>
