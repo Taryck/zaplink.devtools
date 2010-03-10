@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="21C383026E7258555FC22BB7EE1AFD12" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="F44F2D38BEB65B40916924865CC51A48" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VARCL="X" SUBC="1" VERN="000011" RSTAT="K" RMAND="001" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -89,6 +89,51 @@ START-OF-SELECTION.
   ENDIF.
 
 END-OF-SELECTION.</SOURCE>
+  <TEXTS>
+   <ITEM LANGU="E">
+    <LONG_TXT TDVERSION="00001" TDFUSER="TBENSIAL" TDFRELES="700" TDFDATE="20100310" TDFTIME="121227" TDLINESIZE="072">U1&amp;PURPOSE&amp;
+ASThis program use ZAPLink framework to export set of ABAP component to
+  XML files. ZAPLink default export is into a container (XML file). This
+  tools export each ABAP component to a file. The file is overwritten if
+  changes have been detected (using MD5 checksum).
+U1&amp;INTEGRATION&amp;
+AS
+U1&amp;PREREQUISITES&amp;
+ASRequire ZAPLink framework installed and required connectors to export
+  each ABAP component type.
+U1&amp;FEATURES&amp;
+ASDetect changes. Save component in local directory.
+ASAllow 3 export modes :
+AS- &quot;Components by type Hier.&quot; : a directory will be created for each
+  component type using transport request convention (CLAS, PROG,...). This
+  kind of export is used for Google Code synchronization.
+AS- &quot;Components by package Hier.&quot; : a directory hierarchy will be created
+  as an image of the package hierarchy. Each component will be stored in
+  his package directory. Note that changing component package will move
+  file elsewhere
+AS- &quot;Components by package Hier.&quot; : a directory hierarchy will be created
+  as an image of the package hierarchy. Each component will be stored in
+  his package directory. Note that changing component package will move
+  file elsewhere
+AS- &quot;Connectors&quot; this special mode is used to create a container for
+  connector (and his dependencies) in order to publish them on the
+  connector repository.
+ASThe first two modes might be useful to save your components or all
+  components of your project.
+U2&amp;SELECTION&amp;
+AS&quot;Extend to sub-packages&quot; when selecting this option, all sub-package of
+  a main package in your selection criteria will also be selected. Note
+  that exclusion override sub-package extension.
+U2&amp;STANDARD_VARIANTS&amp;
+AS
+U2&amp;OUTPUT&amp;
+AS
+U1&amp;ACTIVITIES&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS</LONG_TXT>
+   </ITEM>
+  </TEXTS>
   <TEXTSPOOL>
    <ITEM ID="I" KEY="MOD">
     <TEXTS>

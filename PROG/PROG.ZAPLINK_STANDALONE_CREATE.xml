@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="0DEB6F65DBC3CBA042CC17E9522C2DD8" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="8F954487A089DE42C90DBF431AE19204" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000012" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -351,6 +351,36 @@ FORM check_prog_exists  USING    p_prog.
     MESSAGE e541(00) WITH p_prog.
   ENDIF.
 ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
+  <TEXTS>
+   <ITEM LANGU="E">
+    <LONG_TXT TDVERSION="00001" TDFUSER="TBENSIAL" TDFRELES="700" TDFDATE="20100310" TDFTIME="121718" TDLINESIZE="072">U1&amp;PURPOSE&amp;
+ASThis program generate a standalone (without needs of any other ABAP
+  component) program based on a program with dependencies on other ABAP
+  component.
+ASThis tools is used to create ZAPLink standalone installer.
+U1&amp;INTEGRATION&amp;
+AS
+U1&amp;PREREQUISITES&amp;
+ASRequire ZAPLink framework installed and required connectors to export
+  each ABAP component type.
+U1&amp;FEATURES&amp;
+ASScan program to detect Classes, interface, type-group uses and convert
+  Classes and interface into local class and interface.
+ASNote : In many case an standalone version of your program CAN&apos;T be
+  created. So check on an other SAP system that you program do compile. Do
+  also an extended check before releasing.
+U2&amp;SELECTION&amp;
+AS
+U2&amp;STANDARD_VARIANTS&amp;
+AS
+U2&amp;OUTPUT&amp;
+AS
+U1&amp;ACTIVITIES&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS</LONG_TXT>
+   </ITEM>
+  </TEXTS>
   <TEXTSPOOL>
    <ITEM ID="R">
     <TEXTS>
