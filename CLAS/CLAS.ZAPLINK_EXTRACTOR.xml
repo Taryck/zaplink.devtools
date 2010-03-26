@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="6984BA294B548390A237F1A185ABBF3B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="16DAFE8A23507A8CE78903C8C5C6CBA7" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -53,6 +53,7 @@
    <ITEM CMPNAME="TO_LIST" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_LIST"/>
    <ITEM CMPNAME="TO_MSG_COLL" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_MSG_COLL"/>
    <ITEM CMPNAME="TO_RAW" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_RAW"/>
+   <ITEM CMPNAME="TO_RAW_BASE" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_RAW_BASE"/>
    <ITEM CMPNAME="TO_XML" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TO_XML"/>
    <ITEM CMPNAME="TR_AUTHOR" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_AUTHOR"/>
    <ITEM CMPNAME="TR_COMPNAME" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_COMPNAME"/>
@@ -425,8 +426,7 @@
             CATCH cx_root.
           ENDTRY.
           IF o_cnx_clean IS BOUND.    o_cnx_clean-&gt;anonymize( o_raw ).    ENDIF.
-          o_raw-&gt;connector = o_conn-&gt;uuid.
-          o_raw-&gt;version = o_conn-&gt;version.
+          o_raw-&gt;update_connector_data( o_conn ).
         CATCH zaplink_cx_connector INTO _cx_cnx.
           o_comp-&gt;set_exception( _cx_cnx ).
           TRY.
@@ -601,8 +601,7 @@
             IF o_cnx_clean IS BOUND.
               o_cnx_clean-&gt;anonymize( o_raw ).
             ENDIF.
-            o_raw-&gt;connector = o_conn-&gt;uuid.
-            o_raw-&gt;version = o_conn-&gt;version.
+            o_raw-&gt;update_connector_data( o_conn ).
           CATCH zaplink_cx_connector INTO _cx_cnx.
             o_comp-&gt;set_exception( _cx_cnx ).
             TRY.
@@ -966,7 +965,7 @@
   DATA o_xml           TYPE to_xml.
   DATA _tempstring     TYPE string.
   DATA o_file          TYPE to_file.
-  DATA o_file_raw      TYPE to_raw.
+  DATA o_file_raw      TYPE to_raw_base.
   DATA root_node       TYPE REF TO if_ixml_node.
   DATA d_name          TYPE td_compname.
   DATA d_type          TYPE td_comptype.
