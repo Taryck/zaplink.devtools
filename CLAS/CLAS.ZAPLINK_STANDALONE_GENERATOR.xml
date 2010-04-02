@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="9D31734C64949768609C530CC416749E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="F6910F749DD398DC5F113F57B5FE95DD" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="5B83874B283E9376E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -153,7 +153,7 @@ DATA _name TYPE string.
     &lt;a&gt; LIKE LINE OF attributs.
 
   LOOP AT attributs ASSIGNING &lt;a&gt;.
-    CONCATENATE &apos;Attributs-&gt;&apos; &lt;a&gt;-cmpname INTO _name.
+    CONCATENATE &apos;Attributs-&gt;&apos; &lt;a&gt;-cmpname INTO _name.   &quot;#EC NOTEXT
     stack( _name ).
     CALL METHOD process_type( type = &lt;a&gt;-typtype
                               name = &lt;a&gt;-type ).
@@ -522,7 +522,7 @@ DATA _name TYPE string.
     &lt;e&gt; LIKE LINE OF &lt;m&gt;-exceptions.
 
   LOOP AT methods ASSIGNING &lt;m&gt;.
-    CONCATENATE &apos;Method-&gt;&apos; &lt;m&gt;-cmpname INTO _name.
+    CONCATENATE &apos;Method-&gt;&apos; &lt;m&gt;-cmpname INTO _name.    &quot;#EC NOTEXT
     stack( _name ).
 * Check parameters
     LOOP AT &lt;m&gt;-parameters ASSIGNING &lt;p&gt;.
@@ -791,7 +791,7 @@ DATA _name TYPE string.
     &lt;t&gt; LIKE LINE OF types.
 
   LOOP AT types ASSIGNING &lt;t&gt;.
-    CONCATENATE &apos;Type=&gt;&apos; &lt;t&gt;-cmpname INTO _name.
+    CONCATENATE &apos;Type=&gt;&apos; &lt;t&gt;-cmpname INTO _name.    &quot;#EC NOTEXT
     stack( _name ).
     CALL METHOD process_type( type = &lt;t&gt;-typtype
                               name = &lt;t&gt;-type

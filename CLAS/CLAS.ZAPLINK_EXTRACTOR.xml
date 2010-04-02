@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="16DAFE8A23507A8CE78903C8C5C6CBA7" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="0E085859F2A91854D2E8B4A48555D72C" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" UUID="769C4A4BD5991F32E1000000AC120173" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -141,7 +141,8 @@
    <MACROS>
 *&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
 *&quot;* in the implementation part of the class
-</MACROS>
+
+INCLUDE ZAPLINK_MACROS.</MACROS>
   </LOCAL>
   <METHODS>
    <ITEM CMPNAME="CLASS_CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDTYPE="2" MTDDECLTYP="1">
@@ -692,151 +693,154 @@
     &lt;i&gt; LIKE LINE OF o_generator-&gt;includes,
     &lt;c&gt; LIKE LINE OF o_generator-&gt;classes.
 
-  o_list = zaplink_connectors_4extractor=&gt;get_connectorlist( ).
-  o_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+  TRY.
+    o_list = zaplink_connectors_4extractor=&gt;get_connectorlist( ).
+    o_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
 
 * Initialize Interator
-  TRY.
-      o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
-      o_list-&gt;init_sel_iter( ).
-      o_list-&gt;display_progress = abap_true.
-      o_comp = o_list-&gt;get_next( ).
-    CATCH zaplink_cx_list INTO _cx_list.
-* Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
-      CREATE OBJECT o_mycx
-        EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
-      o_mycx-&gt;update( ).
-      RAISE EXCEPTION o_mycx.
-  ENDTRY.
-
-  WHILE o_comp IS BOUND.
-    CREATE OBJECT o_generator.
-    o_generator-&gt;packages = package.
-    CREATE OBJECT o_cnxlist.
-    CREATE OBJECT o_file.
-
     TRY.
-        o_comp-&gt;set_with_subcomp( abap_false ).
-        _comp = o_comp-&gt;get_key( ).
-* Load previous file
-        TRY.
-            CREATE OBJECT o_conn TYPE (_comp-name).
-          CATCH cx_root INTO _cx.
-            RAISE EXCEPTION TYPE zaplink_cx_connector
-                       EXPORTING textid = zaplink_cx=&gt;system_error
-                               previous = _cx.
-        ENDTRY.
-        filename = o_conn-&gt;uuid.
-        CONCATENATE filename ext_sep o_conn-&gt;version ext_sep file_ext INTO filename.
-        filename = concatenate_path( directory = target_dir
-                                      filename = filename ).
-        o_file-&gt;set_filename( filename ).
-        o_file-&gt;set_filetype( zaplink_file=&gt;c_ft_local ).
-        CLEAR o_cont.
-        IF o_file-&gt;file_exists( ) = abap_true.
-          TRY.
-              CREATE OBJECT o_cont
-                EXPORTING
-                  o_file = o_file.
-              CALL METHOD o_cont-&gt;load_from_file( ).
-            CATCH zaplink_cx_container.
-              CLEAR o_cont.
-          ENDTRY.
-        ENDIF.
-
-* Get connector and dependenties
-        d_classname = _comp-name.
-        o_generator-&gt;add_object( d_classname ).
-        LOOP AT o_generator-&gt;classes ASSIGNING &lt;c&gt;.
-          CREATE OBJECT o_cnxcomp.
-          o_cnxcomp-&gt;set_type( &apos;CLAS&apos; ).
-          _comp-name = &lt;c&gt;-name.
-          o_cnxcomp-&gt;set_name( _comp-name ).
-          TRY.
-              o_cnxlist-&gt;add( o_cnxcomp ).
-            CATCH zaplink_cx INTO o_cx.
-              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
-          ENDTRY.
-        ENDLOOP.
-        LOOP AT o_generator-&gt;includes ASSIGNING &lt;i&gt;.
-          CREATE OBJECT o_cnxcomp.
-          o_cnxcomp-&gt;set_type( &apos;PROG&apos; ).
-          _comp-name = &lt;i&gt;.
-          o_cnxcomp-&gt;set_name( _comp-name ).
-          TRY.
-              o_cnxlist-&gt;add( o_cnxcomp ).
-            CATCH zaplink_cx INTO o_cx.
-              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
-          ENDTRY.
-        ENDLOOP.
-        LOOP AT o_generator-&gt;messages ASSIGNING &lt;m&gt;.
-          CREATE OBJECT o_cnxcomp.
-          o_cnxcomp-&gt;set_type( &apos;MSAG&apos; ).
-          _comp-name = &lt;m&gt;-name.
-          o_cnxcomp-&gt;set_name( _comp-name ).
-          TRY.
-              o_cnxlist-&gt;add( o_cnxcomp ).
-            CATCH zaplink_cx INTO o_cx.
-              IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
-          ENDTRY.
-        ENDLOOP.
-
-        o_cnxlist-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
-
-        IF NOT o_cont IS BOUND.
-* No previous file
-          _comp = o_comp-&gt;get_key( ).
-          s_cnxdata-name = _comp-name.
-          o_cont = zaplink_container=&gt;create_new( o_file = o_file
-                                                    data = s_cnxdata ).
-        ENDIF.
-        o_cont-&gt;add_components( o_cnxlist ).
-
-        o_cont-&gt;save_to_file( ).
-* Change detected for connector : &amp;1 (&amp;2) in file &amp;3
-        MESSAGE w002 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
-        WRITE:/ icon_green_light AS ICON, d_msg.
-        o_contlist = o_cont-&gt;get_content( ).
-        o_contlist-&gt;init_iter( ).
-        o_cnxcomp = o_contlist-&gt;get_next( ).
-        WHILE o_cnxcomp IS BOUND.
-          _comp = o_cnxcomp-&gt;get_key( ).
-          IF o_cnxlist-&gt;search( o_cnxcomp ) IS BOUND.
-* Component (&amp;1) &amp;2 has changed and has been updated
-            MESSAGE w004 WITH _comp-type _comp-name INTO d_msg.
-            WRITE:/ space, space, icon_green_light AS ICON, d_msg.
-          ELSE.
-* Component (&amp;1) &amp;2 haven&apos;t change
-            MESSAGE w003 WITH _comp-type _comp-name INTO d_msg.
-            WRITE:/ space, space,icon_yellow_light AS ICON, d_msg.
-          ENDIF.
-          o_cnxcomp = o_contlist-&gt;get_next( ).
-        ENDWHILE.
-        WRITE:/ .
-
-      CATCH zaplink_cx_component INTO _cx_comp.
-        CREATE OBJECT _cx_cnx
-          EXPORTING
-            textid  = zaplink_cx_container=&gt;add_failed
-            prev_cx = _cx_comp.
-        _cx_cnx-&gt;update( ).
-        o_comp-&gt;set_exception( _cx_cnx ).
-* Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
-        RAISE EXCEPTION TYPE zaplink_cx_container
-                   EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
-                               type = _comp-type
-                               name = _comp-name.
-    ENDTRY.
-
-    TRY.
+        o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+        o_list-&gt;init_sel_iter( ).
+        o_list-&gt;display_progress = abap_true.
         o_comp = o_list-&gt;get_next( ).
       CATCH zaplink_cx_list INTO _cx_list.
-        EXIT.
+* Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
+        CREATE OBJECT o_mycx
+          EXPORTING
+            textid  = zaplink_cx_component=&gt;invalid_exception
+            prev_cx = _cx_list.
+        o_mycx-&gt;update( ).
+        RAISE EXCEPTION o_mycx.
     ENDTRY.
-  ENDWHILE.
-</SOURCE>
+
+    WHILE o_comp IS BOUND.
+      CREATE OBJECT o_generator.
+      o_generator-&gt;packages = package.
+      CREATE OBJECT o_cnxlist.
+      CREATE OBJECT o_file.
+
+      TRY.
+          o_comp-&gt;set_with_subcomp( abap_false ).
+          _comp = o_comp-&gt;get_key( ).
+* Load previous file
+          TRY.
+              CREATE OBJECT o_conn TYPE (_comp-name).
+            CATCH cx_root INTO _cx.
+              RAISE EXCEPTION TYPE zaplink_cx_connector
+                         EXPORTING textid = zaplink_cx=&gt;system_error
+                                 previous = _cx.
+          ENDTRY.
+          filename = o_conn-&gt;uuid.
+          CONCATENATE filename ext_sep o_conn-&gt;version ext_sep file_ext INTO filename.
+          filename = concatenate_path( directory = target_dir
+                                        filename = filename ).
+          o_file-&gt;set_filename( filename ).
+          o_file-&gt;set_filetype( zaplink_file=&gt;c_ft_local ).
+          CLEAR o_cont.
+          IF o_file-&gt;file_exists( ) = abap_true.
+            TRY.
+                CREATE OBJECT o_cont
+                  EXPORTING
+                    o_file = o_file.
+                CALL METHOD o_cont-&gt;load_from_file( ).
+              CATCH zaplink_cx_container.
+                CLEAR o_cont.
+            ENDTRY.
+          ENDIF.
+
+* Get connector and dependenties
+          d_classname = _comp-name.
+          o_generator-&gt;add_object( d_classname ).
+          LOOP AT o_generator-&gt;classes ASSIGNING &lt;c&gt;.
+            CREATE OBJECT o_cnxcomp.
+            o_cnxcomp-&gt;set_type( &apos;CLAS&apos; ).
+            _comp-name = &lt;c&gt;-name.
+            o_cnxcomp-&gt;set_name( _comp-name ).
+            TRY.
+                o_cnxlist-&gt;add( o_cnxcomp ).
+              CATCH zaplink_cx INTO o_cx.
+                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+            ENDTRY.
+          ENDLOOP.
+          LOOP AT o_generator-&gt;includes ASSIGNING &lt;i&gt;.
+            CREATE OBJECT o_cnxcomp.
+            o_cnxcomp-&gt;set_type( &apos;PROG&apos; ).
+            _comp-name = &lt;i&gt;.
+            o_cnxcomp-&gt;set_name( _comp-name ).
+            TRY.
+                o_cnxlist-&gt;add( o_cnxcomp ).
+              CATCH zaplink_cx INTO o_cx.
+                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+            ENDTRY.
+          ENDLOOP.
+          LOOP AT o_generator-&gt;messages ASSIGNING &lt;m&gt;.
+            CREATE OBJECT o_cnxcomp.
+            o_cnxcomp-&gt;set_type( &apos;MSAG&apos; ).
+            _comp-name = &lt;m&gt;-name.
+            o_cnxcomp-&gt;set_name( _comp-name ).
+            TRY.
+                o_cnxlist-&gt;add( o_cnxcomp ).
+              CATCH zaplink_cx INTO o_cx.
+                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+            ENDTRY.
+          ENDLOOP.
+
+          o_cnxlist-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+
+          IF NOT o_cont IS BOUND.
+* No previous file
+            _comp = o_comp-&gt;get_key( ).
+            s_cnxdata-name = _comp-name.
+            o_cont = zaplink_container=&gt;create_new( o_file = o_file
+                                                      data = s_cnxdata ).
+          ENDIF.
+          o_cont-&gt;add_components( o_cnxlist ).
+
+          o_cont-&gt;save_to_file( ).
+* Change detected for connector : &amp;1 (&amp;2) in file &amp;3
+          MESSAGE w002 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
+          WRITE:/ icon_green_light AS ICON, d_msg.
+          o_contlist = o_cont-&gt;get_content( ).
+          o_contlist-&gt;init_iter( ).
+          o_cnxcomp = o_contlist-&gt;get_next( ).
+          WHILE o_cnxcomp IS BOUND.
+            _comp = o_cnxcomp-&gt;get_key( ).
+            IF o_cnxlist-&gt;search( o_cnxcomp ) IS BOUND.
+* Component (&amp;1) &amp;2 has changed and has been updated
+              MESSAGE w004 WITH _comp-type _comp-name INTO d_msg.
+              WRITE:/ space, space, icon_green_light AS ICON, d_msg.
+            ELSE.
+* Component (&amp;1) &amp;2 haven&apos;t change
+              MESSAGE w003 WITH _comp-type _comp-name INTO d_msg.
+              WRITE:/ space, space,icon_yellow_light AS ICON, d_msg.
+            ENDIF.
+            o_cnxcomp = o_contlist-&gt;get_next( ).
+          ENDWHILE.
+          WRITE:/ .
+
+        CATCH zaplink_cx_component INTO _cx_comp.
+          CREATE OBJECT _cx_cnx
+            EXPORTING
+              textid  = zaplink_cx_container=&gt;add_failed
+              prev_cx = _cx_comp.
+          _cx_cnx-&gt;update( ).
+          o_comp-&gt;set_exception( _cx_cnx ).
+* Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
+          RAISE EXCEPTION TYPE zaplink_cx_container
+                     EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+                                 type = _comp-type
+                                 name = _comp-name.
+      ENDTRY.
+
+      TRY.
+          o_comp = o_list-&gt;get_next( ).
+        CATCH zaplink_cx_list INTO _cx_list.
+          EXIT.
+      ENDTRY.
+    ENDWHILE.
+
+    mac_def_catch zaplink_cx_connector.
+  ENDTRY.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="GET_DEVC_PATH" VERSION="1" STATE="1" EDITORDER="1 " MTDDECLTYP="1">
     <TEXTS>

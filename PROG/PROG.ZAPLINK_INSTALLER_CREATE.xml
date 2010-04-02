@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="CE1AC0C1EEAC8A1893B7D1A8F8C36D34" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="97CBCB5EF3C24A3B425DC99FE6EECD4F" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000074" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000076" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>
 *&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
@@ -257,7 +257,7 @@ START-OF-SELECTION.
       o_objects-&gt;init_iter( ).
       o_objects-&gt;display_progress = abap_false.
       o_comp = o_objects-&gt;get_next( ).
-      WRITE:/ &apos;Container containt :&apos;.
+      WRITE:/ &apos;Container containt :&apos;(001).
       WHILE NOT o_comp IS INITIAL.
         t_type = o_comp-&gt;get_type( ).
         t_name = o_comp-&gt;get_name( ).
@@ -330,8 +330,8 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
 *  SORT t_connectors BY classname.
 *  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING classname.
   _line = &apos;zaplink_connectors=&gt;clear_connectors( ).&apos;. APPEND _line TO ac_loadlocal. &quot; remove ABAP class connector to add only local ones
-  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.
+  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.   &quot;#EC NOTEXT
+  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.                                                             &quot;#EC NOTEXT
   LOOP AT t_connectors ASSIGNING &lt;c&gt;.
     TRY.
         CREATE OBJECT _comp.
@@ -352,18 +352,18 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
               not_existing = 3
               OTHERS       = 4.
           CLEAR _line.
-          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.
+          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.            &quot;#EC NOTEXT
           APPEND _line TO ac_loadlocal.
         ENDIF.
       CATCH zaplink_cx INTO _cx.
         _cx-&gt;write( ).
     ENDTRY.
   ENDLOOP.
-  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.
+  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.   &quot;#EC NOTEXT
+  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal.                         &quot;#EC NOTEXT
+  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.                                                     &quot;#EC NOTEXT
+  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.                   &quot;#EC NOTEXT
+  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.                                                          &quot;#EC NOTEXT
 
 ENDFORM.                    &quot; BUILD_CLASS_POOL
 *&amp;---------------------------------------------------------------------*
@@ -448,6 +448,16 @@ FORM check_prog_exists  USING    p_prog.
   ENDIF.
 ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
   <TEXTSPOOL>
+   <ITEM ID="I" KEY="001">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Container containt :" LENGTH="30 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="PDC">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Specify program&apos;&apos;s devlopement class" LENGTH="50 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="R">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Auto installer generator" LENGTH="24 "/>
