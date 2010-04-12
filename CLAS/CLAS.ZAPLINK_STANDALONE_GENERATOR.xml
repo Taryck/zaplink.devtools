@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="CB0238347628E6535A7882CCCE120270" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="650B3DB8EC6A3DD3F585D5C97A68DBFA" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -142,15 +142,15 @@ AS</DOCUMENTATION>
    <ITEM REFCLSNAME="ZAPLINK_KERNEL_TYPES" VERSION="1" EXPOSURE="2" STATE="1" RELTYPE="1"/>
   </INTERFACES>
   <LOCAL>
-   <TYPES>
+   <TYPES>`
 *&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
 *&quot;* definitions, interfaces or data types) you need for method
 *&quot;* IMPLEMENTATION OR PRIVATE METHOD&apos;S SIGNATURE</TYPES>
-   <IMPLEMENTATIONS>
+   <IMPLEMENTATIONS>`
 *&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
 *&quot;* LOCAL HELPER CLASSES</IMPLEMENTATIONS>
-   <MACROS>
+   <MACROS>`
 *&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
 *&quot;* IN THE IMPLEMENTATION PART OF THE CLASS</MACROS>
   </LOCAL>
@@ -165,7 +165,7 @@ AS</DOCUMENTATION>
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
 DATA _name TYPE string.
   FIELD-SYMBOLS:
     &lt;a&gt; LIKE LINE OF attributs.
@@ -211,7 +211,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _codes      LIKE LINE OF classes.
   DATA o_raw       TYPE to_raw.
   DATA o_data      TYPE to_class.
@@ -325,7 +325,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   TYPES:
     BEGIN OF ts_dep,
       ori_name  TYPE td_name,
@@ -379,7 +379,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _obj      LIKE LINE OF deferred_declaration.
   DATA _line     LIKE LINE OF abapcode.
 
@@ -411,7 +411,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _key        TYPE td_name.
   FIELD-SYMBOLS:
     &lt;i&gt; LIKE LINE OF interfaces.
@@ -456,7 +456,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _codes      LIKE LINE OF classes.
   DATA o_raw       TYPE to_raw.
   DATA o_data      TYPE to_interface.
@@ -529,7 +529,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _name       TYPE string.
   DATA t_objs      TYPE td_sourcecode.
   DATA _key        TYPE td_name.
@@ -571,7 +571,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA ref_objs    TYPE td_sourcecode.
   DATA _key        TYPE td_name.
   FIELD-SYMBOLS:
@@ -623,7 +623,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _key   TYPE seoclskey.
   DATA o_type TYPE seoclstype.
   DATA o_desc TYPE REF TO cl_abap_typedescr.
@@ -717,7 +717,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_obj       LIKE LINE OF required_objects.
   DATA s_key       TYPE seoclskey.
   DATA o_type      TYPE seoclstype.
@@ -759,7 +759,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _code TYPE string.
   FIELD-SYMBOLS:
     &lt;f&gt; LIKE LINE OF code.
@@ -782,7 +782,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA t_objs      TYPE td_sourcecode.
   DATA _key        TYPE td_name.
   FIELD-SYMBOLS:
@@ -803,7 +803,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
 DATA _name TYPE string.
   FIELD-SYMBOLS:
     &lt;t&gt; LIKE LINE OF types.
@@ -828,7 +828,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_order   LIKE LINE OF new_order.
   FIELD-SYMBOLS &lt;c&gt; LIKE LINE OF remain_classes.
 
@@ -855,7 +855,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA static_objs TYPE td_sourcecode.
   DATA _code       TYPE string.
 
@@ -885,7 +885,7 @@ DATA _name TYPE string.
     <PARAMETERS>
      <ITEM SCONAME="DATA" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_MESSAGE"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_msg LIKE LINE OF messages.
   s_msg-name = data.
   APPEND s_msg TO messages.</SOURCE>
@@ -897,7 +897,7 @@ DATA _name TYPE string.
     <PARAMETERS>
      <ITEM SCONAME="TYPERGROUPS" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="ZAPLINK_OBJECT_DATA=&gt;TT_TYPEGROUPS"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _tg LIKE LINE OF me-&gt;typegroups.
   FIELD-SYMBOLS:
     &lt;t&gt; LIKE LINE OF typergroups.
@@ -910,7 +910,7 @@ DATA _name TYPE string.
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CLASS_CONSTRUCTOR"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
   DATA _softcomp LIKE LINE OF softcomponents.
 
   _softcomp-sign = &apos;I&apos;. _softcomp-option = &apos;EQ&apos;.
@@ -936,7 +936,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
 *  DATA d_line LIKE LINE OF code.
   result = code.
   DELETE result WHERE table_line IS INITIAL. &quot; DELETE result WHERE table_line = space.
@@ -961,7 +961,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   target = source.
 * Convert also constants &apos;#document&apos; =&gt; &apos;#DOCUMENT&apos;.
 *  TRANSLATE target TO UPPER CASE.  &quot;#EC SYNTCHAR
@@ -983,7 +983,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF targetcode.
   targetcode = sourcecode.
@@ -1009,7 +1009,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF targetcode.
   targetcode = sourcecode.
@@ -1035,7 +1035,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _codes      LIKE LINE OF classes.
 
   TRY.
@@ -1059,7 +1059,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   CONSTANTS c_intftype TYPE td_classtype VALUE &apos;9&apos;.
   DATA t_objects TYPE tt_req_objects.
   DATA s_object  LIKE LINE OF required_objects.
@@ -1101,7 +1101,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   CONSTANTS:
     c_crlf TYPE string VALUE line_separator,
     c_commentedline TYPE string VALUE &apos;*&apos;,
@@ -1234,7 +1234,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _tmp_code TYPE ts_source.
   DATA _line     LIKE LINE OF _tmp_code-def.
   DATA _tmp      TYPE td_sourcecode.
@@ -1329,7 +1329,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA o_source    TYPE REF TO cl_oo_source.
   DATA _clskey     TYPE seoclskey.
   DATA _pos        TYPE sy-tabix.
@@ -1437,7 +1437,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _key    TYPE seoclsname.
   DATA _prog   TYPE program.
   DATA _line   LIKE LINE OF codes-def.
@@ -1491,7 +1491,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA _key   TYPE seoclskey.
   DATA o_type TYPE seoclstype.
   DATA _class      TYPE vseoclass.
@@ -1534,7 +1534,7 @@ DATA _name TYPE string.
     <EXCEPTIONS>
      <ITEM SCONAME="FAILED" VERSION="1" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   TYPES:
     BEGIN OF ts_object,
       name  TYPE td_name,
@@ -1630,7 +1630,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA d_tabix TYPE sy-tabix.
   FIELD-SYMBOLS:
     &lt;c&gt; LIKE LINE OF context.
@@ -1684,7 +1684,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA x TYPE i.
   FIELD-SYMBOLS:
     &lt;o&gt; TYPE ANY.
@@ -1718,7 +1718,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_excl_c    LIKE LINE OF excluded_classes.
   DATA d_softcomp  TYPE tdevc-dlvunit.
   DATA d_devclass  TYPE tdevc-devclass.
@@ -1758,7 +1758,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _key        TYPE td_name.
   DATA _obj        TYPE string.
   DATA _type       TYPE string.
@@ -1796,7 +1796,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA t_upcode    TYPE td_sourcecode.
   FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF t_upcode,
@@ -1844,7 +1844,7 @@ DATA _name TYPE string.
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Generate ABAP Source Code"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_order   LIKE LINE OF new_order.
   FIELD-SYMBOLS:
     &lt;o&gt; LIKE LINE OF new_order,
@@ -1875,7 +1875,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA t_includes TYPE td_sourcecode.
   DATA d_softcomp TYPE tdevc-dlvunit.
   DATA d_devclass TYPE tdevc-devclass.
@@ -1924,7 +1924,7 @@ DATA _name TYPE string.
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   FIELD-SYMBOLS:
     &lt;l&gt; LIKE LINE OF data.
   LOOP AT data ASSIGNING &lt;l&gt;.
@@ -1948,7 +1948,7 @@ DATA _name TYPE string.
      <ITEM SCONAME="FULL" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL" PARVALUE="ABAP_FALSE" PAROPTIONL="X"/>
      <ITEM SCONAME="TYPE" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_CLASSTYPE" PAROPTIONL="X"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA s_ctx LIKE LINE OF context.
   s_ctx-context = context.   s_ctx-type = type.    s_ctx-full_def = full.   INSERT s_ctx INTO me-&gt;context INDEX 1.</SOURCE>
    </ITEM>
@@ -1956,7 +1956,7 @@ DATA _name TYPE string.
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Remove stack entry"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
   IF NOT context IS INITIAL. DELETE context INDEX 1. ENDIF.
   IF context IS INITIAL. CLEAR: circular_ref_on, circular_context. ENDIF.</SOURCE>
    </ITEM>
@@ -1964,7 +1964,7 @@ DATA _name TYPE string.
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Clean up data"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
   FIELD-SYMBOLS &lt;r&gt; LIKE LINE OF requirements.
 
   SORT requirements BY ori_name name full_def.    DELETE ADJACENT DUPLICATES FROM requirements COMPARING ori_name name full_def.

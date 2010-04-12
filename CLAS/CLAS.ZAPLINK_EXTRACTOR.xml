@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="56842E1757801461999A1F3F36AFFBF8" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="3BD8E7DB1BDBFFAF08CB8005D213E18B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -142,17 +142,17 @@ AS</DOCUMENTATION>
    <ITEM REFCLSNAME="ZAPLINK_KERNEL_TYPES" VERSION="1" EXPOSURE="2" STATE="1" RELTYPE="1"/>
   </INTERFACES>
   <LOCAL>
-   <TYPES>
+   <TYPES>`
 *&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
 *&quot;* definitions, interfaces or data types) you need for method
 *&quot;* implementation or private method&apos;s signature
 </TYPES>
-   <IMPLEMENTATIONS>
+   <IMPLEMENTATIONS>`
 *&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
 *&quot;* local helper classes
 </IMPLEMENTATIONS>
-   <MACROS>
+   <MACROS>`
 *&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
 *&quot;* in the implementation part of the class
 
@@ -163,7 +163,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CLASS_CONSTRUCTOR"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
   xmlengine = cl_ixml=&gt;create( ).
 
   CALL METHOD cl_gui_frontend_services=&gt;get_file_separator
@@ -193,7 +193,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      <ITEM SCONAME="FILENAME" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_FILENAME"/>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA len TYPE i.
 
   IF directory IS INITIAL.    result = filename.    RETURN.   ENDIF.
@@ -209,7 +209,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CONSTRUCTOR"/>
     </TEXTS>
-    <SOURCE>
+    <SOURCE>`
 
   CREATE OBJECT application_log.
   CALL METHOD application_log-&gt;init
@@ -237,7 +237,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
      <ITEM SCONAME="TYPE" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_COMPTYPE"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   CONCATENATE type ext_sep name ext_sep file_ext INTO result.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FULLPATH_BY_DEVC" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="3 " MTDDECLTYP="1">
@@ -253,7 +253,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA filename    TYPE td_filename.
   DATA _comp       TYPE ts_component.
   DATA d_devc      TYPE td_devclass.
@@ -309,7 +309,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _comp       TYPE ts_component.
   DATA filename    TYPE td_filename.
   DATA _directory  TYPE td_directoryname.
@@ -370,7 +370,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="TYPE" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
   DATA o_list      TYPE to_list.
@@ -499,7 +499,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="TYPE" VERSION="1" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA directory   TYPE string.
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
@@ -677,7 +677,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
-    <SOURCE>
+    <SOURCE>`
   DATA o_generator TYPE REF TO zaplink_standalone_generator.
   DATA _cx         TYPE REF TO cx_root.
   DATA directory   TYPE string.
@@ -873,7 +873,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   TYPES: BEGIN OF ts_devc,
            devc TYPE td_devclass,
            path TYPE td_filename,
@@ -952,7 +952,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TO_XML"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA ez_xml          TYPE to_ez_xml.
   DATA o_xml           TYPE to_xml.
 
@@ -979,7 +979,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA o_xml           TYPE to_xml.
   DATA _tempstring     TYPE string.
   DATA o_file          TYPE to_file.
@@ -1078,7 +1078,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TO_XML"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA o_streamfactory  TYPE REF TO if_ixml_stream_factory.
   DATA o_stream         TYPE REF TO if_ixml_istream.
   DATA o_parser         TYPE REF TO if_ixml_parser.
@@ -1116,7 +1116,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" VERSION="1" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="STRING"/>
     </PARAMETERS>
-    <SOURCE>
+    <SOURCE>`
   DATA _streamfactory  TYPE REF TO if_ixml_stream_factory.
   DATA _outputstream   TYPE REF TO if_ixml_ostream.
   DATA _renderer       TYPE REF TO if_ixml_renderer.
