@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="4157DC098DA3339F2059E776FE433ED1" CODE_SIGNATURE="66A6A52682CA076CB14FD3CE5B54FA44" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="4C8ECDB7EA3E18642E334DC8C006419D" CODE_SIGNATURE="FA2A727397FC66A310FDB2107EC7F8FA" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000015" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000017" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>`
 *---------------------------------------------------------------------*
 * Report  ZAPLINK_INSTALLER
@@ -138,7 +138,7 @@ START-OF-SELECTION.
             MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                     WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
           ENDIF.
-          IF d_answer CO &apos;YJ&apos;.
+          IF d_answer CO &apos;YJ1&apos;.
             CREATE OBJECT o_activ
               EXPORTING
                 obj_list = t_comps.
@@ -148,7 +148,7 @@ START-OF-SELECTION.
       ENDIF.
       o_xml-&gt;log-&gt;write( ).
       IF uninst IS INITIAL.
-        IF d_answer CO &apos;YJ&apos;.
+        IF d_answer CO &apos;YJ1&apos;.
           IF t_comps IS INITIAL.
             WRITE:/ &apos;All objects sucessfully activated : &apos;, d_count.
           ELSE.
