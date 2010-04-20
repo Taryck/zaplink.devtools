@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="787DFDBD594A013E7442E603A3A71180" CODE_SIGNATURE="2B9E0487E653EBE231E3E47C616C754B" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="B43B61BC12AA627E3CDCB4B06D538C83" CODE_SIGNATURE="22BD5ACB0259BF500AF916E619366979" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000014" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA VARCL="X" SUBC="1" VERN="000015" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>`
 *---------------------------------------------------------------------*
 * Report  ZAPLINK_INSTALLER
@@ -55,7 +55,9 @@ START-OF-SELECTION.
   DATA o_o_dir    TYPE REF TO zaplink_opt_directory.
   DATA o_o_devc   TYPE REF TO zaplink_opt_devclass.
   DATA o_o_tr     TYPE REF TO zaplink_opt_transport_request.
+  DATA o_comp     TYPE zaplink_container_4inst=&gt;to_component.
   DATA t_comps    TYPE zaplink_list=&gt;tt_compkeys.
+  DATA s_comp     LIKE LINE OF t_comps.
   DATA o_activ    TYPE REF TO zaplink_activate.
   DATA d_count    TYPE i.
   DATA d_answer   TYPE c.
@@ -106,7 +108,12 @@ START-OF-SELECTION.
         o_xml-&gt;uninstall_from_sap( o_list ).
       ENDIF.
       IF uninst IS INITIAL.
-        t_comps = o_list-&gt;get_keys( ).
+        o_list-&gt;init_sel_iter( ).   o_list-&gt;display_progress = abap_false.
+        o_comp = o_list-&gt;get_next( ).
+        WHILE o_comp IS BOUND.
+          s_comp = o_comp-&gt;get_key( ).    APPEND s_comp TO t_comps.
+          o_comp = o_list-&gt;get_next( ).
+        ENDWHILE.
         IF NOT t_comps IS INITIAL.
           d_count = LINES( t_comps ).   d_msg = d_count.  CONDENSE d_msg.
           CONCATENATE &apos;Would you activate the objects (&apos; d_msg &apos;) that have been installed&apos; INTO d_msg.

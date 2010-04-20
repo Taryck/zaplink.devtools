@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="9539373B0D5E0FCA48210F9F0FBDD124" CODE_SIGNATURE="18D5E6054F1F05CD0A7E6DCD43A75984" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="74E18F43FAD0240E2C940478C22BC0DE" CODE_SIGNATURE="F56C0A3B11BA31EE74A03C97DCB4B7D1" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
    <TEXTS>
-    <ITEM LANGU="E" DESCRIPT="Installer Générator">
+    <ITEM LANGU="E" DESCRIPT="ZAPLink : Stand Alone Generator (local class&amp;intf)">
      <DOCUMENTATION TDVERSION="00001" TDFUSER="TBENSIAL" TDFRELES="700" TDFDATE="20100406" TDFTIME="184347" TDLINESIZE="072">U1&amp;FUNCTIONALITY&amp;
 ASTools used to maps dependencies of :
 AS,,- Programs
@@ -28,10 +28,18 @@ AS</DOCUMENTATION>
   <ALIASES>
    <ITEM CMPNAME="LINE_SEPARATOR" VERSION="1" EXPOSURE="1" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="LINE_SEPARATOR"/>
    <ITEM CMPNAME="TD_COMPNAME" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_COMPNAME"/>
+   <ITEM CMPNAME="TD_DEVCLASS" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_DEVCLASS"/>
+   <ITEM CMPNAME="TD_SOFTCOMP" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_SOFTCOMP"/>
    <ITEM CMPNAME="TO_COMPONENT" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_COMPONENT"/>
    <ITEM CMPNAME="TO_RAW" VERSION="1" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_RAW"/>
+   <ITEM CMPNAME="TS_COMPKEY" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TS_COMPKEY"/>
   </ALIASES>
   <ATTRIBUTS>
+   <ITEM CMPNAME="ALL_COMPONENTS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_COMPS">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="All components required"/>
+    </TEXTS>
+   </ITEM>
    <ITEM CMPNAME="CIRCULAR_CONTEXT" VERSION="1" STATE="1" EDITORDER="4 " TYPTYPE="1" TYPE="TT_CONTEXT">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface list"/>
@@ -78,11 +86,11 @@ AS</DOCUMENTATION>
      <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="OBJTYPE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTDECLTYP="2" TYPTYPE="4" SRCROW1="89 " SRCCOLUMN1="4 " SRCROW2="93 " SRCCOLUMN2="21 " TYPESRC_LENG="348 " TYPESRC="BEGIN OF objtype,
-          class             TYPE td_classtype VALUE &apos;0&apos;, &quot;#EC NOTEXT      Object Type : Class
-          exception_class   TYPE td_classtype VALUE &apos;5&apos;, &quot;#EC NOTEXT      Local Object type : Exception_Class
-          interface         TYPE td_classtype VALUE &apos;1&apos;, &quot;#EC NOTEXT      Object Type : Interface
-        END OF objtype
+   <ITEM CMPNAME="OBJTYPE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTDECLTYP="2" TYPTYPE="4" SRCROW1="104 " SRCCOLUMN1="4 " SRCROW2="108 " SRCCOLUMN2="23 " TYPESRC_LENG="356 " TYPESRC="BEGIN OF objtype,
+            class             TYPE td_classtype VALUE &apos;0&apos;, &quot;#EC NOTEXT      Object Type : Class
+            exception_class   TYPE td_classtype VALUE &apos;5&apos;, &quot;#EC NOTEXT      Local Object type : Exception_Class
+            interface         TYPE td_classtype VALUE &apos;1&apos;, &quot;#EC NOTEXT      Object Type : Interface
+          END OF objtype
 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Object types"/>
@@ -119,18 +127,19 @@ AS</DOCUMENTATION>
      <ITEM LANGU="E" DESCRIPT="Software component accepted"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="S_COMP" VERSION="1" STATE="1" EDITORDER="9 " TYPTYPE="1" TYPE="TS_COMP"/>
    <ITEM CMPNAME="TYPEGROUPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="1" TYPE="TT_TYPEGROUPS">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Type Groups list"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TYPETYPE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " ATTDECLTYP="2" TYPTYPE="4" SRCROW1="81 " SRCCOLUMN1="4 " SRCROW2="87 " SRCCOLUMN2="22 " TYPESRC_LENG="465 " TYPESRC="BEGIN OF typetype,
-          like    TYPE seotyptype VALUE &apos;0&apos;, &quot;#EC NOTEXT      Attribute reference (LIKE)
-          type    TYPE seotyptype VALUE &apos;1&apos;, &quot;#EC NOTEXT      Type reference (TYPE)
-          otype   TYPE seotyptype VALUE &apos;2&apos;, &quot;#EC NOTEXT      Object (TYPE)
-          ref     TYPE seotyptype VALUE &apos;3&apos;, &quot;#EC NOTEXT      Object reference (TYPE REF TO)
-          code    TYPE seotyptype VALUE &apos;4&apos;, &quot;#EC NOTEXT      See coding
-        END OF typetype
+   <ITEM CMPNAME="TYPETYPE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " ATTDECLTYP="2" TYPTYPE="4" SRCROW1="96 " SRCCOLUMN1="4 " SRCROW2="102 " SRCCOLUMN2="24 " TYPESRC_LENG="477 " TYPESRC="BEGIN OF typetype,
+            like    TYPE seotyptype VALUE &apos;0&apos;, &quot;#EC NOTEXT      Attribute reference (LIKE)
+            type    TYPE seotyptype VALUE &apos;1&apos;, &quot;#EC NOTEXT      Type reference (TYPE)
+            otype   TYPE seotyptype VALUE &apos;2&apos;, &quot;#EC NOTEXT      Object (TYPE)
+            ref     TYPE seotyptype VALUE &apos;3&apos;, &quot;#EC NOTEXT      Object reference (TYPE REF TO)
+            code    TYPE seotyptype VALUE &apos;4&apos;, &quot;#EC NOTEXT      See coding
+          END OF typetype
 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Types of type definition"/>
@@ -152,7 +161,24 @@ AS</DOCUMENTATION>
 *&quot;* LOCAL HELPER CLASSES</IMPLEMENTATIONS>
    <MACROS>`
 *&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
-*&quot;* IN THE IMPLEMENTATION PART OF THE CLASS</MACROS>
+*&quot;* IN THE IMPLEMENTATION PART OF THE CLASS
+
+  DEFINE mac_read_tadir.
+    select single devclass dlvunit into (&amp;3, &amp;4)
+      from v_tralan
+      where pgmid = &apos;R3TR&apos;
+        and object = &amp;1
+        and obj_name = &amp;2.
+  END-OF-DEFINITION.
+
+  DEFINE mac_add_comp.
+    if not s_comp-type is initial and not s_comp-name is initial.
+      mac_read_tadir s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
+      if s_comp-devclass in packages and s_comp-softcomp in softcomponents.
+        insert s_comp into table all_components.
+      endif.
+    endif.
+  END-OF-DEFINITION.</MACROS>
   </LOCAL>
   <METHODS>
    <ITEM CMPNAME="ADD_ATTRIBUTS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="1 ">
@@ -887,21 +913,20 @@ DATA _name TYPE string.
     </PARAMETERS>
     <SOURCE>`
   DATA s_msg LIKE LINE OF messages.
-  s_msg-name = data.
-  APPEND s_msg TO messages.</SOURCE>
+  check not data is INITIAL.
+  s_msg-name = data.    APPEND s_msg TO messages.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="APPEND_TYPEGROUPS" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="13 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Add type groups"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="TYPERGROUPS" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="ZAPLINK_OBJECT_DATA=&gt;TT_TYPEGROUPS"/>
+     <ITEM SCONAME="TYPEGROUPS" VERSION="1" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="ZAPLINK_OBJECT_DATA=&gt;TT_TYPEGROUPS"/>
     </PARAMETERS>
     <SOURCE>`
   DATA _tg LIKE LINE OF me-&gt;typegroups.
-  FIELD-SYMBOLS:
-    &lt;t&gt; LIKE LINE OF typergroups.
-  LOOP AT typergroups ASSIGNING &lt;t&gt;.
+  FIELD-SYMBOLS &lt;t&gt; LIKE LINE OF typegroups.
+  LOOP AT typegroups ASSIGNING &lt;t&gt;.
     _tg-name = &lt;t&gt;-typegroup.
     APPEND _tg TO me-&gt;typegroups.
   ENDLOOP.</SOURCE>
@@ -1717,21 +1742,14 @@ DATA _name TYPE string.
     </PARAMETERS>
     <SOURCE>`
   DATA s_excl_c    LIKE LINE OF excluded_classes.
-  DATA d_softcomp  TYPE tdevc-dlvunit.
-  DATA d_devclass  TYPE tdevc-devclass.
 
-  DEFINE mac_read_tadir.
-    select single devclass dlvunit into (d_devclass, d_softcomp)
-      from v_tralan
-      where pgmid = &apos;R3TR&apos;
-        and object = &amp;1
-        and obj_name = name.
-  END-OF-DEFINITION.
-
-  result = abap_true.   READ TABLE excluded_classes TRANSPORTING NO FIELDS WITH TABLE KEY name = name.    CHECK sy-subrc &lt;&gt; 0.
-  IF NOT type IS INITIAL.   mac_read_tadir type. ELSE.  mac_read_tadir &apos;CLAS&apos;.  IF sy-subrc &lt;&gt; 0. mac_read_tadir &apos;INTF&apos;. ENDIF. ENDIF.
+  clear s_comp.   result = abap_true.   READ TABLE excluded_classes TRANSPORTING NO FIELDS WITH TABLE KEY name = name.    CHECK sy-subrc &lt;&gt; 0.
+  IF NOT type IS INITIAL.   mac_read_tadir type name s_comp-devclass s_comp-softcomp.
+  ELSE.   mac_read_tadir &apos;CLAS&apos; name s_comp-devclass s_comp-softcomp.
+  IF sy-subrc &lt;&gt; 0. mac_read_tadir &apos;INTF&apos; name s_comp-devclass s_comp-softcomp.
+  ENDIF. ENDIF.
 * customer components
-  IF d_devclass IN packages AND d_softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.
+  IF s_comp-devclass IN packages AND s_comp-softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.
 </SOURCE>
    </ITEM>
    <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 ">
@@ -1962,14 +1980,27 @@ DATA _name TYPE string.
      <ITEM LANGU="E" DESCRIPT="Clean up data"/>
     </TEXTS>
     <SOURCE>`
-  FIELD-SYMBOLS &lt;r&gt; LIKE LINE OF requirements.
+  FIELD-SYMBOLS:
+    &lt;r&gt; LIKE LINE OF requirements,
+    &lt;c&gt; LIKE LINE OF classes,
+    &lt;i&gt; LIKE LINE OF includes,
+    &lt;t&gt; LIKE LINE OF typegroups,
+    &lt;m&gt; LIKE LINE OF messages.
 
   SORT requirements BY ori_name name full_def.    DELETE ADJACENT DUPLICATES FROM requirements COMPARING ori_name name full_def.
   LOOP AT requirements ASSIGNING &lt;r&gt;.   CHECK &lt;r&gt;-ori_name = &lt;r&gt;-name.    DELETE requirements.    ENDLOOP.
   inverse_order( CHANGING order = order ).     DELETE ADJACENT DUPLICATES FROM order COMPARING type name.   inverse_order( CHANGING order = order ).
   SORT typegroups.    DELETE ADJACENT DUPLICATES FROM typegroups.
   SORT includes.      DELETE ADJACENT DUPLICATES FROM includes.
-  SORT messages.      DELETE ADJACENT DUPLICATES FROM messages.</SOURCE>
+  SORT messages.      DELETE ADJACENT DUPLICATES FROM messages.
+
+* Update all components list
+  REFRESH all_components.
+  LOOP AT classes ASSIGNING &lt;c&gt;.    CLEAR s_comp.   if &lt;c&gt;-type = 0. s_comp-type = &apos;CLAS&apos;.  else.   s_comp-type = &apos;INTF&apos;.   ENDIF.   s_comp-name = &lt;c&gt;-name.   mac_add_comp.    ENDLOOP.
+  LOOP AT typegroups ASSIGNING &lt;t&gt;.    CLEAR s_comp.   s_comp-type = &apos;TYPE&apos;.   s_comp-name = &lt;t&gt;-name.   mac_add_comp.    ENDLOOP.
+  LOOP AT includes ASSIGNING &lt;i&gt;.    CLEAR s_comp.   s_comp-type = &apos;PROG&apos;.   s_comp-name = &lt;i&gt;.   mac_add_comp.    ENDLOOP.
+  LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   s_comp-type = &apos;MSAG&apos;.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.
+</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
@@ -1982,7 +2013,7 @@ DATA _name TYPE string.
      <ITEM LANGU="E" DESCRIPT="Class type (SEOCLSTYPE)"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TD_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="18 " TYPTYPE="1" TYPE="SEOCLASSDF-MSG_ID"/>
+   <ITEM CMPNAME="TD_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="20 " TYPTYPE="1" TYPE="SEOCLASSDF-MSG_ID"/>
    <ITEM CMPNAME="TD_NAME" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 " TYPTYPE="1" TYPE="SEOCLSNAME">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
@@ -2008,40 +2039,47 @@ DATA _name TYPE string.
      <ITEM LANGU="E" DESCRIPT="ZAPLink Class &amp; Interface connector"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TR_DLVUNIT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="4" SRCROW1="18 " SRCCOLUMN1="4 " SRCROW2="18 " SRCCOLUMN2="41 " TYPESRC_LENG="40 ">
+   <ITEM CMPNAME="TR_DLVUNIT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="4" SRCROW1="24 " SRCCOLUMN1="4 " SRCROW2="24 " SRCCOLUMN2="41 " TYPESRC_LENG="40 ">
     tr_dlvunit TYPE RANGE OF tdevc-dlvunit
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Software component accepted"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TR_PACKAGES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="4" SRCROW1="16 " SRCCOLUMN1="4 " SRCROW2="16 " SRCCOLUMN2="43 " TYPESRC_LENG="42 ">
+   <ITEM CMPNAME="TR_PACKAGES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="4" SRCROW1="22 " SRCCOLUMN1="4 " SRCROW2="22 " SRCCOLUMN2="43 " TYPESRC_LENG="42 ">
     tr_packages TYPE RANGE OF tdevc-devclass
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Range of package"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="13 " TYPTYPE="4" SRCROW1="55 " SRCCOLUMN1="4 " SRCROW2="59 " SRCCOLUMN2="22 " TYPESRC_LENG="208 ">BEGIN OF ts_context,
-        context   TYPE string,
-        type      TYPE td_classtype,    &quot; 0 Class 1 interface
-        full_def  TYPE flag,          &quot; Full definition required
-      END OF ts_context
+   <ITEM CMPNAME="TS_COMP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="18 " TYPTYPE="4" SRCROW1="77 " SRCCOLUMN1="4 " SRCROW2="82 " SRCCOLUMN2="19 " TYPESRC_LENG="162 ">BEGIN OF ts_comp.
+    INCLUDE TYPE ts_compkey AS hdr.
+    TYPES:
+        devclass TYPE td_devclass,
+        softcomp TYPE td_softcomp,
+      END OF ts_comp
 </ITEM>
-   <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="8 " TYPTYPE="4" SRCROW1="32 " SRCCOLUMN1="4 " SRCROW2="34 " SRCCOLUMN2="17 " TYPESRC_LENG="70 ">
+   <ITEM CMPNAME="TS_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="13 " TYPTYPE="4" SRCROW1="61 " SRCCOLUMN1="4 " SRCROW2="65 " SRCCOLUMN2="24 " TYPESRC_LENG="216 ">BEGIN OF ts_context,
+          context   TYPE string,
+          type      TYPE td_classtype,    &quot; 0 Class 1 interface
+          full_def  TYPE flag,          &quot; Full definition required
+        END OF ts_context
+</ITEM>
+   <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="8 " TYPTYPE="4" SRCROW1="38 " SRCCOLUMN1="4 " SRCROW2="40 " SRCCOLUMN2="19 " TYPESRC_LENG="74 ">
     BEGIN OF ts_list,
-      name      TYPE td_name,
-    END OF ts_list
+        name      TYPE td_name,
+      END OF ts_list
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="19 " TYPTYPE="4" SRCROW1="72 " SRCCOLUMN1="4 " SRCROW2="74 " SRCCOLUMN2="26 " TYPESRC_LENG="86 ">BEGIN OF ts_message,
-            name TYPE td_message,
-          END OF ts_message
+   <ITEM CMPNAME="TS_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="21 " TYPTYPE="4" SRCROW1="87 " SRCCOLUMN1="4 " SRCROW2="89 " SRCCOLUMN2="28 " TYPESRC_LENG="90 ">BEGIN OF ts_message,
+              name TYPE td_message,
+            END OF ts_message
 </ITEM>
-   <ITEM CMPNAME="TS_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="11 " TYPTYPE="4" SRCROW1="46 " SRCCOLUMN1="4 " SRCROW2="51 " SRCCOLUMN2="18 " TYPESRC_LENG="205 ">
+   <ITEM CMPNAME="TS_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="11 " TYPTYPE="4" SRCROW1="52 " SRCCOLUMN1="4 " SRCROW2="57 " SRCCOLUMN2="18 " TYPESRC_LENG="205 ">
     BEGIN OF ts_order.
     INCLUDE TYPE ts_list.
     TYPES:
@@ -2053,31 +2091,31 @@ DATA _name TYPE string.
      <ITEM LANGU="E" DESCRIPT="Class/interface, type and flag"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_REQ_OBJECT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="9 " TYPTYPE="4" SRCROW1="36 " SRCCOLUMN1="4 " SRCROW2="42 " SRCCOLUMN2="23 " TYPESRC_LENG="268 ">BEGIN OF ts_req_object,
-      ori_name  TYPE td_name,
-      name      TYPE td_name,
-      type      TYPE td_classtype,    &quot; 0 Class 1 interface
-      full_def  TYPE flag,          &quot; Full definition required
-      source    TYPE string,
-    END OF ts_req_object
+   <ITEM CMPNAME="TS_REQ_OBJECT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="9 " TYPTYPE="4" SRCROW1="42 " SRCCOLUMN1="4 " SRCROW2="48 " SRCCOLUMN2="25 " TYPESRC_LENG="280 ">BEGIN OF ts_req_object,
+        ori_name  TYPE td_name,
+        name      TYPE td_name,
+        type      TYPE td_classtype,    &quot; 0 Class 1 interface
+        full_def  TYPE flag,          &quot; Full definition required
+        source    TYPE string,
+      END OF ts_req_object
 </ITEM>
-   <ITEM CMPNAME="TS_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="4" SRCROW1="22 " SRCCOLUMN1="4 " SRCROW2="28 " SRCCOLUMN2="19 " TYPESRC_LENG="226 ">
+   <ITEM CMPNAME="TS_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="4" SRCROW1="28 " SRCCOLUMN1="4 " SRCROW2="34 " SRCCOLUMN2="21 " TYPESRC_LENG="238 ">
     BEGIN OF ts_source,
-      name  TYPE td_name,
-      type  TYPE td_classtype,    &quot; 0 Class 1 interface
-      def   TYPE td_sourcecode,
-      macro TYPE td_sourcecode,
-      impl  TYPE td_sourcecode,
-    END OF ts_source
+        name  TYPE td_name,
+        type  TYPE td_classtype,    &quot; 0 Class 1 interface
+        def   TYPE td_sourcecode,
+        macro TYPE td_sourcecode,
+        impl  TYPE td_sourcecode,
+      END OF ts_source
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface sources codes"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_TYPEGROUP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="16 " TYPTYPE="4" SRCROW1="65 " SRCCOLUMN1="4 " SRCROW2="67 " SRCCOLUMN2="28 " TYPESRC_LENG="90 ">
+   <ITEM CMPNAME="TS_TYPEGROUP" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="16 " TYPTYPE="4" SRCROW1="71 " SRCCOLUMN1="4 " SRCROW2="73 " SRCCOLUMN2="30 " TYPESRC_LENG="94 ">
     BEGIN OF ts_typegroup,
-            name TYPE seotpuname,
-          END OF ts_typegroup
+              name TYPE seotpuname,
+            END OF ts_typegroup
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="a Type Group"/>
@@ -2090,39 +2128,41 @@ DATA _name TYPE string.
      <ITEM LANGU="E" DESCRIPT="Indexed list of class"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TT_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="14 " TYPTYPE="4" SRCROW1="61 " SRCCOLUMN1="4 " SRCROW2="61 " SRCCOLUMN2="64 " TYPESRC_LENG="63 ">
+   <ITEM CMPNAME="TT_COMPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="19 " TYPTYPE="4" SRCROW1="84 " SRCCOLUMN1="4 " SRCROW2="84 " SRCCOLUMN2="66 " TYPESRC_LENG="65 ">tt_comps type SORTED TABLE OF ts_comp with UNIQUE KEY type name
+</ITEM>
+   <ITEM CMPNAME="TT_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="14 " TYPTYPE="4" SRCROW1="67 " SRCCOLUMN1="4 " SRCROW2="67 " SRCCOLUMN2="64 " TYPESRC_LENG="63 ">
     tt_context TYPE STANDARD TABLE OF ts_context WITH DEFAULT KEY
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Context Stack"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TT_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " TYPTYPE="4" SRCROW1="53 " SRCCOLUMN1="4 " SRCROW2="53 " SRCCOLUMN2="59 " TYPESRC_LENG="58 ">
+   <ITEM CMPNAME="TT_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " TYPTYPE="4" SRCROW1="59 " SRCCOLUMN1="4 " SRCROW2="59 " SRCCOLUMN2="59 " TYPESRC_LENG="58 ">
     tt_list TYPE STANDARD TABLE OF ts_order WITH DEFAULT KEY
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface list"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TT_MESSAGE_IDS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="20 " TYPTYPE="4" SRCROW1="76 " SRCCOLUMN1="4 " SRCROW2="76 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">tt_message_ids TYPE STANDARD TABLE OF ts_message WITH DEFAULT KEY
+   <ITEM CMPNAME="TT_MESSAGE_IDS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="22 " TYPTYPE="4" SRCROW1="91 " SRCCOLUMN1="4 " SRCROW2="91 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">tt_message_ids TYPE STANDARD TABLE OF ts_message WITH DEFAULT KEY
 </ITEM>
-   <ITEM CMPNAME="TT_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="15 " TYPTYPE="4" SRCROW1="63 " SRCCOLUMN1="4 " SRCROW2="63 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">
+   <ITEM CMPNAME="TT_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="15 " TYPTYPE="4" SRCROW1="69 " SRCCOLUMN1="4 " SRCROW2="69 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">
     tt_order TYPE STANDARD TABLE OF ts_order WITH NON-UNIQUE KEY name
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TT_REQ_OBJECTS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="10 " TYPTYPE="4" SRCROW1="44 " SRCCOLUMN1="4 " SRCROW2="44 " SRCCOLUMN2="79 " TYPESRC_LENG="78 ">tt_req_objects TYPE STANDARD TABLE OF ts_req_object WITH NON-UNIQUE KEY name
+   <ITEM CMPNAME="TT_REQ_OBJECTS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="10 " TYPTYPE="4" SRCROW1="50 " SRCCOLUMN1="4 " SRCROW2="50 " SRCCOLUMN2="79 " TYPESRC_LENG="78 ">tt_req_objects TYPE STANDARD TABLE OF ts_req_object WITH NON-UNIQUE KEY name
 </ITEM>
-   <ITEM CMPNAME="TT_SOURCES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="4" SRCROW1="30 " SRCCOLUMN1="4 " SRCROW2="30 " SRCCOLUMN2="65 " TYPESRC_LENG="64 ">
+   <ITEM CMPNAME="TT_SOURCES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="4" SRCROW1="36 " SRCCOLUMN1="4 " SRCROW2="36 " SRCCOLUMN2="65 " TYPESRC_LENG="64 ">
     tt_sources TYPE SORTED TABLE OF ts_source WITH UNIQUE KEY name
 
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Classes/interfaces codes"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TT_TYPEGROUPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="17 " TYPTYPE="4" SRCROW1="69 " SRCCOLUMN1="4 " SRCROW2="69 " SRCCOLUMN2="69 " TYPESRC_LENG="68 ">
+   <ITEM CMPNAME="TT_TYPEGROUPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="17 " TYPTYPE="4" SRCROW1="75 " SRCCOLUMN1="4 " SRCROW2="75 " SRCCOLUMN2="69 " TYPESRC_LENG="68 ">
     tt_typegroups TYPE STANDARD TABLE OF ts_typegroup WITH DEFAULT KEY
 
     <TEXTS>

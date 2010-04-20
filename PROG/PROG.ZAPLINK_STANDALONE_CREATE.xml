@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="0A3076791D6956564C11C89E8F94C244" CODE_SIGNATURE="E2EAF5D1B158C37336339D8DC0F7FB24" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="5A5386E217B52B6057794F2889A1987D" CODE_SIGNATURE="204F4172378C8A46D6F4F6A4FFF6A6C4" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000012" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" VERN="000013" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
   <SOURCE>`
 *&amp;---------------------------------------------------------------------*
 *&amp; Report  ZAPLINK_INSTALLER_CREATE
@@ -40,7 +40,7 @@ DATA abapcode    TYPE td_sourcecode.
 DATA ac_loadlocal TYPE td_sourcecode.
 DATA m_code      TYPE td_sourcecode.
 DATA m_index     TYPE sy-tabix.
-*DATA idx_init    TYPE sy-tabix.
+DATA idx_init    TYPE sy-tabix.
 DATA _prog       TYPE progdir.
 DATA _oname      TYPE e071-obj_name.
 DATA d_source    TYPE string.
@@ -70,16 +70,16 @@ START-OF-SELECTION.
 
   abapcode = o_generator-&gt;generate( ).
 
-*  PERFORM check_prog_pos USING m_code &apos;*INITIALIZATION*.*&apos; CHANGING idx_init.
-*  IF idx_init IS INITIAL.
-*    PERFORM check_prog_pos USING m_code &apos;*START-OF-SELECTION*.*&apos; CHANGING idx_init.
-*  ENDIF.
-*  IF idx_init IS INITIAL.
-  APPEND LINES OF ac_loadlocal TO abapcode.
-*  ELSE.
-*    ADD 1 TO idx_init.
-*    INSERT LINES OF ac_loadlocal INTO sourcecode INDEX idx_init.
-*  ENDIF.
+  PERFORM check_prog_pos USING m_code &apos;*INITIALIZATION*.*&apos; CHANGING idx_init.
+  IF idx_init IS INITIAL.
+    PERFORM check_prog_pos USING m_code &apos;*START-OF-SELECTION*.*&apos; CHANGING idx_init.
+  ENDIF.
+  IF idx_init IS INITIAL.
+    APPEND LINES OF ac_loadlocal TO abapcode.
+  ELSE.
+    ADD 1 TO idx_init.
+    INSERT LINES OF ac_loadlocal INTO sourcecode INDEX idx_init.
+  ENDIF.
 
   INSERT LINES OF abapcode INTO sourcecode INDEX m_index.
 

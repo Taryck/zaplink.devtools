@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="0DDC2D1A840987870A34B63A28BB4070" CODE_SIGNATURE="401A857E2E0BD714E5B5A04AAC051BCD" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="E26E28B2F9F90D784B0129270DFE2447" CODE_SIGNATURE="D8313D5325BCDA9F230F1628A4C260FB" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -438,10 +438,10 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
           TRY.
               CLEAR o_cnx_clean.
               o_cnx_clean ?= o_conn.
+              o_cnx_clean-&gt;anonymize( o_raw ).
             CATCH cx_root.
           ENDTRY.
-          IF o_cnx_clean IS BOUND.    o_cnx_clean-&gt;anonymize( o_raw ).    ENDIF.
-          o_raw-&gt;update_connector_data( o_conn ).
+          o_raw-&gt;set_checksum( ).
         CATCH zaplink_cx_connector INTO _cx_cnx.
           o_comp-&gt;set_exception( _cx_cnx ).
           TRY.
@@ -611,12 +611,10 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
             TRY.
                 CLEAR o_cnx_clean.
                 o_cnx_clean ?= o_conn.
+                o_cnx_clean-&gt;anonymize( o_raw ).
               CATCH cx_root.
             ENDTRY.
-            IF o_cnx_clean IS BOUND.
-              o_cnx_clean-&gt;anonymize( o_raw ).
-            ENDIF.
-            o_raw-&gt;update_connector_data( o_conn ).
+            o_raw-&gt;set_checksum( ).
           CATCH zaplink_cx_connector INTO _cx_cnx.
             o_comp-&gt;set_exception( _cx_cnx ).
             TRY.
