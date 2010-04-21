@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="570FCA09BCAB1492240BA08554F97177" CODE_SIGNATURE="AF839DCE02474AE598BFB0F14A969CD0" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="7FB94C5B5A96AB8B78BC3B29436FBAF2" CODE_SIGNATURE="AF839DCE02474AE598BFB0F14A969CD0" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
@@ -145,13 +145,11 @@ AS</DOCUMENTATION>
    <TYPES>`
 *&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
 *&quot;* definitions, interfaces or data types) you need for method
-*&quot;* implementation or private method&apos;s signature
-`</TYPES>
+*&quot;* implementation or private method&apos;s signature</TYPES>
    <IMPLEMENTATIONS>`
 *&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
-*&quot;* local helper classes
-`</IMPLEMENTATIONS>
+*&quot;* local helper classes</IMPLEMENTATIONS>
    <MACROS>`
 *&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
 *&quot;* in the implementation part of the class
@@ -177,8 +175,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
   IF sy-subrc &lt;&gt; 0.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.
-`</SOURCE>
+  ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CONCATENATE_PATH" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="8 " MTDDECLTYP="1">
     <TEXTS>
@@ -202,8 +199,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
     CONCATENATE directory file_sep filename INTO result.
   ELSE.
     CONCATENATE directory filename INTO result.
-  ENDIF.
-`</SOURCE>
+  ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CONSTRUCTOR" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDTYPE="2">
     <TEXTS>
@@ -225,8 +221,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
   IF sy-subrc &lt;&gt; 0.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.
-`</SOURCE>
+  ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FILENAME" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="2 " MTDDECLTYP="1">
     <TEXTS>
@@ -346,8 +341,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
   filename = create_filename( type = _comp-type
                               name = _comp-name ).
   result = concatenate_path( directory = _directory
-                              filename = filename ).
-`</SOURCE>
+                              filename = filename ).</SOURCE>
    </ITEM>
    <ITEM CMPNAME="EXTRACT_BY_PACKAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="4 ">
     <TEXTS>
@@ -649,8 +643,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
           EXIT.
       ENDTRY.
     ENDWHILE.
-  ENDIF.
-`</SOURCE>
+  ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="EXTRACT_CONNECTORS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
     <TEXTS>
@@ -935,8 +928,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
                  WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
     ENDIF.
   ENDIF.
-  result = s_devc-path.
-`</SOURCE>
+  result = s_devc-path.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="RAW_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="5 ">
     <TEXTS>
@@ -1061,8 +1053,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
       MESSAGE e005 WITH d_type d_name filename INTO d_msg.
       WRITE:/ icon_red_light AS ICON, d_msg.
       RETURN.
-  ENDTRY.
-`</SOURCE>
+  ENDTRY.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="STRING_2_XML" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="7 ">
     <TEXTS>
@@ -1099,8 +1090,7 @@ INCLUDE ZAPLINK_MACROS.</MACROS>
 
   IF o_doc IS BOUND.
     result = o_doc.
-  ENDIF.
-`</SOURCE>
+  ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="XML_2_STRING" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="6 ">
     <TEXTS>

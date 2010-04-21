@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A405FB644C7D42D111ABDA97C796615F" CODE_SIGNATURE="DBDB6AF26F67EBE6FB7E4011B67F0A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="A69963E0444A8760E4E65B41C80F0B6D" CODE_SIGNATURE="DBDB6AF26F67EBE6FB7E4011B67F0A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -337,8 +337,7 @@ DATA _name TYPE string.
 
   unstack( ).
 
-  insert_order( s_order = _order   context = context ).
-`</SOURCE>
+  insert_order( s_order = _order   context = context ).</SOURCE>
    </ITEM>
    <ITEM CMPNAME="ADD_DEFERED_OK" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 ">
     <TEXTS>
@@ -771,8 +770,7 @@ DATA _name TYPE string.
 
   s_obj-type = o_type.    s_obj-full_def = full.    s_obj-source = source.
   IF s_class-category = &apos;40&apos;.    s_obj-type = objtype-exception_class.   ENDIF.
-  APPEND s_obj TO required_objects.
-`</SOURCE>
+  APPEND s_obj TO required_objects.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="ADD_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 ">
     <TEXTS>
@@ -1749,8 +1747,7 @@ DATA _name TYPE string.
   IF sy-subrc &lt;&gt; 0. mac_read_tadir &apos;INTF&apos; name s_comp-devclass s_comp-softcomp.
   ENDIF. ENDIF.
 * customer components
-  IF s_comp-devclass IN packages AND s_comp-softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.
-`</SOURCE>
+  IF s_comp-devclass IN packages AND s_comp-softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 ">
     <TEXTS>
@@ -1920,8 +1917,7 @@ DATA _name TYPE string.
       ENDLOOP.
       DELETE codes-macro.
     ENDIF.
-  ENDLOOP.
-`</SOURCE>
+  ENDLOOP.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="SOURCE_2_STRING" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="10 " MTDDECLTYP="1">
     <TEXTS>
@@ -1999,8 +1995,7 @@ DATA _name TYPE string.
   LOOP AT classes ASSIGNING &lt;c&gt;.    CLEAR s_comp.   if &lt;c&gt;-type = 0. s_comp-type = &apos;CLAS&apos;.  else.   s_comp-type = &apos;INTF&apos;.   ENDIF.   s_comp-name = &lt;c&gt;-name.   mac_add_comp.    ENDLOOP.
   LOOP AT typegroups ASSIGNING &lt;t&gt;.    CLEAR s_comp.   s_comp-type = &apos;TYPE&apos;.   s_comp-name = &lt;t&gt;-name.   mac_add_comp.    ENDLOOP.
   LOOP AT includes ASSIGNING &lt;i&gt;.    CLEAR s_comp.   s_comp-type = &apos;PROG&apos;.   s_comp-name = &lt;i&gt;.   mac_add_comp.    ENDLOOP.
-  LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   s_comp-type = &apos;MSAG&apos;.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.
-`</SOURCE>
+  LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   s_comp-type = &apos;MSAG&apos;.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
