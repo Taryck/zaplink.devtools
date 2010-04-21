@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="C6DA7AE0032733571C4A693BCAD4FB4A" CODE_SIGNATURE="DBDB6AF26F67EBE6FB7E4011B67F0A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="A405FB644C7D42D111ABDA97C796615F" CODE_SIGNATURE="DBDB6AF26F67EBE6FB7E4011B67F0A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
    <TEXTS>
     <ITEM LANGU="E" DESCRIPT="ZAPLink : Stand Alone Generator (local class&amp;intf)">
-     <DOCUMENTATION TDVERSION="00001" TDFUSER="TBENSIAL" TDFRELES="700" TDFDATE="20100406" TDFTIME="184347" TDLINESIZE="072">U1&amp;FUNCTIONALITY&amp;
+     <DOCUMENTATION TDFRELES="700" TDLINESIZE="072">U1&amp;FUNCTIONALITY&amp;
 ASTools used to maps dependencies of :
 AS,,- Programs
 AS,,- Classes
@@ -338,7 +338,7 @@ DATA _name TYPE string.
   unstack( ).
 
   insert_order( s_order = _order   context = context ).
-</SOURCE>
+`</SOURCE>
    </ITEM>
    <ITEM CMPNAME="ADD_DEFERED_OK" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="5 ">
     <TEXTS>
@@ -772,7 +772,7 @@ DATA _name TYPE string.
   s_obj-type = o_type.    s_obj-full_def = full.    s_obj-source = source.
   IF s_class-category = &apos;40&apos;.    s_obj-type = objtype-exception_class.   ENDIF.
   APPEND s_obj TO required_objects.
-</SOURCE>
+`</SOURCE>
    </ITEM>
    <ITEM CMPNAME="ADD_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 ">
     <TEXTS>
@@ -1750,7 +1750,7 @@ DATA _name TYPE string.
   ENDIF. ENDIF.
 * customer components
   IF s_comp-devclass IN packages AND s_comp-softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.
-</SOURCE>
+`</SOURCE>
    </ITEM>
    <ITEM CMPNAME="PROCESS_TYPE" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="21 ">
     <TEXTS>
@@ -1921,7 +1921,7 @@ DATA _name TYPE string.
       DELETE codes-macro.
     ENDIF.
   ENDLOOP.
-</SOURCE>
+`</SOURCE>
    </ITEM>
    <ITEM CMPNAME="SOURCE_2_STRING" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="10 " MTDDECLTYP="1">
     <TEXTS>
@@ -2000,7 +2000,7 @@ DATA _name TYPE string.
   LOOP AT typegroups ASSIGNING &lt;t&gt;.    CLEAR s_comp.   s_comp-type = &apos;TYPE&apos;.   s_comp-name = &lt;t&gt;-name.   mac_add_comp.    ENDLOOP.
   LOOP AT includes ASSIGNING &lt;i&gt;.    CLEAR s_comp.   s_comp-type = &apos;PROG&apos;.   s_comp-name = &lt;i&gt;.   mac_add_comp.    ENDLOOP.
   LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   s_comp-type = &apos;MSAG&apos;.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.
-</SOURCE>
+`</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
@@ -2041,14 +2041,14 @@ DATA _name TYPE string.
    </ITEM>
    <ITEM CMPNAME="TR_DLVUNIT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="4" SRCROW1="24 " SRCCOLUMN1="4 " SRCROW2="24 " SRCCOLUMN2="41 " TYPESRC_LENG="40 ">
     tr_dlvunit TYPE RANGE OF tdevc-dlvunit
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Software component accepted"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TR_PACKAGES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="4" SRCROW1="22 " SRCCOLUMN1="4 " SRCROW2="22 " SRCCOLUMN2="43 " TYPESRC_LENG="42 ">
     tr_packages TYPE RANGE OF tdevc-devclass
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Range of package"/>
     </TEXTS>
@@ -2059,18 +2059,18 @@ DATA _name TYPE string.
         devclass TYPE td_devclass,
         softcomp TYPE td_softcomp,
       END OF ts_comp
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TS_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="13 " TYPTYPE="4" SRCROW1="61 " SRCCOLUMN1="4 " SRCROW2="65 " SRCCOLUMN2="24 " TYPESRC_LENG="216 ">BEGIN OF ts_context,
           context   TYPE string,
           type      TYPE td_classtype,    &quot; 0 Class 1 interface
           full_def  TYPE flag,          &quot; Full definition required
         END OF ts_context
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TS_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="8 " TYPTYPE="4" SRCROW1="38 " SRCCOLUMN1="4 " SRCROW2="40 " SRCCOLUMN2="19 " TYPESRC_LENG="74 ">
     BEGIN OF ts_list,
         name      TYPE td_name,
       END OF ts_list
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
     </TEXTS>
@@ -2078,7 +2078,7 @@ DATA _name TYPE string.
    <ITEM CMPNAME="TS_MESSAGE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="21 " TYPTYPE="4" SRCROW1="87 " SRCCOLUMN1="4 " SRCROW2="89 " SRCCOLUMN2="28 " TYPESRC_LENG="90 ">BEGIN OF ts_message,
               name TYPE td_message,
             END OF ts_message
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TS_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="11 " TYPTYPE="4" SRCROW1="52 " SRCCOLUMN1="4 " SRCROW2="57 " SRCCOLUMN2="18 " TYPESRC_LENG="205 ">
     BEGIN OF ts_order.
     INCLUDE TYPE ts_list.
@@ -2086,7 +2086,7 @@ DATA _name TYPE string.
       type    TYPE td_classtype,    &quot; 0 Class 1 interface
       defered TYPE flag,          &quot; &apos;X&apos; if defered load required
     END OF ts_order
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface, type and flag"/>
     </TEXTS>
@@ -2098,7 +2098,7 @@ DATA _name TYPE string.
         full_def  TYPE flag,          &quot; Full definition required
         source    TYPE string,
       END OF ts_req_object
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TS_SOURCE" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="4" SRCROW1="28 " SRCCOLUMN1="4 " SRCROW2="34 " SRCCOLUMN2="21 " TYPESRC_LENG="238 ">
     BEGIN OF ts_source,
         name  TYPE td_name,
@@ -2107,7 +2107,7 @@ DATA _name TYPE string.
         macro TYPE td_sourcecode,
         impl  TYPE td_sourcecode,
       END OF ts_source
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface sources codes"/>
     </TEXTS>
@@ -2116,55 +2116,55 @@ DATA _name TYPE string.
     BEGIN OF ts_typegroup,
               name TYPE seotpuname,
             END OF ts_typegroup
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="a Type Group"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_CLASSLIST" VERSION="1" EXPOSURE="1" STATE="1" EDITORDER="1 " TYPTYPE="4" SRCROW1="15 " SRCCOLUMN1="4 " SRCROW2="15 " SRCCOLUMN2="65 " TYPESRC_LENG="64 ">
     tt_classlist TYPE SORTED TABLE OF ts_list WITH UNIQUE KEY name
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Indexed list of class"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_COMPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="19 " TYPTYPE="4" SRCROW1="84 " SRCCOLUMN1="4 " SRCROW2="84 " SRCCOLUMN2="66 " TYPESRC_LENG="65 ">tt_comps type SORTED TABLE OF ts_comp with UNIQUE KEY type name
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TT_CONTEXT" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="14 " TYPTYPE="4" SRCROW1="67 " SRCCOLUMN1="4 " SRCROW2="67 " SRCCOLUMN2="64 " TYPESRC_LENG="63 ">
     tt_context TYPE STANDARD TABLE OF ts_context WITH DEFAULT KEY
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Context Stack"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_LIST" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="12 " TYPTYPE="4" SRCROW1="59 " SRCCOLUMN1="4 " SRCROW2="59 " SRCCOLUMN2="59 " TYPESRC_LENG="58 ">
     tt_list TYPE STANDARD TABLE OF ts_order WITH DEFAULT KEY
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface list"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_MESSAGE_IDS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="22 " TYPTYPE="4" SRCROW1="91 " SRCCOLUMN1="4 " SRCROW2="91 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">tt_message_ids TYPE STANDARD TABLE OF ts_message WITH DEFAULT KEY
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TT_ORDER" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="15 " TYPTYPE="4" SRCROW1="69 " SRCCOLUMN1="4 " SRCROW2="69 " SRCCOLUMN2="68 " TYPESRC_LENG="67 ">
     tt_order TYPE STANDARD TABLE OF ts_order WITH NON-UNIQUE KEY name
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface Order"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_REQ_OBJECTS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="10 " TYPTYPE="4" SRCROW1="50 " SRCCOLUMN1="4 " SRCROW2="50 " SRCCOLUMN2="79 " TYPESRC_LENG="78 ">tt_req_objects TYPE STANDARD TABLE OF ts_req_object WITH NON-UNIQUE KEY name
-</ITEM>
+`</ITEM>
    <ITEM CMPNAME="TT_SOURCES" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="4" SRCROW1="36 " SRCCOLUMN1="4 " SRCROW2="36 " SRCCOLUMN2="65 " TYPESRC_LENG="64 ">
     tt_sources TYPE SORTED TABLE OF ts_source WITH UNIQUE KEY name
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Classes/interfaces codes"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TT_TYPEGROUPS" VERSION="1" EXPOSURE="2" STATE="1" EDITORDER="17 " TYPTYPE="4" SRCROW1="75 " SRCCOLUMN1="4 " SRCROW2="75 " SRCCOLUMN2="69 " TYPESRC_LENG="68 ">
     tt_typegroups TYPE STANDARD TABLE OF ts_typegroup WITH DEFAULT KEY
-
+`
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Table of type group"/>
     </TEXTS>
