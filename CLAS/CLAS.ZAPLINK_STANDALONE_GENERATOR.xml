@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="6E12036CC2F655EA9B342466420B9842" CODE_SIGNATURE="0B5EC33CD7A0A1F885B342D57E69780B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="A90AFA33C94CC5EE9FB59262D7602069" CODE_SIGNATURE="1491E54759A62828E86AC2EEE14E91AA" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -1352,7 +1352,7 @@ DATA _name TYPE string.
      <ITEM SCONAME="FAILED" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
     <SOURCE>`
-  DATA o_source    TYPE REF TO cl_oo_source.
+*  DATA o_source    TYPE REF TO cl_oo_source.
   DATA _clskey     TYPE seoclskey.
   DATA _pos        TYPE sy-tabix.
   DATA t_code      TYPE td_sourcecode.
@@ -1364,18 +1364,20 @@ DATA _name TYPE string.
 
   _clskey = name.
 
-  CREATE OBJECT o_source
-    EXPORTING
-      clskey             = _clskey
-    EXCEPTIONS
-      class_not_existing = 1
-      OTHERS             = 2.
-  IF sy-subrc &lt;&gt; 0.
+  t_code = zaplink_object=&gt;get_class_globalsource( _clskey ).
+*  CREATE OBJECT o_source
+*    EXPORTING
+*      clskey             = _clskey
+*    EXCEPTIONS
+*      class_not_existing = 1
+*      OTHERS             = 2.
+*  IF sy-subrc &lt;&gt; 0.
+  IF t_code is INITIAL.
     RAISE failed.
   ENDIF.
-  t_code = convert_source( o_source-&gt;source ).
+*  t_code = convert_source( o_source-&gt;source ).
   t_upcode = convert_source_upcase( t_code ).
-  CLEAR o_source.
+*  CLEAR o_source.
 
 *Remove text before CLASS Zxxx DEFINITION
   CONCATENATE &apos;CLASS&apos; _clskey &apos;DEFINITION&apos; INTO _line SEPARATED BY space.
@@ -1421,7 +1423,7 @@ DATA _name TYPE string.
     _pos = sy-tabix.
     APPEND LINES OF t_lines TO _pos TO codes-def.
     DELETE t_lines TO _pos.
-    DELETE t_upcode to _pos.
+    DELETE t_upcode TO _pos.
     codes-macro = t_lines.
   ELSE.
 * normal case for interfaces
@@ -1433,7 +1435,7 @@ DATA _name TYPE string.
   LOOP AT t_upcode ASSIGNING &lt;l&gt;
      WHERE table_line CP &apos;*GLOBAL FRIENDS*&apos;.
     REPLACE FIRST OCCURRENCE OF &apos;GLOBAL FRIENDS&apos; IN &lt;l&gt; WITH &apos;FRIENDS&apos;.
-    modify codes-def from &lt;l&gt; index sy-tabix.
+    MODIFY codes-def FROM &lt;l&gt; INDEX sy-tabix.
   ENDLOOP.
 
   remove_def_load( CHANGING codes = codes ).
@@ -1460,21 +1462,24 @@ DATA _name TYPE string.
      <ITEM SCONAME="FAILED" LANGU="E" EDITORDER="1 "/>
     </EXCEPTIONS>
     <SOURCE>`
-  DATA _key    TYPE seoclsname.
-  DATA _prog   TYPE program.
+  DATA _clskey     TYPE seoclskey.
+*  DATA _key    TYPE seoclsname.
+*  DATA _prog   TYPE program.
   DATA _line   LIKE LINE OF codes-def.
   DATA _pos        TYPE sy-tabix.
   DATA t_upcode    TYPE td_sourcecode.
 
-  _key = name.
-  _prog = cl_oo_classname_service=&gt;get_intfsec_name( _key ).
-
-  READ REPORT _prog INTO codes-def.
-  codes-def = convert_source( codes-def ).
+  _clskey = name.
+  codes-def = zaplink_object=&gt;get_interface_globalsource( _clskey ).
+*  _key = name.
+*  _prog = cl_oo_classname_service=&gt;get_intfsec_name( _key ).
+*
+*  READ REPORT _prog INTO codes-def.
+*  codes-def = convert_source( codes-def ).
   t_upcode = convert_source_upcase( codes-def ).
 
 *Remove text public after : interface xxxx
-  CONCATENATE &apos;INTERFACE&apos; _key INTO _line SEPARATED BY space.
+  CONCATENATE &apos;INTERFACE&apos; _clskey INTO _line SEPARATED BY space.
   READ TABLE t_upcode TRANSPORTING NO FIELDS
        FROM _line.
   IF sy-subrc &lt;&gt; 0.
