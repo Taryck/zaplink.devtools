@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="603A5C4FADB2BE45D163420AC921FD8D" CODE_SIGNATURE="2B9B62F93AE7D3E3EFC7D5972ED0C09A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="25F924435258DE5A8FC2D350D5B6AB43" CODE_SIGNATURE="2B9B62F93AE7D3E3EFC7D5972ED0C09A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -78,21 +78,30 @@ END-OF-SELECTION.</SOURCE>
    <ITEM ID="I" KEY="MOD">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Extraction mode :" LENGTH="20 "/>
+     <ITEM LANGU="F" ENTRY="Mode d&apos;extraction" LENGTH="20 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="R">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="ZAPLink : Synchronize SAP with file repository" LENGTH="46 "/>
+     <ITEM LANGU="F" ENTRY="ZAPLink : Extraction en masse de componsants" LENGTH="70 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="EM_CNX">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Connecteurs" LENGTH="19 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="EM_PACK">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        Components by package Hier." LENGTH="35 "/>
+     <ITEM LANGU="F" ENTRY="        Hiérarchie par package" LENGTH="35 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="EM_TYPE">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        Components by type Hier." LENGTH="32 "/>
+     <ITEM LANGU="F" ENTRY="        Hiérarchie par type" LENGTH="32 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="P_ANA">
@@ -103,36 +112,43 @@ END-OF-SELECTION.</SOURCE>
    <ITEM ID="S" KEY="P_EXT">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        Extend to sub-packages" LENGTH="30 "/>
+     <ITEM LANGU="F" ENTRY="        Etendre aux sous-packages" LENGTH="33 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="P_PATH">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="        Local store directory" LENGTH="29 "/>
+     <ITEM LANGU="F" ENTRY="        Chemin local de sauvegarde" LENGTH="34 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="S_AUTHOR">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="26 "/>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="26 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="S_NAME">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="19 "/>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="19 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="S_PACK">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="15 "/>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="15 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="S_SRCS">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="23 "/>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="23 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="S" KEY="S_TYPE">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="D       ." LENGTH="19 "/>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="19 "/>
     </TEXTS>
    </ITEM>
   </TEXTSPOOL>
