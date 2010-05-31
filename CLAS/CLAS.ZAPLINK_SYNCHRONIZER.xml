@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A0576BF3B805ED90A530AF356994338B" CODE_SIGNATURE="179EC1B609A3753C959B64E824E3F227" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="6F47F032DE4DFB28B2C91B14AA58DAAD" CODE_SIGNATURE="179EC1B609A3753C959B64E824E3F227" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_DIRECTORY"/>
@@ -552,7 +552,7 @@ END-OF-DEFINITION.</MACROS>
     lmac_create_data o_data s_my_file.
     CHECK o_data-&gt;type IN type AND o_data-&gt;name IN name.
     CHECK s_my_file-o_raw_base-&gt;directory-devclass IN t_ext_pack OR
-          ( O_DATA-&gt;TYPE = &apos;DEVC&apos; AND o_data-&gt;name IN t_ext_pack ).
+          ( o_data-&gt;type = &apos;DEVC&apos; AND o_data-&gt;name IN t_ext_pack ).
     CREATE OBJECT o_comp.
     o_comp-&gt;set_add_object( o_data ).
     o_comp-&gt;set_type( o_data-&gt;type ).    o_comp-&gt;set_name( o_data-&gt;name ).    o_comp-&gt;set_checksum( o_data-&gt;checksum ).

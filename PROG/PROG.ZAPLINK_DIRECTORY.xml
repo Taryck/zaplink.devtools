@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="04F51657384645778B06D13E7793ABA6" CODE_SIGNATURE="E159B036CF5B3ADC88D777DB8F76E744" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="PROG" VERSION="1.0">
+ <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
+  <DYNPROS>
+   <ITEM SCREEN="0010" LANGUAGE="E" DESCRIPT="Display Directory Content" TYPE="N" NEXTSCREEN="0010" LINES="035" COLUMNS="192">
+    <TEXTS>
+     <ITEM LANG="E" DTXT="Display Directory Content"/>
+    </TEXTS>
+    <FLOW_LOGIC>`
+PROCESS BEFORE OUTPUT.
+  MODULE SET_STATUS_VAL.
+  MODULE CREATE_CONTAINER.
+*
+PROCESS AFTER INPUT.
+  MODULE EXIT_MODULE AT EXIT-COMMAND.
+  MODULE OK_CODE.</FLOW_LOGIC>
+    <CONTAINERS>
+     <ITEM TYPE="CUST_CTRL" NAME="CONTENT_CONTAINER" ELEMENT_OF="SCREEN" LINE="003" COLUMN="001" LENGTH="181" HEIGHT="033" C_LINE_MIN="001" C_COLN_MIN="001"/>
+     <ITEM TYPE="SCREEN" NAME="SCREEN">
+      <FIELDS>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-CHECKSUM" LINE="002" COLUMN="052" LENGTH="008" VISLENGTH="008" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="Checksum"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-CONTENT" LINE="002" COLUMN="001" LENGTH="007" VISLENGTH="007" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="CONTENT"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-NAME" LINE="001" COLUMN="014" LENGTH="004" VISLENGTH="004" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="Name"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-SIGNATURE" TEXT="Code_Signature" LINE="002" COLUMN="106" LENGTH="014" VISLENGTH="014" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="Code Signature"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-TIMESTAMP" TEXT="Last_change" LINE="001" COLUMN="159" LENGTH="011" VISLENGTH="011" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="Last change"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="TEXT" NAME="*ZLDIR-TYPE" LINE="001" COLUMN="001" LENGTH="004" VISLENGTH="004" HEIGHT="001" FORMAT="CHAR" FROM_DICT="X" MODIFIC="F" REQU_ENTRY="N" LABELLEFT="X" DICT_I_FKD="X">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="Type"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="PUSH" NAME="BTN_DOWNLOAD" TEXT="Download_______" ICON_NAME="ICON_SYSTEM_SAVE" WITH_ICON="X" LINE="002" COLUMN="011" LENGTH="020" VISLENGTH="018" HEIGHT="001" PUSH_FCODE="DOWN" FORMAT="CHAR" REQU_ENTRY="N">
+        <TEXTS>
+         <ITEM LANGU="E" SHORT_TXT="@2L@ Download"/>
+        </TEXTS>
+       </ITEM>
+       <ITEM TYPE="OKCODE" NAME="OK_CODE" TEXT="____________________" LENGTH="020" VISLENGTH="020" HEIGHT="001" FORMAT="CHAR" INPUT_FLD="X"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-CHECKSUM" TEXT="________________________________" LINE="002" COLUMN="062" LENGTH="032" VISLENGTH="032" HEIGHT="001" FORMAT="CHAR" OUTPUT_FLD="X" OUTPUTONLY="X" REQU_ENTRY="N"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-DATE" TEXT="__________" LINE="001" COLUMN="172" LENGTH="010" VISLENGTH="010" HEIGHT="001" FORMAT="DATS" OUTPUT_FLD="X" OUTPUTONLY="X" REQU_ENTRY="N"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-NAME" TEXT="________________________________________" LINE="001" COLUMN="020" LENGTH="040" VISLENGTH="040" HEIGHT="001" FORMAT="CHAR" OUTPUT_FLD="X" REQU_ENTRY="N"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-SIGNATURE" TEXT="________________________________" LINE="002" COLUMN="122" LENGTH="032" VISLENGTH="032" HEIGHT="001" FORMAT="CHAR" OUTPUT_FLD="X" OUTPUTONLY="X" REQU_ENTRY="N"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-TIME" TEXT="________" LINE="002" COLUMN="174" LENGTH="008" VISLENGTH="008" HEIGHT="001" FORMAT="TIMS" OUTPUT_FLD="X" OUTPUTONLY="X" REQU_ENTRY="N"/>
+       <ITEM TYPE="TEMPLATE" NAME="S_DIRECTORY-TYPE" TEXT="____" LINE="001" COLUMN="007" LENGTH="004" VISLENGTH="004" HEIGHT="001" FORMAT="CHAR" OUTPUT_FLD="X" REQU_ENTRY="N"/>
+      </FIELDS>
+     </ITEM>
+    </CONTAINERS>
+   </ITEM>
+  </DYNPROS>
+  <MENUPAINTER BAR="000001" FUNCTION="000001">
+   <FUNCTIONS>
+    <ITEM CODE="BACK" TEXTNO="001" TEXT_TYPE="S">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Go back to previous screen" INFO="Back to initial screen"/>
+     </TEXTS>
+    </ITEM>
+    <ITEM CODE="BACK" TEXTNO="002" TEXT_TYPE="S">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Back to initial screen"/>
+     </TEXTS>
+    </ITEM>
+    <ITEM CODE="CANCEL" TEXTNO="001" TEXT_TYPE="S" TEXT_NAME="ICON_CANCEL" ICON_ID="@0W@">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Cancel : Leave program" INFO="Leave program"/>
+     </TEXTS>
+    </ITEM>
+    <ITEM CODE="DOWN" TEXTNO="001" TEXT_TYPE="S">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Download component in XML"/>
+     </TEXTS>
+    </ITEM>
+    <ITEM CODE="EXIT" TEXTNO="001" TEXT_TYPE="S">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Exit"/>
+     </TEXTS>
+    </ITEM>
+   </FUNCTIONS>
+   <KEY_SETTINGS>
+    <ITEM OBJ_CODE="000001" MODAL="D">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Status for Screen 0010"/>
+     </TEXTS>
+     <KEYS>
+      <ITEM PFNO="00" FUNCODE="BACK" FUNNO="001"/>
+      <ITEM PFNO="03" FUNCODE="BACK" FUNNO="002"/>
+      <ITEM PFNO="12" FUNCODE="CANCEL" FUNNO="001"/>
+      <ITEM PFNO="15" FUNCODE="EXIT" FUNNO="001"/>
+     </KEYS>
+     <PUSHBUTTONS>
+      <ITEM SUB_CODE="0001" MODAL="D">
+       <TEXTS>
+        <ITEM LANGU="E" TEXT="Status for Screen 0010"/>
+       </TEXTS>
+      </ITEM>
+     </PUSHBUTTONS>
+    </ITEM>
+   </KEY_SETTINGS>
+   <MENU_BARS>
+    <ITEM OBJ_CODE="000001" MODAL="D">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Status for Screen 0010"/>
+     </TEXTS>
+    </ITEM>
+   </MENU_BARS>
+   <STATUS>
+    <ITEM CODE="ST_0010" MODAL="D" ACTCODE="000001" PFKCODE="000001" BUTCODE="0001">
+     <TEXTS>
+      <ITEM LANGU="E" TEXT="Status for Screen 0010"/>
+     </TEXTS>
+     <FUNCTIONS>
+      <ITEM>BACK</ITEM>
+      <ITEM>CANCEL</ITEM>
+      <ITEM>EXIT</ITEM>
+     </FUNCTIONS>
+    </ITEM>
+   </STATUS>
+  </MENUPAINTER>
+  <SOURCE>`
+*&amp;---------------------------------------------------------------------*
+*&amp; Report  ZAPLINK_EXTRACTOR
+*&amp;---------------------------------------------------------------------*
+
+REPORT  zaplink_directory MESSAGE-ID zaplink.
+
+TABLES: tadir.
+
+PARAMETERS:
+  p_type TYPE tadir-object OBLIGATORY DEFAULT &apos;CLAS&apos;,
+  p_name TYPE tadir-obj_name OBLIGATORY DEFAULT &apos;ZAPLINK_DIRECTORY&apos;.
+
+TYPES to_file TYPE REF TO zaplink_file.
+TYPES td_filename TYPE zaplink_file=&gt;td_filename.
+TYPES ts_screen TYPE zaplink_directory=&gt;ts_screen.
+
+DATA s_directory  TYPE ts_screen.
+DATA o_cx         TYPE REF TO zaplink_cx.
+DATA o_container  TYPE REF TO cl_gui_custom_container.
+DATA o_html       TYPE REF TO cl_gui_html_viewer.
+
+START-OF-SELECTION.
+  DATA s_key       TYPE zaplink_directory=&gt;ts_key.
+
+  s_key-type = p_type.    s_key-name = p_name.
+  zaplink_directory=&gt;dsp_directory( s_key ).
+
+END-OF-SELECTION.
+
+*&amp;---------------------------------------------------------------------*
+*&amp;      Form  Dsp_directory
+*&amp;---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      --&gt;S_DATA     text
+*----------------------------------------------------------------------*
+FORM dsp_directory USING s_data TYPE zaplink_directory=&gt;ts_screen.
+  s_directory = s_data.
+  CALL SCREEN 0010.
+ENDFORM.                    &quot;Dsp_directory
+*&amp;---------------------------------------------------------------------*
+*&amp;      Module  SET_STATUS_VAL  OUTPUT
+*&amp;---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE set_status_val OUTPUT.
+  SET PF-STATUS &apos;ST_0010&apos;.
+ENDMODULE.                 &quot; SET_STATUS_VAL  OUTPUT
+*&amp;---------------------------------------------------------------------*
+*&amp;      Module  OK_CODE  INPUT
+*&amp;---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE ok_code INPUT.
+  DATA o_file     TYPE to_file.
+  DATA d_filename TYPE td_filename.
+  DATA d_msgty    TYPE sy-msgty.
+  DATA d_msg      TYPE string.
+
+  CASE sy-ucomm.
+    WHEN &apos;DOWN&apos;.
+      CREATE OBJECT o_file.
+      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+      o_file-&gt;set_filecontent( s_directory-content ).
+      CONCATENATE s_directory-type s_directory-name zaplink_directory=&gt;file_ext INTO d_filename SEPARATED BY zaplink_directory=&gt;ext_sep.
+      o_file-&gt;set_filename( d_filename ).
+      TRY.
+          o_file-&gt;save_dialog( ).
+          o_file-&gt;save( ).
+        CATCH zaplink_cx INTO o_cx.
+          IF o_cx-&gt;textid = zaplink_cx_file=&gt;dialog_canceled.   d_msgty = &apos;S&apos;.    ELSE.   d_msgty = &apos;W&apos;.    ENDIF.
+          d_msg = o_cx-&gt;get_text( ).
+          MESSAGE d_msg TYPE d_msgty.
+      ENDTRY.
+    WHEN &apos;BACK&apos;.
+      CALL SELECTION-SCREEN 1000.
+    WHEN &apos;EXIT&apos; OR &apos;CANCEL&apos;.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.                 &quot; OK_CODE  INPUT
+*&amp;---------------------------------------------------------------------*
+*&amp;      Module  CREATE_CONTAINER  OUTPUT
+*&amp;---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE create_container OUTPUT.
+  DATA t_xml TYPE STANDARD TABLE OF char1024.   &quot; dump with string :-/
+  DATA s_url TYPE char255.
+  FIELD-SYMBOLS &lt;l&gt; LIKE LINE OF t_xml.
+
+  IF NOT o_container IS BOUND.    CREATE OBJECT o_container EXPORTING container_name = &apos;CONTENT_CONTAINER&apos;.    ENDIF.
+  IF NOT o_html IS BOUND.         CREATE OBJECT o_html EXPORTING parent = o_container.    ENDIF.
+  SPLIT s_directory-content AT zaplink_directory=&gt;line_separator INTO TABLE t_xml.
+  CHECK NOT t_xml IS INITIAL.
+  DELETE t_xml INDEX 1.
+* Line feed are lost...
+*  LOOP AT t_xml ASSIGNING &lt;l&gt;.    CONCATENATE &lt;l&gt;
+**  zaplink_directory=&gt;line_separator
+*  CL_ABAP_CHAR_UTILITIES=&gt;CR_LF
+**  CL_ABAP_CHAR_UTILITIES=&gt;VERTICAL_TAB
+*  CL_ABAP_CHAR_UTILITIES=&gt;NEWLINE
+**  CL_ABAP_CHAR_UTILITIES=&gt;FORM_FEED
+**  &apos;\n&apos;
+*  space
+*  INTO &lt;l&gt;.   ENDLOOP.
+  o_html-&gt;load_data( EXPORTING subtype = &apos;xml&apos;
+                   IMPORTING assigned_url = s_url
+                   CHANGING data_table = t_xml ).
+  o_html-&gt;show_url( s_url ).
+ENDMODULE.                 &quot; CREATE_CONTAINER  OUTPUT</SOURCE>
+  <TEXTSPOOL>
+   <ITEM ID="I" KEY="MOD">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="Mode d&apos;extraction" LENGTH="20 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="R">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="ZAPLink : Extract all package to files" LENGTH="38 "/>
+     <ITEM LANGU="F" ENTRY="ZAPLink : Extraction en masse de componsants" LENGTH="70 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="EM_CNX">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Connecteurs" LENGTH="19 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="EM_PACK">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Hiérarchie par package" LENGTH="35 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="EM_TYPE">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Hiérarchie par type" LENGTH="32 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="P_EXT">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Etendre aux sous-packages" LENGTH="33 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="P_NAME">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="19 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="P_PATH">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="        Chemin local de sauvegarde" LENGTH="34 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="P_TYPE">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="D       ." LENGTH="19 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_AUTHOR">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="26 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_NAME">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="19 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_PACK">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="15 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_SRCS">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="23 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="S" KEY="S_TYPE">
+    <TEXTS>
+     <ITEM LANGU="F" ENTRY="D       ." LENGTH="19 "/>
+    </TEXTS>
+   </ITEM>
+  </TEXTSPOOL>
+ </RAW>
+</ZL_OBJECT>
