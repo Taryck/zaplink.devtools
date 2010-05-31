@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="62EA922C8C2FE4C5789CEE823D7B3BED" CODE_SIGNATURE="AC1D80D3E4497ECD6AB3359A03DF11D2" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="46F65605B8AA9437156C40E065A56DD6" CODE_SIGNATURE="357F75A515A06F20E47D9BD5346EF0B1" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_FILE"/>
  </DEPENDENCIES>
@@ -67,7 +67,7 @@ AS</DOCUMENTATION>
    <ITEM CMPNAME="TO_COMPONENT" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_COMPONENT"/>
    <ITEM CMPNAME="TO_CONTAINER" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_CONTAINER"/>
    <ITEM CMPNAME="TO_FILE" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_FILE"/>
-   <ITEM CMPNAME="TO_LIST" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_LIST"/>
+   <ITEM CMPNAME="TO_LIST" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_LIST"/>
    <ITEM CMPNAME="TO_MSG_COLL" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_MSG_COLL"/>
    <ITEM CMPNAME="TO_OPTIONS" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_OPTIONS"/>
    <ITEM CMPNAME="TO_OPT_DEVCLASS" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_OPT_DEVCLASS"/>
@@ -119,8 +119,8 @@ AS</DOCUMENTATION>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="DIRHIERACHIES" EXPOSURE="2" STATE="1" EDITORDER="5 " ATTDECLTYP="2" TYPTYPE="4">begin of dirhierachies,
-       type type td_dirhierachy value &apos;T&apos;,  &quot;#EC NOTEXT
-       devc type td_dirhierachy value &apos;D&apos;,  &quot;#EC NOTEXT
+       type type td_dirhierarchy value &apos;T&apos;,  &quot;#EC NOTEXT
+       devc type td_dirhierarchy value &apos;D&apos;,  &quot;#EC NOTEXT
      end of dirhierachies
 `</ITEM>
    <ITEM CMPNAME="FILE_SEP" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="1" ATTRDONLY="X" TYPTYPE="1" TYPE="C">
@@ -138,6 +138,7 @@ AS</DOCUMENTATION>
      <ITEM LANGU="E" DESCRIPT="ZAPlink Framework : Root exception class"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="WORKING_LIST" EXPOSURE="1" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="TO_LIST"/>
    <ITEM CMPNAME="XMLENGINE" EXPOSURE="1" STATE="1" EDITORDER="1 " ATTDECLTYP="1" TYPTYPE="3" TYPE="IF_IXML">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="XML Engine"/>
@@ -161,14 +162,244 @@ AS</DOCUMENTATION>
    <IMPLEMENTATIONS>`
 *&quot;* local class implementation for public class
 *&quot;* use this source file for the implementation part of
-*&quot;* local helper classes</IMPLEMENTATIONS>
+*&quot;* local helper classes
+CLASS lcl_data DEFINITION
+  CREATE PUBLIC
+  FRIENDS zaplink_extractor
+  .
+
+  PUBLIC SECTION.
+    INTERFACES zaplink_datatypes.
+    ALIASES td_filename FOR zaplink_datatypes~td_filename.
+    ALIASES td_checksum FOR zaplink_datatypes~td_checksum.
+    ALIASES to_xml      FOR zaplink_datatypes~to_xml.
+    ALIASES td_comptype FOR zaplink_datatypes~td_comptype.
+    ALIASES td_compname FOR zaplink_datatypes~td_compname.
+    ALIASES td_devclass FOR zaplink_datatypes~td_devclass.
+
+    INTERFACES zaplink_kernel_types.
+    ALIASES to_file     FOR zaplink_kernel_types~to_file.
+    ALIASES to_raw      FOR zaplink_kernel_types~to_raw.
+    ALIASES to_raw_base FOR zaplink_kernel_types~to_raw_base.
+
+    TYPES ts_key      TYPE zaplink_directory=&gt;ts_key.
+    TYPES ts_data     TYPE zaplink_directory=&gt;ts_data.
+
+    DATA type        TYPE td_comptype.
+    DATA name        TYPE td_compname.
+    DATA package     TYPE td_devclass.
+    DATA o_raw       TYPE to_raw.
+    DATA o_file      TYPE to_file.
+    DATA o_raw_base  TYPE to_raw_base.
+    DATA filename    TYPE td_filename.
+    DATA checksum    TYPE td_checksum.
+    DATA signature   TYPE td_checksum.
+    DATA o_xml       TYPE to_xml.
+    METHODS join
+      IMPORTING
+        value(data) TYPE REF TO lcl_data.
+    METHODS get_key
+      RETURNING
+        value(result) TYPE ts_key.
+    METHODS get_file_data
+      RETURNING
+        value(result) TYPE ts_data.
+    METHODS get_sap_data
+      RETURNING
+        value(result) TYPE ts_data.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.                    &quot;lcl_data  DEFINITIO
+*----------------------------------------------------------------------*
+*       CLASS lcl_data IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_data IMPLEMENTATION.
+  METHOD join.
+    DEFINE lmac_join.
+      if me-&gt;&amp;1 is initial.   me-&gt;&amp;1 = data-&gt;&amp;1.    endif.
+    END-OF-DEFINITION.
+    lmac_join: o_xml, o_raw_base, o_raw, filename, checksum, type, name, package, checksum, signature.
+  ENDMETHOD.                    &quot;Join
+  METHOD get_key.
+    result-type = type.
+    result-name = name.
+  ENDMETHOD.                    &quot;get_key
+  METHOD get_file_data.
+    DATA xml_str TYPE string.
+    CHECK o_raw_base IS BOUND.
+    result-checksum = o_raw_base-&gt;get_checksum( ).
+    result-signature = o_raw_base-&gt;get_code_signature( ).
+    IF o_file IS BOUND.
+      xml_str = o_file-&gt;get_filecontent( ).
+    ELSE.
+      xml_str = zaplink_connectors=&gt;raw_2_string( o_raw_base ).
+    ENDIF.
+    result-content = zaplink_tools=&gt;zip_string( xml_str ).
+  ENDMETHOD.                    &quot;get_file_data
+  METHOD get_sap_data.
+    DATA xml_str TYPE string.
+    CHECK o_raw IS BOUND.
+    result-checksum = o_raw-&gt;get_checksum( ).
+    result-signature = o_raw-&gt;get_code_signature( ).
+    xml_str = zaplink_connectors=&gt;raw_2_string( o_raw ).
+    result-content = zaplink_tools=&gt;zip_string( xml_str ).
+  ENDMETHOD.                    &quot;get_sap_data
+ENDCLASS.                    &quot;lcl_data IMPLEMENTATION</IMPLEMENTATIONS>
    <MACROS>`
 *&quot;* use this source file for any macro definitions you need
 *&quot;* in the implementation part of the class
 
-INCLUDE zaplink_macros.</MACROS>
+INCLUDE zaplink_macros.
+
+DEFINE lmac_create_data.
+  create object &amp;1.
+  &amp;1-&gt;o_file = &amp;2-o_file.
+  &amp;1-&gt;o_xml = &amp;2-o_xml.
+  &amp;1-&gt;o_raw_base = &amp;2-o_raw_base.
+  &amp;1-&gt;o_raw = &amp;2-o_raw.
+  &amp;1-&gt;filename = &amp;2-filename.
+*  &amp;1-&gt;checksum = &amp;2-checksum.
+  if &amp;2-o_raw_base is bound.
+    &amp;1-&gt;type = &amp;2-o_raw_base-&gt;get_type( ).
+    &amp;1-&gt;name = &amp;2-o_raw_base-&gt;get_name( ).
+    &amp;1-&gt;package = &amp;2-o_raw_base-&gt;directory-devclass.
+    &amp;1-&gt;checksum = &amp;2-o_raw_base-&gt;get_checksum( ).
+    &amp;1-&gt;signature = &amp;2-o_raw_base-&gt;get_code_signature( ).
+  elseif &amp;2-o_raw is bound.
+    &amp;1-&gt;type = &amp;2-o_raw-&gt;get_type( ).
+    &amp;1-&gt;name = &amp;2-o_raw-&gt;get_name( ).
+    &amp;1-&gt;package = &amp;2-o_raw-&gt;directory-devclass.
+    &amp;1-&gt;checksum = &amp;2-o_raw-&gt;get_checksum( ).
+    &amp;1-&gt;signature = &amp;2-o_raw-&gt;get_code_signature( ).
+  endif.
+END-OF-DEFINITION.</MACROS>
   </LOCAL>
   <METHODS>
+   <ITEM CMPNAME="ANALYSE" EXPOSURE="2" STATE="1" EDITORDER="7 ">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Analyse components"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="AUTHOR" CMPTYPE="1" EDITORDER="7 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_AUTHOR"/>
+     <ITEM SCONAME="EXT" CMPTYPE="1" EDITORDER="6 " PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL"/>
+     <ITEM SCONAME="HIERARCHY" CMPTYPE="1" EDITORDER="8 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRHIERARCHY">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Directory Hierarchy types"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="NAME" CMPTYPE="1" EDITORDER="4 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPNAME"/>
+     <ITEM SCONAME="PACKAGES" CMPTYPE="1" EDITORDER="5 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_PACKAGES"/>
+     <ITEM SCONAME="SRCSYSTEM" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_SRCSYSTEM">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Package"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TARGET_DIR" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Client Directory"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA filename    TYPE td_filename.
+  DATA t_keys      TYPE tt_compkeys.
+  DATA o_tmp_list  TYPE to_list.
+  DATA o_comp      TYPE to_component.
+  DATA o_comp_n    TYPE to_component.
+  DATA o_conn      TYPE to_connector.
+  DATA o_cnx_clean TYPE to_connector_cleaner.
+  DATA _comp       TYPE ts_component.
+  DATA o_raw       TYPE REF TO zaplink_raw.
+  DATA d_checksum  TYPE td_checksum.
+  DATA d_code_sign TYPE td_checksum.
+  DATA s_my_file   TYPE ts_my_file.
+  DATA _cx_list    TYPE REF TO zaplink_cx_list.
+  DATA _cx_cnx     TYPE REF TO zaplink_cx_connector.
+  DATA _cx_comp    TYPE REF TO zaplink_cx_component.
+  DATA o_data      TYPE REF TO lcl_data.
+
+  t_keys = zaplink_tools=&gt;get_keys_from_tadir( srcsystem = srcsystem
+                                                   type  = type
+                                                    name = name
+                                                packages = packages
+                                                     ext = ext
+                                                  author = author ).
+  CHECK NOT t_keys IS INITIAL.
+  TRY.
+      CREATE OBJECT working_list.
+      working_list-&gt;add_keys( t_keys ).
+      working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+      working_list-&gt;reverse_selection( ).
+      o_tmp_list = working_list-&gt;selection_as_list( ).
+      working_list-&gt;remove_list( o_tmp_list ).
+
+* Initialize Interator
+      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+      working_list-&gt;init_iter( ).
+      working_list-&gt;display_progress = abap_true.
+      o_comp_n = working_list-&gt;get_next( ).
+
+      WHILE o_comp_n IS BOUND.
+        o_comp = o_comp_n.    o_comp_n = working_list-&gt;get_next( ).
+        TRY.
+            o_comp-&gt;set_with_subcomp( abap_false ).
+            _comp = o_comp-&gt;get_key( ).   o_conn = o_comp-&gt;connector( ).
+* Extract Component
+            o_raw = o_conn-&gt;read_from_sap( o_comp ).
+            TRY.
+                CLEAR o_cnx_clean.
+                o_cnx_clean ?= o_conn.
+                o_cnx_clean-&gt;anonymize( o_raw ).
+              CATCH cx_root.
+            ENDTRY.
+            o_raw-&gt;set_checksum( ).
+            filename = create_fullpath( directory = target_dir
+                                        hierarchy = hierarchy
+                                             comp = o_comp ).
+            s_my_file = load_file( filename ).
+            s_my_file-o_raw = o_raw.
+            lmac_create_data o_data s_my_file.
+            o_comp-&gt;set_add_object( o_data ).
+*            o_comp-&gt;set_checksum( o_data-&gt;checksum ).   o_comp-&gt;set_code_signature( o_data-&gt;signature ).
+            d_checksum =  o_raw-&gt;get_checksum( ).           o_comp-&gt;set_checksum( d_checksum ).
+            d_code_sign =  o_raw-&gt;get_code_signature( ).    o_comp-&gt;set_code_signature( d_code_sign ).
+            IF d_checksum = s_my_file-checksum.   o_comp-&gt;set_action( zaplink_list=&gt;sel_actions-none ).    ENDIF.
+
+          CATCH zaplink_cx_connector INTO _cx_cnx.
+            o_comp-&gt;set_exception( _cx_cnx ).
+            TRY.
+                o_comp-&gt;set_msg_coll( o_conn-&gt;application_log ).
+              CATCH cx_root.
+            ENDTRY.
+          CATCH zaplink_cx_component INTO _cx_comp.
+            CREATE OBJECT _cx_cnx
+              EXPORTING
+                textid  = zaplink_cx_container=&gt;add_failed
+                prev_cx = _cx_comp.
+            _cx_cnx-&gt;update( ).
+            o_comp-&gt;set_exception( _cx_cnx ).
+* Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
+            RAISE EXCEPTION TYPE zaplink_cx_container
+                       EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+                                   type = _comp-type
+                                   name = _comp-name.
+        ENDTRY.
+      ENDWHILE.
+    CATCH zaplink_cx_list INTO _cx_list.
+* Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
+      CREATE OBJECT o_mycx
+        EXPORTING
+          textid  = zaplink_cx_component=&gt;invalid_exception
+          prev_cx = _cx_list.
+      o_mycx-&gt;update( ).
+      RAISE EXCEPTION o_mycx.
+  ENDTRY.
+
+  working_list-&gt;select_by_action( ).</SOURCE>
+   </ITEM>
    <ITEM CMPNAME="CLASS_CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDTYPE="2" MTDDECLTYP="1">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="CLASS_CONSTRUCTOR"/>
@@ -240,7 +471,7 @@ INCLUDE zaplink_macros.</MACROS>
      <ITEM LANGU="E" DESCRIPT="Create directories"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="DIR_HIERARCHY" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRHIERACHY" PAROPTIONL="X"/>
+     <ITEM SCONAME="DIR_HIERARCHY" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRHIERARCHY" PAROPTIONL="X"/>
      <ITEM SCONAME="T_KEYS" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_COMPKEYS"/>
     </PARAMETERS>
     <SOURCE>`
@@ -311,6 +542,34 @@ INCLUDE zaplink_macros.</MACROS>
     </PARAMETERS>
     <SOURCE>`
   CONCATENATE type ext_sep name ext_sep file_ext INTO result.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CREATE_FULLPATH" EXPOSURE="1" STATE="1" EDITORDER="11 " MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Generate XML full file path based on tree type"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="COMP" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TO_COMPONENT"/>
+     <ITEM SCONAME="DIRECTORY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Client Directory"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="HIERARCHY" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRHIERARCHY">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Directory Hierarchy"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="4 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
+    </PARAMETERS>
+    <SOURCE>`
+  CASE hierarchy.
+    WHEN dirhierachies-type.
+      result = zaplink_extractor=&gt;create_fullpath_by_type( directory = directory
+                                                           comp      = comp ).
+    WHEN dirhierachies-devc.
+      result = zaplink_extractor=&gt;create_fullpath_by_devc( directory = directory
+                                                           comp      = comp ).
+  ENDCASE.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FULLPATH_BY_DEVC" EXPOSURE="1" STATE="1" EDITORDER="3 " MTDDECLTYP="1">
     <TEXTS>
@@ -420,7 +679,114 @@ INCLUDE zaplink_macros.</MACROS>
   result = concatenate_path( directory = _directory
                               filename = filename ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="EXTRACT_BY_PACKAGE" EXPOSURE="2" STATE="1" EDITORDER="4 ">
+   <ITEM CMPNAME="EXTRACT" EXPOSURE="2" STATE="1" EDITORDER="6 ">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Extrac all package components by types"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="AUTHOR" CMPTYPE="1" EDITORDER="7 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_AUTHOR"/>
+     <ITEM SCONAME="EXT" CMPTYPE="1" EDITORDER="6 " PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL"/>
+     <ITEM SCONAME="HIERARCHY" CMPTYPE="1" EDITORDER="8 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRHIERARCHY">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Directory Hierarchy types"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="NAME" CMPTYPE="1" EDITORDER="4 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPNAME"/>
+     <ITEM SCONAME="PACKAGES" CMPTYPE="1" EDITORDER="5 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_PACKAGES"/>
+     <ITEM SCONAME="SRCSYSTEM" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_SRCSYSTEM">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Package"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TARGET_DIR" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DIRECTORYNAME">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="Client Directory"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA directory   TYPE string.
+  DATA filename    TYPE td_filename.
+  DATA t_keys      TYPE tt_compkeys.
+  DATA rc          TYPE sy-subrc.
+  DATA o_list      TYPE to_list.
+  DATA o_comp      TYPE to_component.
+  DATA o_comp_n    TYPE to_component.
+  DATA o_conn      TYPE to_connector.
+  DATA o_cnx_clean TYPE to_connector_cleaner.
+  DATA o_raw       TYPE REF TO zaplink_raw.
+  DATA _comp       TYPE zaplink_component=&gt;ts_component.
+  DATA _cx_cnx     TYPE REF TO zaplink_cx_connector.
+  DATA _cx_comp    TYPE REF TO zaplink_cx_component.
+  DATA _cx_list    TYPE REF TO zaplink_cx_list.
+  DATA o_data      TYPE REF TO lcl_data.
+
+  analyse( target_dir = target_dir
+           srcsystem  = srcsystem
+           type       = type
+           name       = name
+           packages   = packages
+           ext        = ext
+           hierarchy  = hierarchy
+           author     = author ).
+
+  working_list-&gt;change_selection( ).
+
+* Initialize Interator
+  TRY.
+      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+      working_list-&gt;init_sel_iter( ).
+      working_list-&gt;display_progress = abap_true.
+      o_comp_n = working_list-&gt;get_next( ).
+
+      WHILE o_comp_n IS BOUND.
+        o_comp = o_comp_n.    o_comp_n = working_list-&gt;get_next( ).
+        TRY.
+            o_conn = o_comp-&gt;connector( ).
+            CASE o_comp-&gt;get_action( ).
+              WHEN actions-export.
+                o_data ?= o_comp-&gt;get_add_object(  ).
+                save_file( o_raw = o_data-&gt;o_raw
+                        filename = o_data-&gt;filename ).
+              WHEN actions-import.
+              WHEN actions-uninstall.
+              WHEN actions-unreplicable.
+              WHEN OTHERS.
+            ENDCASE.
+
+          CATCH zaplink_cx_connector INTO _cx_cnx.
+            o_comp-&gt;set_exception( _cx_cnx ).
+            TRY.
+                o_comp-&gt;set_msg_coll( o_conn-&gt;application_log ).
+              CATCH cx_root.
+            ENDTRY.
+
+          CATCH zaplink_cx_component INTO _cx_comp.
+            CREATE OBJECT _cx_cnx
+              EXPORTING
+                textid  = zaplink_cx_container=&gt;add_failed
+                prev_cx = _cx_comp.
+            _cx_cnx-&gt;update( ).
+            o_comp-&gt;set_exception( _cx_cnx ).
+* Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
+            RAISE EXCEPTION TYPE zaplink_cx_container
+                       EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+                                   type = _comp-type
+                                   name = _comp-name.
+        ENDTRY.
+      ENDWHILE.
+    CATCH zaplink_cx_list INTO _cx_list.
+* Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
+      CREATE OBJECT o_mycx
+        EXPORTING
+          textid  = zaplink_cx_component=&gt;invalid_exception
+          prev_cx = _cx_list.
+      o_mycx-&gt;update( ).
+      RAISE EXCEPTION o_mycx.
+  ENDTRY.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="EXTRACT_BY_PACKAGE_OFF" EXPOSURE="2" STATE="1" EDITORDER="4 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Extrac all package components by package heirachy"/>
     </TEXTS>
@@ -444,14 +810,12 @@ INCLUDE zaplink_macros.</MACROS>
     <SOURCE>`
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
-  DATA o_list      TYPE to_list.
+  DATA o_tmp_list  TYPE to_list.
   DATA o_comp      TYPE to_component.
   DATA o_conn      TYPE to_connector.
   DATA o_cnx_clean TYPE to_connector_cleaner.
   DATA _comp       TYPE ts_component.
   DATA o_raw       TYPE REF TO zaplink_raw.
-  FIELD-SYMBOLS:
-    &lt;k&gt;    LIKE LINE OF t_keys.
   DATA _cx_list TYPE REF TO zaplink_cx_list.
   DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
   DATA _cx_comp TYPE REF TO zaplink_cx_component.
@@ -463,16 +827,20 @@ INCLUDE zaplink_macros.</MACROS>
                                                      ext = ext
                                                   author = author ).
   CHECK NOT t_keys IS INITIAL.
+  SORT t_keys BY type name.
+  CREATE OBJECT working_list.
+  working_list-&gt;add_keys( t_keys ).
+  working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+  working_list-&gt;reverse_selection( ).
+  o_tmp_list = working_list-&gt;selection_as_list( ).
+  working_list-&gt;remove_list( o_tmp_list ).
 
-  CREATE OBJECT o_list.
-  o_list-&gt;add_keys( t_keys ).
-  o_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
 * Initialize Interator
   TRY.
-      o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
-      o_list-&gt;init_sel_iter( ).
-      o_list-&gt;display_progress = abap_true.
-      o_comp = o_list-&gt;get_next( ).
+      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+      working_list-&gt;init_sel_iter( ).
+      working_list-&gt;display_progress = abap_true.
+      o_comp = working_list-&gt;get_next( ).
     CATCH zaplink_cx_list INTO _cx_list.
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
@@ -543,13 +911,13 @@ INCLUDE zaplink_macros.</MACROS>
     ENDIF.
 
     TRY.
-        o_comp = o_list-&gt;get_next( ).
+        o_comp = working_list-&gt;get_next( ).
       CATCH zaplink_cx_list INTO _cx_list.
         EXIT.
     ENDTRY.
   ENDWHILE.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="EXTRACT_BY_TYPE" EXPOSURE="2" STATE="1" EDITORDER="5 ">
+   <ITEM CMPNAME="EXTRACT_BY_TYPE_OFF" EXPOSURE="2" STATE="1" EDITORDER="5 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Extrac all package components by types"/>
     </TEXTS>
@@ -580,7 +948,6 @@ INCLUDE zaplink_macros.</MACROS>
   DATA o_conn      TYPE to_connector.
   DATA o_cnx_clean TYPE to_connector_cleaner.
   DATA o_raw       TYPE REF TO zaplink_raw.
-  DATA o_pack_raw  TYPE REF TO zaplink_devc_data.
   DATA _comp       TYPE zaplink_component=&gt;ts_component.
 
   DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
@@ -763,7 +1130,6 @@ INCLUDE zaplink_macros.</MACROS>
   DATA o_conn      TYPE to_connector.
   DATA o_cnx_clean TYPE to_connector_cleaner.
   DATA d_classname TYPE zaplink_standalone_generator=&gt;td_name.
-  DATA o_raw       TYPE REF TO zaplink_raw.
   DATA _comp       TYPE zaplink_component=&gt;ts_component.
   DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
   DATA _cx_comp TYPE REF TO zaplink_cx_component.
@@ -1038,7 +1404,7 @@ INCLUDE zaplink_macros.</MACROS>
   ENDTRY.
 
   CHECK NOT _tempstring IS INITIAL. &quot; file exists
-  result-o_xml = string_2_xml( _tempstring ).
+  result-o_xml = zaplink_connectors=&gt;string_2_xml( _tempstring ).
   CHECK result-o_xml IS BOUND.
 
   root_node = result-o_xml-&gt;get_root_element( ).
@@ -1049,7 +1415,7 @@ INCLUDE zaplink_macros.</MACROS>
   ENDTRY.
   result-checksum = result-o_raw_base-&gt;get_checksum( ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="RAW_2_XML" EXPOSURE="1" STATE="1" EDITORDER="5 ">
+   <ITEM CMPNAME="RAW_2_XML_OFF" EXPOSURE="1" STATE="1" EDITORDER="5 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert RAW to XML"/>
     </TEXTS>
@@ -1089,11 +1455,9 @@ INCLUDE zaplink_macros.</MACROS>
      </ITEM>
     </PARAMETERS>
     <SOURCE>`
-*  DATA o_xml           TYPE to_xml.
   DATA _tempstring     TYPE string.
 *  DATA o_file          TYPE to_file.
   DATA s_my_file       TYPE ts_my_file.
-  DATA root_node       TYPE REF TO if_ixml_node.
   DATA d_name          TYPE td_compname.
   DATA d_type          TYPE td_comptype.
   DATA d_msg           TYPE string.
@@ -1112,19 +1476,19 @@ INCLUDE zaplink_macros.</MACROS>
       WRITE:/ zaplink_list_4extractor=&gt;lights-export AS ICON, icon_yellow_light AS ICON, d_msg.
       EXIT.
     ELSE.
-      s_my_file-o_xml = raw_2_xml( o_raw ).
+      s_my_file-o_xml = zaplink_connectors=&gt;raw_2_xml( o_raw ).
     ENDIF.
   ENDIF.
 * Either file do not exists or had to be overwrited
 
   IF NOT s_my_file-o_xml IS BOUND.    &quot; if not allready done
     o_raw-&gt;set_checksum( ).
-    s_my_file-o_xml = raw_2_xml( o_raw ).
+    s_my_file-o_xml = zaplink_connectors=&gt;raw_2_xml( o_raw ).
   ENDIF.
 
   CHECK s_my_file-o_xml IS BOUND.
 
-  _tempstring = xml_2_string( s_my_file-o_xml ).
+  _tempstring = zaplink_connectors=&gt;xml_2_string( s_my_file-o_xml ).
 
   TRY.
       s_my_file-o_file-&gt;set_filecontent( _tempstring ).
@@ -1139,7 +1503,7 @@ INCLUDE zaplink_macros.</MACROS>
       RETURN.
   ENDTRY.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="STRING_2_XML" EXPOSURE="1" STATE="1" EDITORDER="8 ">
+   <ITEM CMPNAME="STRING_2_XML_OFF" EXPOSURE="1" STATE="1" EDITORDER="8 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert string to XML Document"/>
     </TEXTS>
@@ -1176,7 +1540,7 @@ INCLUDE zaplink_macros.</MACROS>
     result = o_doc.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="XML_2_STRING" EXPOSURE="1" STATE="1" EDITORDER="7 ">
+   <ITEM CMPNAME="XML_2_STRING_OFF" EXPOSURE="1" STATE="1" EDITORDER="7 ">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Convert XML to string"/>
     </TEXTS>
@@ -1223,7 +1587,11 @@ INCLUDE zaplink_macros.</MACROS>
      <ITEM LANGU="E" DESCRIPT="Client Directory"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TD_DIRHIERACHY" EXPOSURE="2" STATE="1" EDITORDER="4 " TYPTYPE="1" TYPE="CHAR01"/>
+   <ITEM CMPNAME="TD_DIRHIERARCHY" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="1" TYPE="CHAR01">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Directory Hierarchy types"/>
+    </TEXTS>
+   </ITEM>
    <ITEM CMPNAME="TD_PACKAGE" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="DEVCLASS">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Package"/>
@@ -1244,14 +1612,19 @@ INCLUDE zaplink_macros.</MACROS>
      <ITEM LANGU="E" DESCRIPT="ZAPLink Easy XML Tools"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TS_MY_FILE" EXPOSURE="1" STATE="1" EDITORDER="3 " TYPTYPE="4">begin of TS_MY_FILE,
+   <ITEM CMPNAME="TO_LIST_E" EXPOSURE="1" STATE="1" EDITORDER="4 " TYPTYPE="3" TYPE="ZAPLINK_LIST_4EXTRACTOR">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink list for Extractor"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_MY_FILE" EXPOSURE="1" STATE="1" EDITORDER="3 " TYPTYPE="4">BEGIN OF ts_my_file,
       o_file      TYPE to_file,
       o_xml       TYPE to_xml,
-      o_raw_base  TYPE TO_raw_base,
-      o_raw       TYPE tO_raw,
+      o_raw_base  TYPE to_raw_base,
+      o_raw       TYPE to_raw,
       filename    TYPE td_filename,
       checksum    TYPE td_checksum,
-    end of TS_MY_FILE
+    END OF ts_my_file
 `</ITEM>
   </TYPES>
  </RAW>

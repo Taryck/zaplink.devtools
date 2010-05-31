@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="A1772503568CEDF4EB27896FFEB84977" CODE_SIGNATURE="A882183485A3893D89E18A7765F76BCD" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
+   <TEXTS>
+    <ITEM LANGU="E" DESCRIPT="ZAPLink : Synchronize tools"/>
+   </TEXTS>
+  </A0_MAINDATA>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class
+DEFINE lmac_create_data.
+  create object &amp;1.
+  &amp;1-&gt;o_file = &amp;2-o_file.
+  &amp;1-&gt;o_xml = &amp;2-o_xml.
+  &amp;1-&gt;o_raw_base = &amp;2-o_raw_base.
+  &amp;1-&gt;o_raw = &amp;2-o_raw.
+  &amp;1-&gt;filename = &amp;2-filename.
+*  &amp;1-&gt;checksum = &amp;2-checksum.
+  if &amp;2-o_raw_base is bound.
+    &amp;1-&gt;type = &amp;2-o_raw_base-&gt;get_type( ).
+    &amp;1-&gt;name = &amp;2-o_raw_base-&gt;get_name( ).
+    &amp;1-&gt;package = &amp;2-o_raw_base-&gt;directory-devclass.
+    &amp;1-&gt;checksum = &amp;2-o_raw_base-&gt;get_checksum( ).
+    &amp;1-&gt;signature = &amp;2-o_raw_base-&gt;get_code_signature( ).
+  elseif &amp;2-o_raw is bound.
+    &amp;1-&gt;type = &amp;2-o_raw-&gt;get_type( ).
+    &amp;1-&gt;name = &amp;2-o_raw-&gt;get_name( ).
+    &amp;1-&gt;package = &amp;2-o_raw-&gt;directory-devclass.
+    &amp;1-&gt;checksum = &amp;2-o_raw-&gt;get_checksum( ).
+    &amp;1-&gt;signature = &amp;2-o_raw-&gt;get_code_signature( ).
+  endif.
+END-OF-DEFINITION.</MACROS>
+  </LOCAL>
+  <METHODS>
+   <ITEM CMPNAME="DEL_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Delete directory infos of the component"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA s_zldir TYPE zldir.
+  s_zldir-key = key.
+  IF s_zldir-type IS INITIAL OR s_zldir-name IS INITIAL.
+    BREAK-POINT.
+  ELSE.
+    DELETE zldir FROM s_zldir.
+  ENDIF.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GET_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Read directory infos of the component when last imported"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY"/>
+     <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TS_FULLDATA">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA s_dir TYPE zldir.
+  s_dir-key = key.
+  SELECT SINGLE * INTO s_dir
+    FROM zldir
+    WHERE type = key-type
+      AND name = key-name.
+  result = s_dir-data.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="SET_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Write directory infos of the component"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="DATA" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_DATA">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY">
+      <TEXTS>
+       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA s_zldir TYPE zldir.
+  s_zldir-key = key.
+  s_zldir-data-change = data.
+  GET TIME STAMP FIELD s_zldir-timestamp.
+  IF s_zldir-type IS INITIAL OR s_zldir-name IS INITIAL.
+    BREAK-POINT.
+  ELSE.
+    MODIFY zldir FROM s_zldir.
+  ENDIF.</SOURCE>
+   </ITEM>
+  </METHODS>
+  <TEXTSPOOL>
+   <ITEM ID="I" KEY="DIR">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Dir" LENGTH="4 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="FIL">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Fil" LENGTH="3 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="SAP">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="SAP" LENGTH="3 "/>
+    </TEXTS>
+   </ITEM>
+  </TEXTSPOOL>
+  <TYPES>
+   <ITEM CMPNAME="TS_DATA" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="ZLDIR_DATA_CHANGE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_FULLDATA" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="ZLDIR_DATA">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_KEY" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="ZLDIR_KEY">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+    </TEXTS>
+   </ITEM>
+  </TYPES>
+ </RAW>
+</ZL_OBJECT>

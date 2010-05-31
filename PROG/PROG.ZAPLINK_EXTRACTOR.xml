@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="F4CC78049A8291A085277AA96EC23F3D" CODE_SIGNATURE="4659C5BE306E56142CC4869D7B58ADB0" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="B5EACD03DD260F2793C72829EE12389C" CODE_SIGNATURE="979F720AFA642B2372D7A8D1E37CE97D" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -56,37 +56,36 @@ AT SELECTION-SCREEN OUTPUT.
   ENDLOOP.
 
 START-OF-SELECTION.
-  DATA o_extract TYPE REF TO zaplink_extractor.
-  DATA r_pack TYPE zaplink_extractor=&gt;tr_packages.
+  DATA o_extract   TYPE REF TO zaplink_extractor.
+  DATA r_pack      TYPE zaplink_extractor=&gt;tr_packages.
+  DATA d_hierarchy TYPE zaplink_extractor=&gt;td_dirhierarchy.
 
   r_pack = s_pack[].
   CREATE OBJECT o_extract.
-  IF NOT em_type IS INITIAL.
-    CALL METHOD o_extract-&gt;extract_by_type
-      EXPORTING
-        target_dir = p_path
-        srcsystem  = s_srcs[]
-        type       = s_type[]
-        name       = s_name[]
-        packages   = s_pack[]
-        ext        = p_ext
-        author     = s_author[].
-  ELSEIF NOT em_pack IS INITIAL.
-    CALL METHOD o_extract-&gt;extract_by_package
-      EXPORTING
-        target_dir = p_path
-        srcsystem  = s_srcs[]
-        type       = s_type[]
-        name       = s_name[]
-        packages   = s_pack[]
-        ext        = p_ext
-        author     = s_author[].
-  ELSEIF NOT em_cnx IS INITIAL.
-    CALL METHOD o_extract-&gt;extract_connectors
-      EXPORTING
-        target_dir = p_path
-        package    = r_pack.
-  ENDIF.
+
+  CASE abap_true.
+    WHEN em_cnx.
+      CALL METHOD o_extract-&gt;extract_connectors
+        EXPORTING
+          target_dir = p_path
+          package    = r_pack.
+      EXIT.
+    WHEN em_pack.
+      d_hierarchy = zaplink_extractor=&gt;dirhierachies-devc.
+    WHEN em_type.
+      d_hierarchy = zaplink_extractor=&gt;dirhierachies-type.
+  ENDCASE.
+
+  CALL METHOD o_extract-&gt;extract
+    EXPORTING
+      target_dir = p_path
+      srcsystem  = s_srcs[]
+      type       = s_type[]
+      name       = s_name[]
+      packages   = s_pack[]
+      ext        = p_ext
+      hierarchy  = d_hierarchy
+      author     = s_author[].
 
 END-OF-SELECTION.</SOURCE>
   <TEXTS>

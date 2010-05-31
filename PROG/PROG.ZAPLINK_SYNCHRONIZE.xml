@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="25F924435258DE5A8FC2D350D5B6AB43" CODE_SIGNATURE="2B9B62F93AE7D3E3EFC7D5972ED0C09A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="F6EA012EF7020918119F3796F298CDBD" CODE_SIGNATURE="AA2679D6F4D450BB0B2BB03BB8C6FC7B" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -25,7 +25,6 @@ SELECT-OPTIONS:
 SELECTION-SCREEN BEGIN OF BLOCK mode WITH FRAME TITLE text-mod.
 PARAMETERS em_type TYPE c RADIOBUTTON GROUP r3 DEFAULT &apos;X&apos;.
 PARAMETERS em_pack TYPE c RADIOBUTTON GROUP r3.
-*PARAMETERS em_cnx  TYPE c RADIOBUTTON GROUP r3.
 SELECTION-SCREEN END OF BLOCK mode.
 
 SELECTION-SCREEN SKIP 1.
@@ -45,31 +44,37 @@ INITIALIZATION.
   t_pack-low = &apos;ZAPLINK-INSTALLER&apos;.  APPEND t_pack TO s_pack.
 
 START-OF-SELECTION.
-  DATA o_synch TYPE REF TO zaplink_synchronizer.
-  DATA r_pack  TYPE zaplink_synchronizer=&gt;tr_packages.
+  DATA o_synch     TYPE REF TO zaplink_synchronizer.
+  DATA r_pack      TYPE zaplink_synchronizer=&gt;tr_packages.
+  DATA d_hierarchy TYPE zaplink_extractor=&gt;td_dirhierarchy.
 
   r_pack = s_pack[].
   CREATE OBJECT o_synch.
+  CASE abap_true.
+    WHEN em_pack.
+      d_hierarchy = zaplink_extractor=&gt;dirhierachies-devc.
+    WHEN em_type.
+      d_hierarchy = zaplink_extractor=&gt;dirhierachies-type.
+  ENDCASE.
+
   IF p_ana IS INITIAL.
-    CALL METHOD o_synch-&gt;synchronize
-      EXPORTING
-        target_dir = p_path
-        srcsystem  = s_srcs[]
-        type       = s_type[]
-        name       = s_name[]
-        packages   = s_pack[]
-        ext        = p_ext
-        author     = s_author[].
+    o_synch-&gt;synchronize( target_dir = p_path
+                          srcsystem  = s_srcs[]
+                          type       = s_type[]
+                          name       = s_name[]
+                          packages   = s_pack[]
+                          ext        = p_ext
+                          hierarchy  = d_hierarchy
+                          author     = s_author[] ).
   ELSE.
-    o_synch-&gt;analyse(
-        target_dir = p_path
-        srcsystem  = s_srcs[]
-        type       = s_type[]
-        name       = s_name[]
-        packages   = s_pack[]
-        ext        = p_ext
-        author     = s_author[]
-        ).
+    o_synch-&gt;analyse( target_dir = p_path
+                      srcsystem  = s_srcs[]
+                      type       = s_type[]
+                      name       = s_name[]
+                      packages   = s_pack[]
+                      ext        = p_ext
+                      hierarchy  = d_hierarchy
+                      author     = s_author[] ).
     o_synch-&gt;display( ).
   ENDIF.
 
