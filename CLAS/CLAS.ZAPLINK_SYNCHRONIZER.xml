@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="7611454584959F5950F196C744B06A5B" CODE_SIGNATURE="B39C38D9F494D8E4D06611589FAA3C76" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="A0576BF3B805ED90A530AF356994338B" CODE_SIGNATURE="179EC1B609A3753C959B64E824E3F227" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_DIRECTORY"/>
@@ -441,15 +441,15 @@ END-OF-DEFINITION.</MACROS>
   DATA msg       TYPE string.
   DATA _pos      TYPE i.
   DATA d_t_count TYPE sy-tabix.
+  DATA t_ext_pack TYPE tr_packages.
+  FIELD-SYMBOLS &lt;f&gt;    LIKE LINE OF t_filelist.
 
-  FIELD-SYMBOLS:
-    &lt;f&gt;    LIKE LINE OF t_filelist.
-
+  IF ext = abap_true.   t_ext_pack = zaplink_tools=&gt;extend_packages( packages ).    ELSE.     t_ext_pack = packages.    ENDIF.
   t_keys = zaplink_tools=&gt;get_keys_from_tadir( srcsystem = srcsystem
                                                    type  = type
                                                     name = name
-                                                packages = packages
-                                                     ext = ext
+                                                packages = t_ext_pack
+                                                     ext = abap_false
                                                   author = author ).
 
   TRY.
@@ -551,7 +551,8 @@ END-OF-DEFINITION.</MACROS>
     CHECK s_my_file-o_raw_base IS BOUND.
     lmac_create_data o_data s_my_file.
     CHECK o_data-&gt;type IN type AND o_data-&gt;name IN name.
-    Check s_my_file-o_raw_base-&gt;directory-devclass IN packages.
+    CHECK s_my_file-o_raw_base-&gt;directory-devclass IN t_ext_pack OR
+          ( O_DATA-&gt;TYPE = &apos;DEVC&apos; AND o_data-&gt;name IN t_ext_pack ).
     CREATE OBJECT o_comp.
     o_comp-&gt;set_add_object( o_data ).
     o_comp-&gt;set_type( o_data-&gt;type ).    o_comp-&gt;set_name( o_data-&gt;name ).    o_comp-&gt;set_checksum( o_data-&gt;checksum ).
