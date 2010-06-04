@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A90AFA33C94CC5EE9FB59262D7602069" CODE_SIGNATURE="1491E54759A62828E86AC2EEE14E91AA" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="66D7327F2643763AF66643EEBCEF7BA7" CODE_SIGNATURE="95D789184E83026ECFAB00455426BB96" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -30,9 +30,11 @@ AS</DOCUMENTATION>
    <ITEM CMPNAME="TD_COMPNAME" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_COMPNAME"/>
    <ITEM CMPNAME="TD_DEVCLASS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_DEVCLASS"/>
    <ITEM CMPNAME="TD_SOFTCOMP" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_SOFTCOMP"/>
+   <ITEM CMPNAME="TD_TRANSPORT_KIND" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_TRANSPORT_KIND"/>
    <ITEM CMPNAME="TO_COMPONENT" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_COMPONENT"/>
    <ITEM CMPNAME="TO_RAW" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_KERNEL_TYPES" REFCMPNAME="TO_RAW"/>
    <ITEM CMPNAME="TS_COMPKEY" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TS_COMPKEY"/>
+   <ITEM CMPNAME="TS_COMPTYPE" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TS_COMPTYPE"/>
   </ALIASES>
   <ATTRIBUTS>
    <ITEM CMPNAME="ALL_COMPONENTS" EXPOSURE="2" STATE="1" EDITORDER="12 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_COMPS">
@@ -63,6 +65,31 @@ AS</DOCUMENTATION>
    <ITEM CMPNAME="CURRENT_COMP" STATE="1" EDITORDER="6 " TYPTYPE="1" TYPE="TD_NAME">
     <TEXTS>
      <ITEM LANGU="E" DESCRIPT="Class/interface name"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="C_CLASS" STATE="1" EDITORDER="10 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TS_COMPTYPE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Component type def"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="C_INTERFACE" STATE="1" EDITORDER="11 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TS_COMPTYPE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Component type def"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="C_MSG_CLASS" STATE="1" EDITORDER="13 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TS_COMPTYPE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Component type def"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="C_PROGRAM" STATE="1" EDITORDER="12 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TS_COMPTYPE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Component type def"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="C_TYPEGROUP" STATE="1" EDITORDER="14 " ATTDECLTYP="1" TYPTYPE="1" TYPE="TS_COMPTYPE">
+    <TEXTS>
+     <ITEM LANGU="E" DESCRIPT="Component type def"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="DEFERRED_DECLARATION" EXPOSURE="1" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TT_CLASSLIST">
@@ -166,16 +193,16 @@ AS</DOCUMENTATION>
 *&quot;* IN THE IMPLEMENTATION PART OF THE CLASS
 
   DEFINE mac_read_tadir.
-    select single devclass dlvunit into (&amp;3, &amp;4)
+    select single devclass dlvunit into (&amp;4, &amp;5)
       from v_tralan
-      where pgmid = &apos;R3TR&apos;
-        and object = &amp;1
-        and obj_name = &amp;2.
+      where pgmid = &amp;1
+        and object = &amp;2
+        and obj_name = &amp;3.
   END-OF-DEFINITION.
 
   DEFINE mac_add_comp.
-    if not s_comp-type is initial and not s_comp-name is initial.
-      mac_read_tadir s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
+    if not s_comp-kind is initial and not s_comp-type is initial and not s_comp-name is initial.
+      mac_read_tadir s_comp-kind s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
       if s_comp-devclass in packages and s_comp-softcomp in softcomponents.
         insert s_comp into table all_components.
       endif.
@@ -943,7 +970,13 @@ DATA _name TYPE string.
   _softcomp-low = &apos;HOME&apos;. APPEND _softcomp TO softcomponents.
   _softcomp-low = &apos;LOCAL&apos;. APPEND _softcomp TO softcomponents.
 
-  CREATE OBJECT o_object.</SOURCE>
+  CREATE OBJECT o_object.
+
+  c_class-type = &apos;CLAS&apos;.    c_class-kind = zaplink_connectors=&gt;get_typekind( c_class-type ).
+  c_interface-type = &apos;INTF&apos;.    c_interface-kind = zaplink_connectors=&gt;get_typekind( c_interface-type ).
+  c_program-type = &apos;PROG&apos;.    c_program-kind = zaplink_connectors=&gt;get_typekind( c_program-type ).
+  c_typegroup-type = &apos;TYPE&apos;.    c_typegroup-kind = zaplink_connectors=&gt;get_typekind( c_typegroup-type ).
+  c_msg_class-type = &apos;MSAG&apos;.    c_msg_class-kind = zaplink_connectors=&gt;get_typekind( c_msg_class-type ).</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CLEAN_CODE" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDDECLTYP="1">
     <TEXTS>
@@ -1748,11 +1781,19 @@ DATA _name TYPE string.
     <SOURCE>`
   DATA s_excl_c    LIKE LINE OF excluded_classes.
 
-  clear s_comp.   result = abap_true.   READ TABLE excluded_classes TRANSPORTING NO FIELDS WITH TABLE KEY name = name.    CHECK sy-subrc &lt;&gt; 0.
-  IF NOT type IS INITIAL.   mac_read_tadir type name s_comp-devclass s_comp-softcomp.
-  ELSE.   mac_read_tadir &apos;CLAS&apos; name s_comp-devclass s_comp-softcomp.
-  IF sy-subrc &lt;&gt; 0. mac_read_tadir &apos;INTF&apos; name s_comp-devclass s_comp-softcomp.
-  ENDIF. ENDIF.
+  CLEAR s_comp.   result = abap_true.   READ TABLE excluded_classes TRANSPORTING NO FIELDS WITH TABLE KEY name = name.    CHECK sy-subrc &lt;&gt; 0.
+  s_comp-type = type.   s_comp-name = name.
+  IF NOT s_comp-type IS INITIAL.
+    s_comp-kind = zaplink_connectors=&gt;get_typekind( type ).
+    mac_read_tadir s_comp-kind s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
+  ELSE.
+    MOVE-CORRESPONDING c_class TO s_comp.
+    mac_read_tadir s_comp-kind s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
+    IF sy-subrc &lt;&gt; 0.
+      MOVE-CORRESPONDING c_interface TO s_comp.
+      mac_read_tadir s_comp-kind s_comp-type s_comp-name s_comp-devclass s_comp-softcomp.
+    ENDIF.
+  ENDIF.
 * customer components
   IF s_comp-devclass IN packages AND s_comp-softcomp IN softcomponents.    result = abap_false.    ELSE.   s_excl_c-name = name.   INSERT s_excl_c INTO TABLE excluded_classes.    ENDIF.</SOURCE>
    </ITEM>
@@ -1999,10 +2040,10 @@ DATA _name TYPE string.
 
 * Update all components list
   REFRESH all_components.
-  LOOP AT classes ASSIGNING &lt;c&gt;.    CLEAR s_comp.   if &lt;c&gt;-type = 0. s_comp-type = &apos;CLAS&apos;.  else.   s_comp-type = &apos;INTF&apos;.   ENDIF.   s_comp-name = &lt;c&gt;-name.   mac_add_comp.    ENDLOOP.
-  LOOP AT typegroups ASSIGNING &lt;t&gt;.    CLEAR s_comp.   s_comp-type = &apos;TYPE&apos;.   s_comp-name = &lt;t&gt;-name.   mac_add_comp.    ENDLOOP.
-  LOOP AT includes ASSIGNING &lt;i&gt;.    CLEAR s_comp.   s_comp-type = &apos;PROG&apos;.   s_comp-name = &lt;i&gt;.   mac_add_comp.    ENDLOOP.
-  LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   s_comp-type = &apos;MSAG&apos;.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.</SOURCE>
+  LOOP AT classes ASSIGNING &lt;c&gt;.    CLEAR s_comp.   IF &lt;c&gt;-type = 0. MOVE-CORRESPONDING c_class TO s_comp. ELSE.   MOVE-CORRESPONDING c_interface TO s_comp.   ENDIF.   s_comp-name = &lt;c&gt;-name.   mac_add_comp.    ENDLOOP.
+  LOOP AT typegroups ASSIGNING &lt;t&gt;.    CLEAR s_comp.   MOVE-CORRESPONDING c_typegroup TO s_comp.   s_comp-name = &lt;t&gt;-name.   mac_add_comp.    ENDLOOP.
+  LOOP AT includes ASSIGNING &lt;i&gt;.    CLEAR s_comp.   MOVE-CORRESPONDING c_program TO s_comp.   s_comp-name = &lt;i&gt;.   mac_add_comp.    ENDLOOP.
+  LOOP AT messages ASSIGNING &lt;m&gt;.    CLEAR s_comp.   MOVE-CORRESPONDING c_msg_class TO s_comp.   s_comp-name = &lt;m&gt;-name.   mac_add_comp.    ENDLOOP.</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
@@ -2058,6 +2099,7 @@ DATA _name TYPE string.
    <ITEM CMPNAME="TS_COMP" EXPOSURE="2" STATE="1" EDITORDER="18 " TYPTYPE="4">BEGIN OF ts_comp.
     INCLUDE TYPE ts_compkey AS hdr.
     TYPES:
+        kind     type td_transport_kind,
         devclass TYPE td_devclass,
         softcomp TYPE td_softcomp,
       END OF ts_comp
