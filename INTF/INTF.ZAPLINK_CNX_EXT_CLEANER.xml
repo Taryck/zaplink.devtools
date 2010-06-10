@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="6AF78E4174B8EDA5E44E56214BDA67D4" CODE_SIGNATURE="116F394471102DA58951B03177151AB8" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CNX_EXT_CLEANER" TYPE="INTF" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="88D9807A4EF196481C1F3C4311E9DBFC" CODE_SIGNATURE="116F394471102DA58951B03177151AB8" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CNX_EXT_CLEANER" TYPE="INTF" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" UNICODE="X">
    <TEXTS>
-    <ITEM LANGU="E" DESCRIPT="ZAP Link Connector : Cleanning interface"/>
+    <ITEM LANG="E" TEXT="ZAP Link Connector : Cleanning interface">U1&amp;MEANING&amp;
+ASCleanner interface that allow to remove all informations that are
+  connected to the SAP system where it belongs :
+B1Save date, time or user
+B1Source system
+B1Change date, time or user
+B1....
+U1&amp;USE&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS
+U1&amp;HINTS&amp;
+AS
+U1&amp;FURTHER_SOURCES_OF_INF&amp;
+AS
+U1Memories
+ASThis application is dedicated to the memories of :
+B2My father : Lamri BENSIALI (1940-2004) without whom I never started
+  programming
+B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
+  application</ITEM>
    </TEXTS>
   </A0_MAINDATA>
   <METHODS>
    <ITEM CMPNAME="ANONYMIZE" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="RAW : Anonymized component data"/>
+     <ITEM LANG="E" TEXT="RAW : Anonymized component data"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="OBJECT" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TO_RAW">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="SAP Object"/>
+       <ITEM LANG="E" TEXT="SAP Object"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
      <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" LANGU="E" EDITORDER="1 ">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors"/>
+       <ITEM LANG="E" TEXT="ZAPlink ROOT Exception for Connectors"/>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
    </ITEM>
    <ITEM CMPNAME="UNANONYMIZE" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDNEWEXC="X">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="RAW : Unanonymized component data (set back default values)"/>
+     <ITEM LANG="E" TEXT="RAW : Unanonymized component data (set back default values)"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="OBJECT" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TO_RAW">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="SAP Object"/>
+       <ITEM LANG="E" TEXT="SAP Object"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
      <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" LANGU="E" EDITORDER="1 ">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPlink ROOT Exception for Connectors"/>
+       <ITEM LANG="E" TEXT="ZAPlink ROOT Exception for Connectors"/>
       </TEXTS>
      </ITEM>
     </EXCEPTIONS>
@@ -53,7 +73,7 @@
   <TYPES>
    <ITEM CMPNAME="TO_RAW" EXPOSURE="2" STATE="1" TYPTYPE="3" TYPE="ZAPLINK_RAW">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="RAW component with data"/>
+     <ITEM LANG="E" TEXT="RAW component with data"/>
     </TEXTS>
    </ITEM>
   </TYPES>

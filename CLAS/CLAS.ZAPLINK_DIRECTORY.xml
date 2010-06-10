@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="D5C78C86E978647F864DC844EF593229" CODE_SIGNATURE="7A55FA292AFF601E0949AA779F0A5A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="DF26D5138B8044C7C451F76CF5297975" CODE_SIGNATURE="7A55FA292AFF601E0949AA779F0A5A28" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
    <TEXTS>
-    <ITEM LANGU="E" DESCRIPT="ZAPLink : Synchronize tools"/>
+    <ITEM LANG="E" TEXT="ZAPLink : Synchronize tools">U1&amp;FUNCTIONALITY&amp;
+ASHandle access to ZLDIR table, which store component&apos;s information of the
+  last synchronization allowing to dertermine where change occurs (SAP
+  side or file side).
+U1&amp;RELATIONS&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS
+U1&amp;HINTS&amp;
+AS
+U1&amp;FURTHER_SOURCES_OF_INF&amp;
+AS
+U1Memories
+ASThis application is dedicated to the memories of :
+B2My father : Lamri BENSIALI (1940-2004) without whom I never started
+  programming
+B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
+  application</ITEM>
    </TEXTS>
   </A0_MAINDATA>
   <ALIASES>
@@ -133,12 +150,12 @@ END-OF-DEFINITION.</MACROS>
   <METHODS>
    <ITEM CMPNAME="DEL_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDDECLTYP="1">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Delete directory infos of the component"/>
+     <ITEM LANG="E" TEXT="Delete directory infos of the component"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+       <ITEM LANG="E" TEXT="ZAPLink Directory : Key"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
@@ -153,12 +170,12 @@ END-OF-DEFINITION.</MACROS>
    </ITEM>
    <ITEM CMPNAME="DSP_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDDECLTYP="1">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Delete directory infos of the component"/>
+     <ITEM LANG="E" TEXT="Delete directory infos of the component"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+       <ITEM LANG="E" TEXT="ZAPLink Directory : Key"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
@@ -187,13 +204,13 @@ END-OF-DEFINITION.</MACROS>
    </ITEM>
    <ITEM CMPNAME="GET_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDDECLTYP="1">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Read directory infos of the component when last imported"/>
+     <ITEM LANG="E" TEXT="Read directory infos of the component when last imported"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY"/>
      <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TS_FULLDATA">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+       <ITEM LANG="E" TEXT="ZAPLink Directory : Data"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
@@ -208,17 +225,17 @@ END-OF-DEFINITION.</MACROS>
    </ITEM>
    <ITEM CMPNAME="SET_DIRECTORY" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDDECLTYP="1">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="Write directory infos of the component"/>
+     <ITEM LANG="E" TEXT="Write directory infos of the component"/>
     </TEXTS>
     <PARAMETERS>
      <ITEM SCONAME="DATA" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_DATA">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+       <ITEM LANG="E" TEXT="ZAPLink Directory : Data"/>
       </TEXTS>
      </ITEM>
      <ITEM SCONAME="KEY" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_KEY">
       <TEXTS>
-       <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+       <ITEM LANG="E" TEXT="ZAPLink Directory : Key"/>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
@@ -254,17 +271,17 @@ END-OF-DEFINITION.</MACROS>
   <TYPES>
    <ITEM CMPNAME="TS_DATA" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="ZLDIR_DATA_CHANGE">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+     <ITEM LANG="E" TEXT="ZAPLink Directory : Data"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TS_FULLDATA" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="ZLDIR_DATA">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Data"/>
+     <ITEM LANG="E" TEXT="ZAPLink Directory : Data"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TS_KEY" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="ZLDIR_KEY">
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory : Key"/>
+     <ITEM LANG="E" TEXT="ZAPLink Directory : Key"/>
     </TEXTS>
    </ITEM>
    <ITEM CMPNAME="TS_SCREEN" EXPOSURE="2" STATE="1" EDITORDER="4 " TYPTYPE="4">
@@ -279,7 +296,7 @@ END-OF-DEFINITION.</MACROS>
         END OF ts_screen
 `
     <TEXTS>
-     <ITEM LANGU="E" DESCRIPT="ZAPLink Directory for screen"/>
+     <ITEM LANG="E" TEXT="ZAPLink Directory for screen"/>
     </TEXTS>
    </ITEM>
   </TYPES>
