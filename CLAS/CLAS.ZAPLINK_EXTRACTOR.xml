@@ -110,6 +110,21 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
    <ITEM CMPNAME="TT_TXTP_TEXTPOOLS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_TXTP_TEXTPOOLS"/>
    <ITEM CMPNAME="TT_TXTP_TEXTS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_TXTP_TEXTS"/>
    <ITEM CMPNAME="TT_TYPES" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_TYPES"/>
+   <ITEM CMPNAME="TD_ORDERKIND" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_ORDERKIND">
+    <TEXTS>
+     <ITEM LANGU="E"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TD_TYPEORDER" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_TYPEORDER">
+    <TEXTS>
+     <ITEM LANGU="E"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_COMPONENT" VERSION="1" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TS_COMPONENT">
+    <TEXTS>
+     <ITEM LANGU="E"/>
+    </TEXTS>
+   </ITEM>
   </ALIASES>
   <ATTRIBUTS>
    <ITEM CMPNAME="APPLICATION_LOG" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TO_MSG_COLL">
@@ -128,10 +143,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
      end of dirhierachies
 `</ITEM>
    <ITEM CMPNAME="FILE_SEP" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="1" ATTRDONLY="X" TYPTYPE="1" TYPE="C">
-    <TEXTS>
      <ITEM LANG="E" TEXT="File/directory Separator"/>
-    </TEXTS>
-   </ITEM>
    <ITEM CMPNAME="O_CX" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="3" TYPE="ZAPLINK_CX">
     <TEXTS>
      <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
@@ -165,6 +177,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
 *&quot;* implementation or private method&apos;s signature</TYPES>
    <IMPLEMENTATIONS>`
 *&quot;* local class implementation for public class
+*&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
 *&quot;* local helper classes
 CLASS lcl_data DEFINITION
@@ -710,6 +723,7 @@ END-OF-DEFINITION.</MACROS>
      <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
     <SOURCE>`
+  DATA packages    TYPE scompaklis.
   DATA directory   TYPE string.
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
@@ -920,6 +934,7 @@ END-OF-DEFINITION.</MACROS>
         EXIT.
     ENDTRY.
   ENDWHILE.</SOURCE>
+*  Data o_pack  TYPE REF TO IF_PACKAGE.
    </ITEM>
    <ITEM CMPNAME="EXTRACT_BY_TYPE_OFF" EXPOSURE="2" STATE="1" EDITORDER="5 ">
     <TEXTS>
@@ -943,6 +958,7 @@ END-OF-DEFINITION.</MACROS>
      <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
     <SOURCE>`
+*  DATA o_pack       TYPE REF TO if_package.
   DATA directory   TYPE string.
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
@@ -1459,6 +1475,7 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
     </PARAMETERS>
     <SOURCE>`
+  DATA o_xml           TYPE to_xml.
   DATA _tempstring     TYPE string.
 *  DATA o_file          TYPE to_file.
   DATA s_my_file       TYPE ts_my_file.
@@ -1506,6 +1523,7 @@ END-OF-DEFINITION.</MACROS>
       WRITE:/ zaplink_list_4extractor=&gt;lights-export AS ICON, icon_red_light AS ICON, d_msg.
       RETURN.
   ENDTRY.</SOURCE>
+  DATA ez_xml          TYPE to_ez_xml.
    </ITEM>
    <ITEM CMPNAME="STRING_2_XML_OFF" EXPOSURE="1" STATE="1" EDITORDER="8 ">
     <TEXTS>
