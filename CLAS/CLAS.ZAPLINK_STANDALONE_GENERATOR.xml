@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="44ABE7C52AEA8B3BAC6D388D0F126F07" CODE_SIGNATURE="6D27BE5BCA249838E2AED5CD0B0A7D47" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="C5365257F42072F2D81F9F609268A6F4" CODE_SIGNATURE="A55EA7659D86B03EF1E818F9E8010847" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -84,6 +84,13 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     &lt;i&gt; LIKE LINE OF includes,
     &lt;c&gt; LIKE LINE OF classes,
     &lt;o&gt; LIKE LINE OF order.
+  DATA t_tokens TYPE STANDARD TABLE OF stokes.
+  DATA t_statements TYPE STANDARD TABLE OF sstmnt.
+  DATA t_kw      TYPE STANDARD TABLE OF char255.
+  DATA s_kw      LIKE LINE OF t_kw.
+  FIELD-SYMBOLS:
+    &lt;t_deb&gt; LIKE LINE OF t_tokens,
+    &lt;st&gt; LIKE LINE OF t_statements.
 
   _clean_up( ).
   resolve( ).
@@ -137,9 +144,19 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     ENDIF.
   ENDLOOP.
 
+  s_kw = &apos;PROGRAM&apos;.    APPEND s_kw TO t_kw.
+  s_kw = &apos;REPORT&apos;.     APPEND s_kw TO t_kw.
   LOOP AT includes ASSIGNING &lt;i&gt;.
     d_report = &lt;i&gt;.
     READ REPORT d_report INTO _tmp.
+    SCAN ABAP-SOURCE _tmp TOKENS INTO t_tokens
+                      STATEMENTS INTO t_statements
+                        KEYWORDS FROM t_kw.
+    zaplink_tools=&gt;inverse_table_order( changing my_table = t_statements ).
+    LOOP AT t_statements ASSIGNING &lt;st&gt;.
+      READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    CHECK sy-subrc = 0.
+      DELETE _tmp FROM &lt;t_deb&gt;-row TO &lt;st&gt;-trow.
+    ENDLOOP.
     APPEND LINES OF _tmp TO _tmp_code-macro.
   ENDLOOP.
 
