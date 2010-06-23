@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="C5365257F42072F2D81F9F609268A6F4" CODE_SIGNATURE="A55EA7659D86B03EF1E818F9E8010847" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="7F6D8E296FE26991FF22F47D47AAF06D" CODE_SIGNATURE="7A12E2A683E3F14B5AD99D685C9A6202" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -147,12 +147,13 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   s_kw = &apos;PROGRAM&apos;.    APPEND s_kw TO t_kw.
   s_kw = &apos;REPORT&apos;.     APPEND s_kw TO t_kw.
   LOOP AT includes ASSIGNING &lt;i&gt;.
-    d_report = &lt;i&gt;.
+    d_report = &lt;i&gt;.   CLEAR _tmp.
     READ REPORT d_report INTO _tmp.
+    CHECK sy-subrc = 0.
     SCAN ABAP-SOURCE _tmp TOKENS INTO t_tokens
                       STATEMENTS INTO t_statements
                         KEYWORDS FROM t_kw.
-    zaplink_tools=&gt;inverse_table_order( changing my_table = t_statements ).
+    zaplink_tools=&gt;inverse_table_order( CHANGING my_table = t_statements ).
     LOOP AT t_statements ASSIGNING &lt;st&gt;.
       READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    CHECK sy-subrc = 0.
       DELETE _tmp FROM &lt;t_deb&gt;-row TO &lt;st&gt;-trow.
