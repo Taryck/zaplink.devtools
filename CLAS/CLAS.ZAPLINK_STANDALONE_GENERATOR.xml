@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="7F6D8E296FE26991FF22F47D47AAF06D" CODE_SIGNATURE="7A12E2A683E3F14B5AD99D685C9A6202" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="99C93C00C3182605BA515BEEB74E96BD" CODE_SIGNATURE="BADE73650AC16BFE09E0B2469FB3A0AB" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -109,6 +109,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
                         CHANGING abapcode = code ).
   ENDLOOP.
 
+* Prepare objects
   LOOP AT order ASSIGNING &lt;o&gt;.
     IF NOT &lt;o&gt;-defered IS INITIAL.
 * Insert defered call
@@ -123,27 +124,33 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
         CONTINUE.
       ENDIF.
       APPEND LINES OF &lt;c&gt;-def TO _tmp_code-def.
-* Put macro into implementation
-      IF &lt;c&gt;-macro IS INITIAL.
-        APPEND LINES OF &lt;c&gt;-impl TO _tmp_code-impl.
-      ELSE.
-        _tmp = &lt;c&gt;-impl.
-        LOOP AT _tmp TRANSPORTING NO FIELDS
-             WHERE table_line CP &apos;*CLASS * IMPLEMENTATION*.*&apos;.
-          _pos = sy-tabix + 1.
-          EXIT.
-        ENDLOOP.
-        IF sy-subrc &lt;&gt; 0.
-          APPEND LINES OF &lt;c&gt;-macro TO _tmp_code-macro.
-          APPEND LINES OF &lt;c&gt;-impl TO _tmp_code-impl.
-        ELSE.
-          INSERT LINES OF &lt;c&gt;-macro INTO _tmp INDEX _pos.
-          APPEND LINES OF _tmp TO _tmp_code-impl.
-        ENDIF.
-      ENDIF.
+      APPEND LINES OF &lt;c&gt;-macro TO _tmp_code-macro.
+      APPEND LINES OF &lt;c&gt;-impl TO _tmp_code-impl.
+** Put macro into implementation
+*      IF &lt;c&gt;-macro IS INITIAL.
+*        APPEND LINES OF &lt;c&gt;-impl TO _tmp_code-impl.
+*      ELSE.
+*        _tmp = &lt;c&gt;-impl.
+*        LOOP AT _tmp TRANSPORTING NO FIELDS
+*             WHERE table_line CP &apos;*CLASS * IMPLEMENTATION*.*&apos;.
+*          _pos = sy-tabix + 1.
+*          EXIT.
+*        ENDLOOP.
+*        IF sy-subrc &lt;&gt; 0.
+*          APPEND LINES OF &lt;c&gt;-macro TO _tmp_code-macro.
+*          APPEND LINES OF &lt;c&gt;-impl TO _tmp_code-impl.
+*        ELSE.
+*          INSERT LINES OF &lt;c&gt;-macro INTO _tmp INDEX _pos.
+*          APPEND LINES OF _tmp TO _tmp_code-impl.
+*        ENDIF.
+*      ENDIF.
     ENDIF.
   ENDLOOP.
 
+* Objects definition second because might be used by includes
+  APPEND LINES OF _tmp_code-def TO code.
+
+* Include third
   s_kw = &apos;PROGRAM&apos;.    APPEND s_kw TO t_kw.
   s_kw = &apos;REPORT&apos;.     APPEND s_kw TO t_kw.
   LOOP AT includes ASSIGNING &lt;i&gt;.
@@ -158,13 +165,15 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
       READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    CHECK sy-subrc = 0.
       DELETE _tmp FROM &lt;t_deb&gt;-row TO &lt;st&gt;-trow.
     ENDLOOP.
-    APPEND LINES OF _tmp TO _tmp_code-macro.
+*    APPEND LINES OF _tmp TO _tmp_code-macro.
+    APPEND LINES OF _tmp TO code.
   ENDLOOP.
 
-  APPEND LINES OF _tmp_code-def TO code.
+* reste of the object then
   APPEND LINES OF _tmp_code-macro TO code.
   APPEND LINES OF _tmp_code-impl TO code.
-  code = clean_code( code ).</SOURCE>
+*  code = clean_code( code ).
+  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = code ).</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>
