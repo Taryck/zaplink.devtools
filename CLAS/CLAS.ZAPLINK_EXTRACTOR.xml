@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FF97358FABD17EE7129526BE76F12D74" CODE_SIGNATURE="EBFFDF813B48BEDD8A3FF680EE045DCF" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="C60BAD22D504CB83697795511F1AFA09" CODE_SIGNATURE="55E418A648B59C36D9D3CB128B377921" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_FILE"/>
  </DEPENDENCIES>
@@ -173,7 +173,7 @@ CLASS lcl_data DEFINITION
   .
 
   PUBLIC SECTION.
-    INTERFACES zaplink_datatypes.
+    INTERFACES zaplink_datatypes.       &quot; OK Used by parent
     ALIASES td_filename FOR zaplink_datatypes~td_filename.
     ALIASES td_checksum FOR zaplink_datatypes~td_checksum.
     ALIASES to_xml      FOR zaplink_datatypes~to_xml.
@@ -181,13 +181,22 @@ CLASS lcl_data DEFINITION
     ALIASES td_compname FOR zaplink_datatypes~td_compname.
     ALIASES td_devclass FOR zaplink_datatypes~td_devclass.
 
-    INTERFACES zaplink_kernel_types.
+    INTERFACES zaplink_kernel_types.    &quot; OK Used by parent
     ALIASES to_file     FOR zaplink_kernel_types~to_file.
     ALIASES to_raw      FOR zaplink_kernel_types~to_raw.
     ALIASES to_raw_base FOR zaplink_kernel_types~to_raw_base.
 
-    TYPES ts_key      TYPE zaplink_directory=&gt;ts_key.
-    TYPES ts_data     TYPE zaplink_directory=&gt;ts_data.
+    TYPES:
+      BEGIN OF ts_key,        &quot; TYPE zaplink_directory=&gt;ts_key.
+        type  TYPE  trobjtype,
+        name  TYPE  sobj_name,
+      END OF  ts_key.
+    TYPES:
+      BEGIN OF ts_data,       &quot; TYPE zaplink_directory=&gt;ts_data.
+        checksum  TYPE  guid_32,
+        signature TYPE  guid_32,
+*        content   TYPE  xstring,
+      END OF ts_data.
 
     DATA type        TYPE td_comptype.
     DATA name        TYPE td_compname.
@@ -235,20 +244,20 @@ CLASS lcl_data IMPLEMENTATION.
     CHECK o_raw_base IS BOUND.
     result-checksum = o_raw_base-&gt;get_checksum( ).
     result-signature = o_raw_base-&gt;get_code_signature( ).
-    IF o_file IS BOUND.
-      xml_str = o_file-&gt;get_filecontent( ).
-    ELSE.
-      xml_str = zaplink_connectors=&gt;raw_2_string( o_raw_base ).
-    ENDIF.
-    result-content = zaplink_tools=&gt;zip_string( xml_str ).
+*    IF o_file IS BOUND.
+*      xml_str = o_file-&gt;get_filecontent( ).
+*    ELSE.
+*      xml_str = zaplink_connectors=&gt;raw_2_string( o_raw_base ).
+*    ENDIF.
+*    result-content = zaplink_tools=&gt;zip_string( xml_str ).
   ENDMETHOD.                    &quot;get_file_data
   METHOD get_sap_data.
     DATA xml_str TYPE string.
     CHECK o_raw IS BOUND.
     result-checksum = o_raw-&gt;get_checksum( ).
     result-signature = o_raw-&gt;get_code_signature( ).
-    xml_str = zaplink_connectors=&gt;raw_2_string( o_raw ).
-    result-content = zaplink_tools=&gt;zip_string( xml_str ).
+*    xml_str = zaplink_connectors=&gt;raw_2_string( o_raw ).
+*    result-content = zaplink_tools=&gt;zip_string( xml_str ).
   ENDMETHOD.                    &quot;get_sap_data
 ENDCLASS.                    &quot;lcl_data IMPLEMENTATION</IMPLEMENTATIONS>
    <MACROS>`
@@ -759,8 +768,10 @@ END-OF-DEFINITION.</MACROS>
   DATA o_file      TYPE to_file.
   DATA o_cnxlist   TYPE to_list.
   DATA o_contlist  TYPE to_list.
+  DATA o_oriclist  TYPE to_list.
   DATA o_cont      TYPE to_container.
   DATA o_comp      TYPE to_component.
+  DATA o_cnx       TYPE to_component.
   DATA o_cnxcomp   TYPE to_component.
   DATA o_conn      TYPE to_connector.
   DATA o_cnx_clean TYPE to_connector_cleaner.
@@ -771,6 +782,7 @@ END-OF-DEFINITION.</MACROS>
   DATA _cx_list TYPE REF TO zaplink_cx_list.
   DATA s_cnxdata   TYPE ts_contdata.
   DATA d_msg       TYPE string.
+  DATA d_change    TYPE abap_bool.
   FIELD-SYMBOLS:
     &lt;m&gt; LIKE LINE OF o_generator-&gt;messages,
     &lt;i&gt; LIKE LINE OF o_generator-&gt;includes,
@@ -785,7 +797,7 @@ END-OF-DEFINITION.</MACROS>
         o_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
         o_list-&gt;init_sel_iter( ).
         o_list-&gt;display_progress = abap_true.
-        o_comp = o_list-&gt;get_next( ).
+        o_cnx = o_list-&gt;get_next( ).
       CATCH zaplink_cx_list INTO _cx_list.
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
         CREATE OBJECT o_mycx
@@ -796,15 +808,15 @@ END-OF-DEFINITION.</MACROS>
         RAISE EXCEPTION o_mycx.
     ENDTRY.
 
-    WHILE o_comp IS BOUND.
+    WHILE o_cnx IS BOUND.
       CREATE OBJECT o_generator.
       o_generator-&gt;packages = package.
       CREATE OBJECT o_cnxlist.
       CREATE OBJECT o_file.
 
       TRY.
-          o_comp-&gt;set_with_subcomp( abap_false ).
-          _comp = o_comp-&gt;get_key( ).
+          o_cnx-&gt;set_with_subcomp( abap_false ).
+          _comp = o_cnx-&gt;get_key( ).
 * Load previous file
           TRY.
               CREATE OBJECT o_conn TYPE (_comp-name).
@@ -825,7 +837,8 @@ END-OF-DEFINITION.</MACROS>
                 CREATE OBJECT o_cont
                   EXPORTING
                     o_file = o_file.
-                CALL METHOD o_cont-&gt;load_from_file( ).
+                o_cont-&gt;load_from_file( ).
+                o_oriclist = o_cont-&gt;get_content( ).
               CATCH zaplink_cx_container.
                 CLEAR o_cont.
             ENDTRY.
@@ -836,9 +849,7 @@ END-OF-DEFINITION.</MACROS>
           o_generator-&gt;add_object( d_classname ).
           LOOP AT o_generator-&gt;classes ASSIGNING &lt;c&gt;.
             CREATE OBJECT o_cnxcomp.
-            o_cnxcomp-&gt;set_type( &apos;CLAS&apos; ).
-            _comp-name = &lt;c&gt;-name.
-            o_cnxcomp-&gt;set_name( _comp-name ).
+            o_cnxcomp-&gt;set_type( &apos;CLAS&apos; ).    _comp-name = &lt;c&gt;-name.    o_cnxcomp-&gt;set_name( _comp-name ).
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
@@ -847,9 +858,7 @@ END-OF-DEFINITION.</MACROS>
           ENDLOOP.
           LOOP AT o_generator-&gt;includes ASSIGNING &lt;i&gt;.
             CREATE OBJECT o_cnxcomp.
-            o_cnxcomp-&gt;set_type( &apos;PROG&apos; ).
-            _comp-name = &lt;i&gt;.
-            o_cnxcomp-&gt;set_name( _comp-name ).
+            o_cnxcomp-&gt;set_type( &apos;PROG&apos; ).    _comp-name = &lt;i&gt;.   o_cnxcomp-&gt;set_name( _comp-name ).
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
@@ -858,9 +867,7 @@ END-OF-DEFINITION.</MACROS>
           ENDLOOP.
           LOOP AT o_generator-&gt;messages ASSIGNING &lt;m&gt;.
             CREATE OBJECT o_cnxcomp.
-            o_cnxcomp-&gt;set_type( &apos;MSAG&apos; ).
-            _comp-name = &lt;m&gt;-name.
-            o_cnxcomp-&gt;set_name( _comp-name ).
+            o_cnxcomp-&gt;set_type( &apos;MSAG&apos; ).      _comp-name = &lt;m&gt;-name.      o_cnxcomp-&gt;set_name( _comp-name ).
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
@@ -872,42 +879,67 @@ END-OF-DEFINITION.</MACROS>
 
           IF NOT o_cont IS BOUND.
 * No previous file
-            _comp = o_comp-&gt;get_key( ).
+            _comp = o_cnx-&gt;get_key( ).
             s_cnxdata-name = _comp-name.
             o_cont = zaplink_container=&gt;create_new( o_file = o_file
                                                       data = s_cnxdata ).
           ENDIF.
           o_cont-&gt;add_components( o_cnxlist ).
-
-          o_cont-&gt;save_to_file( ).
-* Change detected for connector : &amp;1 (&amp;2) in file &amp;3
-          MESSAGE w002 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
-          WRITE:/ icon_green_light AS ICON, d_msg.
           o_contlist ?= o_cont-&gt;get_content( ).
+          CLEAR d_change.
+
+          IF NOT o_oriclist IS BOUND.
+            CREATE OBJECT o_oriclist.
+          ENDIF.
+* check for change
           o_contlist-&gt;init_iter( ).
-          o_cnxcomp = o_contlist-&gt;get_next( ).
-          WHILE o_cnxcomp IS BOUND.
-            _comp = o_cnxcomp-&gt;get_key( ).
-            IF o_cnxlist-&gt;search( o_cnxcomp ) IS BOUND.
-* Component (&amp;1) &amp;2 has changed and has been updated
-              MESSAGE w004 WITH _comp-type _comp-name INTO d_msg.
-              WRITE:/ space, space, icon_green_light AS ICON, d_msg.
-            ELSE.
-* Component (&amp;1) &amp;2 haven&apos;t change
-              MESSAGE w003 WITH _comp-type _comp-name INTO d_msg.
-              WRITE:/ space, space,icon_yellow_light AS ICON, d_msg.
-            ENDIF.
-            o_cnxcomp = o_contlist-&gt;get_next( ).
+          o_comp = o_contlist-&gt;get_next( ).
+          WHILE o_comp IS BOUND.
+            o_cnxcomp = o_oriclist-&gt;search( o_comp ).
+            IF NOT o_cnxcomp IS BOUND.    d_change = abap_true.   EXIT.   ENDIF.
+            IF o_comp-&gt;get_checksum( ) &lt;&gt; o_cnxcomp-&gt;get_checksum( ).    d_change = abap_true.   EXIT.   ENDIF.
+            o_comp = o_contlist-&gt;get_next( ).
           ENDWHILE.
-          WRITE:/ .
+
+          _comp = o_cnx-&gt;get_key( ).
+          IF d_change IS INITIAL.
+* No change detected for connector : &amp;1 (&amp;2) in file &amp;3
+            MESSAGE w015 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
+            WRITE:/ icon_light_out AS ICON, d_msg.
+          ELSE.
+* Change detected for connector : &amp;1 (&amp;2) in file &amp;3
+            MESSAGE w002 WITH _comp-name o_conn-&gt;uuid filename INTO d_msg.
+            WRITE:/ icon_green_light AS ICON, d_msg.
+            o_cont-&gt;save_to_file( ).
+            o_contlist-&gt;init_iter( ).
+            o_cnxcomp = o_contlist-&gt;get_next( ).
+            WHILE o_cnxcomp IS BOUND.
+              _comp = o_cnxcomp-&gt;get_key( ).    o_comp = o_oriclist-&gt;search( o_cnxcomp ).    CLEAR d_change.
+              IF NOT o_comp IS BOUND.
+                d_change = abap_true.
+              ELSE.
+                IF o_comp-&gt;get_checksum( ) &lt;&gt; o_cnxcomp-&gt;get_checksum( ).   d_change = abap_true.   ENDIF.
+              ENDIF.
+              IF d_change = abap_true.
+* Component (&amp;1) &amp;2 has changed and has been updated
+                MESSAGE w004 WITH _comp-type _comp-name INTO d_msg.
+                WRITE:/ space, space, icon_green_light AS ICON, d_msg.
+              ELSE.
+* Component (&amp;1) &amp;2 haven&apos;t changed
+                MESSAGE i003 WITH _comp-type _comp-name INTO d_msg.
+                WRITE:/ space, space, icon_light_out AS ICON, d_msg.
+              ENDIF.
+              o_cnxcomp = o_contlist-&gt;get_next( ).
+            ENDWHILE.
+            WRITE:/ .
+          ENDIF.
 
         CATCH zaplink_cx_component INTO _cx_comp.
           CREATE OBJECT _cx_cnx
             EXPORTING
               textid  = zaplink_cx_container=&gt;add_failed
               prev_cx = _cx_comp.
-          _cx_cnx-&gt;update( ).
-          o_comp-&gt;set_exception( _cx_cnx ).
+          _cx_cnx-&gt;update( ).   o_cnx-&gt;set_exception( _cx_cnx ).    _comp = o_cnx-&gt;get_key( ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
           RAISE EXCEPTION TYPE zaplink_cx_container
                      EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
@@ -916,7 +948,7 @@ END-OF-DEFINITION.</MACROS>
       ENDTRY.
 
       TRY.
-          o_comp = o_list-&gt;get_next( ).
+          o_cnx = o_list-&gt;get_next( ).
         CATCH zaplink_cx_list INTO _cx_list.
           EXIT.
       ENDTRY.
