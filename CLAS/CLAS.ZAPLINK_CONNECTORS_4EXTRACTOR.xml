@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="3A969F9273B01938AA8630BC6FA8B7CD" CODE_SIGNATURE="91CE0B4DF0F10C4D8B42F46DAA66C7C3" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CONNECTORS_4EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="922C0173077D1CABEF273683C818DBA4" CODE_SIGNATURE="B1A4D2B99F3FDF667AA63684F25CAEB2" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CONNECTORS_4EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="1" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_CONNECTOR">
@@ -35,13 +35,11 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
 *&quot;* implementation or private method&apos;s signature</TYPES>
    <IMPLEMENTATIONS>`
 *&quot;* local class implementation for public class
-*&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
 *&quot;* use this source file for the implementation part of
 *&quot;* local helper classes</IMPLEMENTATIONS>
    <MACROS>`
 *&quot;* use this source file for any macro definitions you need
 *&quot;* in the implementation part of the class</MACROS>
   </LOCAL>
-  DATA o_comp TYPE to_component.
  </RAW>
 </ZL_OBJECT>
