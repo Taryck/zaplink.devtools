@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="8F033EA0C04367C8318120842B97356D" CODE_SIGNATURE="C2BF1B24A9BB1CD057179A470A231F39" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="7A6DE1380EEF643E912787287F87BA90" CODE_SIGNATURE="66E42D7E0465D95EECD2756AD30F0948" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VARCL="X" SUBC="1" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -128,15 +128,27 @@ START-OF-SELECTION.
 
 END-OF-SELECTION.
 *&amp;---------------------------------------------------------------------*
+*&amp;      Form  Add_list
+*&amp;---------------------------------------------------------------------*
+FORM add_list USING o_lst TYPE zaplink_container_4inst=&gt;to_list.
+  DATA o_comp     TYPE zaplink_container_4inst=&gt;to_component.
+  DATA o_sublist  TYPE zaplink_container_4inst=&gt;to_list.
+
+  o_lst-&gt;init_sel_iter( ).   o_lst-&gt;display_progress = abap_false.
+  o_comp = o_lst-&gt;get_next( ).
+  WHILE o_comp IS BOUND.
+    s_comp = o_comp-&gt;get_key( ).    APPEND s_comp TO t_comps.
+    o_sublist = o_comp-&gt;get_subcomponents( ).
+    IF o_sublist IS BOUND.    PERFORM add_list USING o_sublist.   ENDIF.
+    o_comp = o_lst-&gt;get_next( ).
+  ENDWHILE.
+
+ENDFORM.                    &quot;Add_list
+*&amp;---------------------------------------------------------------------*
 *&amp;      Form  ACTIVATE
 *&amp;---------------------------------------------------------------------*
 FORM activate .
-  o_list-&gt;init_sel_iter( ).   o_list-&gt;display_progress = abap_false.
-  o_comp = o_list-&gt;get_next( ).
-  WHILE o_comp IS BOUND.
-    s_comp = o_comp-&gt;get_key( ).    APPEND s_comp TO t_comps.
-    o_comp = o_list-&gt;get_next( ).
-  ENDWHILE.
+  PERFORM add_list USING o_list.
   IF t_comps IS INITIAL. RETURN. ENDIF.
   d_count = LINES( t_comps ).   d_msg = d_count.  CONDENSE d_msg.
   CONCATENATE &apos;Would you like to activate the objects (&apos; d_msg &apos;) that have been installed ?&apos; INTO d_msg.
