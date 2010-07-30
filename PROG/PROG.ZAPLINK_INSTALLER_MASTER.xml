@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="7A6DE1380EEF643E912787287F87BA90" CODE_SIGNATURE="66E42D7E0465D95EECD2756AD30F0948" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="85B8A204528577D67391D63E9BE396F3" CODE_SIGNATURE="EBCECA5041309B08B0880ADE80751786" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VARCL="X" SUBC="1" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -10,7 +10,7 @@
 
 REPORT  zaplink_installer MESSAGE-ID zaplink_cx.
 
-INCLUDE zaplink_installer_classes.
+INCLUDE zaplink_installer_master_cl.
 
 SELECTION-SCREEN BEGIN OF LINE.
 SELECTION-SCREEN COMMENT 1(30) t_file FOR FIELD p_file.
@@ -36,10 +36,10 @@ DATA o_file     TYPE REF TO zaplink_file.
 DATA cx_file    TYPE REF TO zaplink_cx_file.
 
 INITIALIZATION.
-  t_file = &apos;Container&apos;&apos;s file&apos;.
-  t_dsp = &apos;Display container&apos;&apos;s containt&apos;.
-  t_inst = &apos;Install container&apos;.
-  t_uninst = &apos;Uninstall container&apos;.
+  t_file = &apos;Container&apos;&apos;s file&apos;.                 &quot;#EC NOTEXT
+  t_dsp = &apos;Display container&apos;&apos;s containt&apos;.      &quot;#EC NOTEXT
+  t_inst = &apos;Install container&apos;.                 &quot;#EC NOTEXT
+  t_uninst = &apos;Uninstall container&apos;.             &quot;#EC NOTEXT
   TRY.
       CREATE OBJECT o_file.
       o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
@@ -151,19 +151,19 @@ FORM activate .
   PERFORM add_list USING o_list.
   IF t_comps IS INITIAL. RETURN. ENDIF.
   d_count = LINES( t_comps ).   d_msg = d_count.  CONDENSE d_msg.
-  CONCATENATE &apos;Would you like to activate the objects (&apos; d_msg &apos;) that have been installed ?&apos; INTO d_msg.
+  CONCATENATE &apos;Would you like to activate the objects (&apos; d_msg &apos;) that have been installed ?&apos; INTO d_msg.     &quot;#EC NOTEXT
   CALL FUNCTION &apos;POPUP_TO_CONFIRM&apos;
     EXPORTING
-      titlebar              = &apos;Activate imported objects&apos;
+      titlebar              = &apos;Activate imported objects&apos;                                                     &quot;#EC NOTEXT
       text_question         = d_msg
-      text_button_1         = &apos;Yes&apos;
-      icon_button_1         = &apos;ICON_ACTIVATE&apos;
-      text_button_2         = &apos;No&apos;
-      icon_button_2         = &apos;ICON_SKIP&apos;
-      default_button        = &apos;1&apos;
+      text_button_1         = &apos;Yes&apos;                                                                           &quot;#EC NOTEXT
+      icon_button_1         = &apos;ICON_ACTIVATE&apos;                                                                 &quot;#EC NOTEXT
+      text_button_2         = &apos;No&apos;                                                                            &quot;#EC NOTEXT
+      icon_button_2         = &apos;ICON_SKIP&apos;                                                                     &quot;#EC NOTEXT
+      default_button        = &apos;1&apos;                                                                             &quot;#EC NOTEXT
       display_cancel_button = abap_false
-      iv_quickinfo_button_1 = &apos;All object will be activate as far as possible&apos;
-      iv_quickinfo_button_2 = &apos;No object activation at all&apos;
+      iv_quickinfo_button_1 = &apos;All object will be activate as far as possible&apos;                                &quot;#EC NOTEXT
+      iv_quickinfo_button_2 = &apos;No object activation at all&apos;                                                   &quot;#EC NOTEXT
     IMPORTING
       answer                = d_answer
     EXCEPTIONS
@@ -179,9 +179,9 @@ FORM activate .
         obj_list = t_comps.
     t_comps = o_activ-&gt;activate( ).
     IF t_comps IS INITIAL.
-      WRITE:/ &apos;All objects sucessfully activated : &apos;, d_count.
+      WRITE:/ &apos;All objects sucessfully activated : &apos;, d_count.                                                &quot;#EC NOTEXT
     ELSE.
-      WRITE:/ &apos;Here is the list of the component(s) that can&apos;&apos;t be activated :&apos;.
+      WRITE:/ &apos;Here is the list of the component(s) that can&apos;&apos;t be activated :&apos;.                              &quot;#EC NOTEXT
       LOOP AT t_comps ASSIGNING &lt;c&gt;.    WRITE:/ &lt;c&gt;-type, &lt;c&gt;-name.   ENDLOOP.
     ENDIF.
   ENDIF.

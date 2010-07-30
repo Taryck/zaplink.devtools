@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A77BBF84D176A1F38EE260531D86A176" CODE_SIGNATURE="79C4F9D39FE5DECD91EA62E3CA1CD6F0" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="27292346FB7CB77D34E52F5CF4E6A83A" CODE_SIGNATURE="307E90DF47A6A8494B5B325058686828" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -235,10 +235,10 @@ FORM add_connectors.
 
 *  SORT t_connectors BY classname.
 *  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING classname.
-  o_generator-&gt;add_object( &apos;ZAPLINK_CONNECTORS&apos; ).
-  _line = &apos;ZAPLINK_CONNECTORS=&gt;clear_connectors( ).&apos;. APPEND _line TO ac_loadlocal. &quot; remove ABAP class connector to add only local ones
-  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.
+  o_generator-&gt;add_object( &apos;ZAPLINK_CONNECTORS&apos; ).                                                                  &quot;#EC NOTEXT
+  _line = &apos;ZAPLINK_CONNECTORS=&gt;clear_connectors( ).&apos;. APPEND _line TO ac_loadlocal. &quot;#EC NOTEXT : remove ABAP class connector to add only local ones
+  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.     &quot;#EC NOTEXT
+  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.                                                                     &quot;#EC NOTEXT
   LOOP AT zaplink_connectors=&gt;supported_types ASSIGNING &lt;c&gt;.
     TRY.
         CREATE OBJECT _comp.
@@ -250,27 +250,20 @@ FORM add_connectors.
              WITH TABLE KEY table_line = _classname.
         IF sy-subrc &lt;&gt; 0.
           INSERT _classname INTO TABLE _classes.
-          CALL METHOD o_generator-&gt;add_object
-            EXPORTING
-              name         = _classname
-            EXCEPTIONS
-              failed       = 1
-              exists       = 2
-              not_existing = 3
-              OTHERS       = 4.
+          o_generator-&gt;add_object( _classname ).
           CLEAR _line.
-          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.
+          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.                  &quot;#EC NOTEXT
           APPEND _line TO ac_loadlocal.
         ENDIF.
       CATCH zaplink_cx INTO _cx.
         _cx-&gt;write( ).
     ENDTRY.
   ENDLOOP.
-  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.
-  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.
+  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.         &quot;#EC NOTEXT
+  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal.                               &quot;#EC NOTEXT
+  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.                                                           &quot;#EC NOTEXT
+  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.                         &quot;#EC NOTEXT
+  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.                                                                &quot;#EC NOTEXT
 
 ENDFORM.                    &quot; BUILD_CLASS_POOL
 *&amp;---------------------------------------------------------------------*

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="83691C33A878179141E0F3600AD4F8E5" CODE_SIGNATURE="6CC020127EE2A948DA6BBD459E75345A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="214063B2FFEBF9D8F600790A01952586" CODE_SIGNATURE="277DA75E14D6BAAD9E99DF51BFE034CB" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -87,13 +87,15 @@ AT SELECTION-SCREEN ON p_devc.
     MESSAGE &apos;Specify program&apos;&apos;s devlopement class&apos;(pdc) TYPE &apos;E&apos;.
   ENDIF.
 
-AT SELECTION-SCREEN ON p_incl.
-  PERFORM check_prog_notexists USING p_incl.
+*AT SELECTION-SCREEN ON p_incl.
+*  PERFORM check_prog_notexists USING p_incl.
+
+AT SELECTION-SCREEN.
+  PERFORM check_prog_include USING p_master  p_incl
+                          CHANGING m_index   m_code.
 
 AT SELECTION-SCREEN ON p_master.
   PERFORM check_prog_exists USING p_master.
-  PERFORM check_prog_include USING p_master  p_incl
-                          CHANGING m_index   m_code.
 
 AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fn.
   TRY.
@@ -344,14 +346,7 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
              WITH TABLE KEY table_line = _classname.
         IF sy-subrc &lt;&gt; 0.
           INSERT _classname INTO TABLE _classes.
-          CALL METHOD o_generator-&gt;add_object
-            EXPORTING
-              name         = _classname
-            EXCEPTIONS
-              failed       = 1
-              exists       = 2
-              not_existing = 3
-              OTHERS       = 4.
+          o_generator-&gt;add_object( _classname ).
           CLEAR _line.
           CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.            &quot;#EC NOTEXT
           APPEND _line TO ac_loadlocal.
@@ -510,5 +505,28 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
     </TEXTS>
    </ITEM>
   </TEXTSPOOL>
+  <VARIANTS>
+   <ITEM>
+    <ZL_OBJECT CHECKSUM="B427A91A055F1ABD78D9B83D9224DE9F" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE                CUS&amp;INSTALLER" TYPE="VARI" VERSION="1.0">
+     <RAW>
+      <A0_MAINDATA TRANSPORT="F" ENVIRONMNT="A" PROTECTED="S" VERSION="1 " MLANGU="E"/>
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Installer V0.006"/>
+      </TEXTS>
+      <VALUES>
+       <ITEM NAME="P_DEVC" VALUE="$TMP"/>
+       <ITEM NAME="P_FN" APPENDAGE="O" VALUE="C:\Documents and Settings\tbensial\Bureau\ZAPLink Framework.V0.006.xml"/>
+       <ITEM NAME="P_IFN" VALUE="C:\Documents and Settings\tbensial\Bureau\ZAPLink Installer.ABAP Program.V0.006.txt"/>
+       <ITEM NAME="P_INCL" APPENDAGE="O" VALUE="ZAPLINK_INSTALLER_MASTER_CL"/>
+       <ITEM NAME="P_MASTER" APPENDAGE="O" VALUE="ZAPLINK_INSTALLER_MASTER"/>
+       <ITEM NAME="P_OVERW" APPENDAGE="C" VALUE="X"/>
+       <ITEM NAME="P_PROG" VALUE="ZAPLINK_INSTALLER"/>
+       <ITEM NAME="P_TRKORR" VALUE="OD4K900163"/>
+       <ITEM NAME="S_PACK"/>
+      </VALUES>
+     </RAW>
+    </ZL_OBJECT>
+   </ITEM>
+  </VARIANTS>
  </RAW>
 </ZL_OBJECT>

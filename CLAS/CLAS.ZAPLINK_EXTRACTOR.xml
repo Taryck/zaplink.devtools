@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="B340074FE3F16A9B4341F9447EF559FD" CODE_SIGNATURE="C2F41B785FD41FF4392C523A85818490" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="F34983234A5C2BFA397B2A406A7A2E15" CODE_SIGNATURE="52E0339949D9B51ADEC591F3A9F967E4" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_FILE"/>
  </DEPENDENCIES>
@@ -290,7 +290,7 @@ DEFINE lmac_create_data.
 END-OF-DEFINITION.</MACROS>
   </LOCAL>
   <METHODS>
-   <ITEM CMPNAME="ANALYSE" EXPOSURE="2" STATE="1" EDITORDER="5 ">
+   <ITEM CMPNAME="ANALYSE" EXPOSURE="2" STATE="1" EDITORDER="5 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Analyse components"/>
     </TEXTS>
@@ -316,6 +316,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA filename    TYPE td_filename.
   DATA t_keys      TYPE tt_compkeys.
@@ -390,8 +397,8 @@ END-OF-DEFINITION.</MACROS>
           CATCH zaplink_cx_component INTO _cx_comp.
             CREATE OBJECT _cx_cnx
               EXPORTING
-                textid  = zaplink_cx_container=&gt;add_failed
-                prev_cx = _cx_comp.
+                textid   = zaplink_cx_container=&gt;add_failed
+                previous = _cx_comp.
             _cx_cnx-&gt;update( ).
             o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
@@ -405,8 +412,8 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
         EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
+          textid   = zaplink_cx_component=&gt;invalid_exception
+          previous = _cx_list.
       o_mycx-&gt;update( ).
       RAISE EXCEPTION o_mycx.
   ENDTRY.
@@ -433,7 +440,7 @@ END-OF-DEFINITION.</MACROS>
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONCATENATE_PATH" EXPOSURE="1" STATE="1" EDITORDER="5 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CONCATENATE_PATH" EXPOSURE="1" STATE="1" EDITORDER="5 " MTDDECLTYP="1" MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate file path from directory and filename"/>
     </TEXTS>
@@ -457,7 +464,7 @@ END-OF-DEFINITION.</MACROS>
     CONCATENATE directory filename INTO result.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDTYPE="2">
+   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDTYPE="2" MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
     </TEXTS>
@@ -479,7 +486,7 @@ END-OF-DEFINITION.</MACROS>
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FILENAME" EXPOSURE="1" STATE="1" EDITORDER="2 " MTDDECLTYP="1">
+   <ITEM CMPNAME="CREATE_FILENAME" EXPOSURE="1" STATE="1" EDITORDER="2 " MTDDECLTYP="1" MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate XML filename"/>
     </TEXTS>
@@ -491,7 +498,7 @@ END-OF-DEFINITION.</MACROS>
     <SOURCE>`
   CONCATENATE type ext_sep name ext_sep file_ext INTO result.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FULLPATH" EXPOSURE="1" STATE="1" EDITORDER="7 ">
+   <ITEM CMPNAME="CREATE_FULLPATH" EXPOSURE="1" STATE="1" EDITORDER="7 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate XML full file path based on tree type"/>
     </TEXTS>
@@ -509,6 +516,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="4 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   CASE hierarchy.
     WHEN dirhierachies-type.
@@ -519,7 +533,7 @@ END-OF-DEFINITION.</MACROS>
                                         comp      = comp ).
   ENDCASE.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FULLPATH_BY_DEVC" EXPOSURE="1" STATE="1" EDITORDER="3 ">
+   <ITEM CMPNAME="CREATE_FULLPATH_BY_DEVC" EXPOSURE="1" STATE="1" EDITORDER="3 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate XML full file path based on devlopment classes"/>
     </TEXTS>
@@ -532,6 +546,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA filename    TYPE td_filename.
   DATA _comp       TYPE ts_component.
@@ -574,7 +595,7 @@ END-OF-DEFINITION.</MACROS>
   result = concatenate_path( directory = _directory
                               filename = filename ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CREATE_FULLPATH_BY_TYPE" EXPOSURE="1" STATE="1" EDITORDER="4 ">
+   <ITEM CMPNAME="CREATE_FULLPATH_BY_TYPE" EXPOSURE="1" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate XML full file path based on component type"/>
     </TEXTS>
@@ -587,6 +608,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA _comp       TYPE ts_component.
   DATA filename    TYPE td_filename.
@@ -625,7 +653,7 @@ END-OF-DEFINITION.</MACROS>
   result = concatenate_path( directory = _directory
                               filename = filename ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="EXTRACT" EXPOSURE="2" STATE="1" EDITORDER="4 ">
+   <ITEM CMPNAME="EXTRACT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Extrac all package components by types"/>
     </TEXTS>
@@ -651,6 +679,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA directory   TYPE string.
   DATA filename    TYPE td_filename.
@@ -712,8 +747,8 @@ END-OF-DEFINITION.</MACROS>
           CATCH zaplink_cx_component INTO _cx_comp.
             CREATE OBJECT _cx_cnx
               EXPORTING
-                textid  = zaplink_cx_container=&gt;add_failed
-                prev_cx = _cx_comp.
+                textid   = zaplink_cx_container=&gt;add_failed
+                previous = _cx_comp.
             _cx_cnx-&gt;update( ).
             o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
@@ -727,8 +762,8 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
         EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
+          textid   = zaplink_cx_component=&gt;invalid_exception
+          previous = _cx_list.
       o_mycx-&gt;update( ).
       RAISE EXCEPTION o_mycx.
   ENDTRY.</SOURCE>
@@ -750,7 +785,7 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
     </PARAMETERS>
     <EXCEPTIONS>
-     <ITEM SCONAME="ZAPLINK_CX_CONNECTOR" LANGU="E" EDITORDER="1 ">
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
       <TEXTS>
        <ITEM LANG="E" TEXT="ZAPlink ROOT Exception for Connectors"/>
       </TEXTS>
@@ -802,8 +837,8 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
         CREATE OBJECT o_mycx
           EXPORTING
-            textid  = zaplink_cx_component=&gt;invalid_exception
-            prev_cx = _cx_list.
+            textid   = zaplink_cx_component=&gt;invalid_exception
+            previous = _cx_list.
         o_mycx-&gt;update( ).
         RAISE EXCEPTION o_mycx.
     ENDTRY.
@@ -937,8 +972,8 @@ END-OF-DEFINITION.</MACROS>
         CATCH zaplink_cx_component INTO _cx_comp.
           CREATE OBJECT _cx_cnx
             EXPORTING
-              textid  = zaplink_cx_container=&gt;add_failed
-              prev_cx = _cx_comp.
+              textid   = zaplink_cx_container=&gt;add_failed
+              previous = _cx_comp.
           _cx_cnx-&gt;update( ).   o_cnx-&gt;set_exception( _cx_cnx ).    _comp = o_cnx-&gt;get_key( ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
           RAISE EXCEPTION TYPE zaplink_cx_container
@@ -957,7 +992,7 @@ END-OF-DEFINITION.</MACROS>
     mac_def_catch zaplink_cx_connector.
   ENDTRY.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="GET_DEVC_PATH" STATE="1" EDITORDER="1 " MTDDECLTYP="1">
+   <ITEM CMPNAME="GET_DEVC_PATH" STATE="1" EDITORDER="1 " MTDDECLTYP="1" MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Build path from Devlopment class"/>
     </TEXTS>
@@ -1040,7 +1075,7 @@ END-OF-DEFINITION.</MACROS>
   ENDIF.
   result = s_devc-path.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="LOAD_FILE" EXPOSURE="1" STATE="1" EDITORDER="6 ">
+   <ITEM CMPNAME="LOAD_FILE" EXPOSURE="1" STATE="1" EDITORDER="6 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Save raw data to file (in XML)"/>
     </TEXTS>
@@ -1052,6 +1087,13 @@ END-OF-DEFINITION.</MACROS>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
 *  DATA o_xml           TYPE to_xml.
   DATA _tempstring     TYPE string.
@@ -1082,7 +1124,7 @@ END-OF-DEFINITION.</MACROS>
   ENDTRY.
   result-checksum = result-o_raw_base-&gt;get_checksum( ).</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SAVE_FILE" EXPOSURE="1" STATE="1" EDITORDER="1 ">
+   <ITEM CMPNAME="SAVE_FILE" EXPOSURE="1" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Save raw data to file (in XML)"/>
     </TEXTS>
@@ -1094,6 +1136,13 @@ END-OF-DEFINITION.</MACROS>
       </TEXTS>
      </ITEM>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA _tempstring     TYPE string.
 *  DATA o_file          TYPE to_file.

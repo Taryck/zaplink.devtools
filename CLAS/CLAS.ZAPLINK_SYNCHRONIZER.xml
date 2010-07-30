@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="A4A5F6B4C4BE446AB350EA4ABAA246D0" CODE_SIGNATURE="C8989BB19AA5D8130808C4947F813F5E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="2144445CD8CE5309C5312C7B1DCAAB76" CODE_SIGNATURE="6C3B90FB98DF95D76B39DD0D768905E2" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_DIRECTORY"/>
@@ -156,10 +156,17 @@ DEFINE lmac_create_data.
 END-OF-DEFINITION.</MACROS>
   </LOCAL>
   <METHODS>
-   <ITEM CMPNAME="DISPLAY" EXPOSURE="2" STATE="1" EDITORDER="2 ">
+   <ITEM CMPNAME="DISPLAY" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Display analyse"/>
     </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA t_filelist  TYPE zaplink_file=&gt;tt_file_list.
   DATA filename    TYPE td_filename.
@@ -241,8 +248,8 @@ END-OF-DEFINITION.</MACROS>
           CATCH zaplink_cx_component INTO _cx_comp.
             CREATE OBJECT _cx_cnx
               EXPORTING
-                textid  = zaplink_cx_container=&gt;add_failed
-                prev_cx = _cx_comp.
+                textid   = zaplink_cx_container=&gt;add_failed
+                previous = _cx_comp.
             _cx_cnx-&gt;update( ).
             o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
@@ -256,13 +263,13 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
         EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
+          textid   = zaplink_cx_component=&gt;invalid_exception
+          previous = _cx_list.
       o_mycx-&gt;update( ).
       RAISE EXCEPTION o_mycx.
   ENDTRY.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="SYNCHRONIZE" EXPOSURE="2" STATE="1" EDITORDER="1 ">
+   <ITEM CMPNAME="SYNCHRONIZE" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Synchronize all components"/>
     </TEXTS>
@@ -285,6 +292,13 @@ END-OF-DEFINITION.</MACROS>
      </ITEM>
      <ITEM SCONAME="TYPE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TR_COMPTYPE"/>
     </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
     <SOURCE>`
   DATA t_filelist  TYPE zaplink_file=&gt;tt_file_list.
   DATA filename    TYPE td_filename.
@@ -412,8 +426,8 @@ END-OF-DEFINITION.</MACROS>
           CATCH zaplink_cx_component INTO _cx_comp.
             CREATE OBJECT _cx_cnx
               EXPORTING
-                textid  = zaplink_cx_container=&gt;add_failed
-                prev_cx = _cx_comp.
+                textid   = zaplink_cx_container=&gt;add_failed
+                previous = _cx_comp.
             _cx_cnx-&gt;update( ).
             o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
@@ -427,8 +441,8 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
         EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
+          textid   = zaplink_cx_component=&gt;invalid_exception
+          previous = _cx_list.
       o_mycx-&gt;update( ).
       RAISE EXCEPTION o_mycx.
   ENDTRY.</SOURCE>
@@ -515,8 +529,8 @@ END-OF-DEFINITION.</MACROS>
           CATCH zaplink_cx_component INTO _cx_comp.
             CREATE OBJECT _cx_cnx
               EXPORTING
-                textid  = zaplink_cx_container=&gt;add_failed
-                prev_cx = _cx_comp.
+                textid   = zaplink_cx_container=&gt;add_failed
+                previous = _cx_comp.
             _cx_cnx-&gt;update( ).
             o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
@@ -531,8 +545,8 @@ END-OF-DEFINITION.</MACROS>
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
         EXPORTING
-          textid  = zaplink_cx_component=&gt;invalid_exception
-          prev_cx = _cx_list.
+          textid   = zaplink_cx_component=&gt;invalid_exception
+          previous = _cx_list.
       o_mycx-&gt;update( ).
       RAISE EXCEPTION o_mycx.
   ENDTRY.
@@ -631,6 +645,11 @@ END-OF-DEFINITION.</MACROS>
    <ITEM ID="I" KEY="FIL">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Fil" LENGTH="3 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="NIR">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Not in range" LENGTH="12 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="I" KEY="SAP">
