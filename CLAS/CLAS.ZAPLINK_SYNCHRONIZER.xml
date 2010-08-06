@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="2144445CD8CE5309C5312C7B1DCAAB76" CODE_SIGNATURE="6C3B90FB98DF95D76B39DD0D768905E2" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="1B5DD61631DEA48953A83D6881B96E26" CODE_SIGNATURE="12E3BED0B117D292E6142E19052B7BD7" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_DIRECTORY"/>
  </DEPENDENCIES>
  <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
-  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_EXTRACTOR">
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
    <INHERITANCE REFCLSNAME="ZAPLINK_EXTRACTOR" STATE="1"/>
    <TEXTS>
     <ITEM LANG="E" TEXT="ZAPLink : Synchronize tools">U1&amp;FUNCTIONALITY&amp;
@@ -391,6 +391,10 @@ END-OF-DEFINITION.</MACROS>
                 zaplink_directory=&gt;set_directory( key = s_key
                                                  data = s_data-change ).
               WHEN actions-uninstall.
+                IF o_conn-&gt;DO_EXISTS( o_comp ) = abap_false.
+                  filename = o_data-&gt;o_file-&gt;get_filename( ).
+                  o_data-&gt;o_file-&gt;delete( ).
+                else.
                 TRY.
                     o_conn-&gt;delete_from_sap( o_comp ).
 * (&amp;1) &amp;2 : Change detected - Component deleted
@@ -402,6 +406,7 @@ END-OF-DEFINITION.</MACROS>
                     MESSAGE s009 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
                     WRITE:/ zaplink_list_4extractor=&gt;lights-uninst AS ICON, zaplink_list_4extractor=&gt;lights-red AS ICON, d_msg.
                 ENDTRY.
+                endif.
               WHEN actions-unreplicable.
 * (&amp;1) &amp;2 : Replication Error - 3 differents checksums with file &amp;3
                 MESSAGE s010 WITH o_data-&gt;type o_data-&gt;name o_data-&gt;filename INTO d_msg.
@@ -608,7 +613,8 @@ END-OF-DEFINITION.</MACROS>
     ENDIF.
     IF s_data-checksum = s_my_file-checksum.        &quot; File and last loaded are the same
       IF NOT o_srch_c IS BOUND.                         &quot; however component do not exists within SAP : deletion handled manualy
-        o_comp-&gt;set_action( actions-unreplicable ).
+*        o_comp-&gt;set_action( actions-unreplicable ).
+        o_comp-&gt;set_action( actions-uninstall ).
       ELSEIF s_data-checksum = o_srch_c-&gt;get_checksum( ).    &quot; No change at all
         o_comp-&gt;set_action( actions-none ).
       ELSE.                                             &quot; Default action is allready export
