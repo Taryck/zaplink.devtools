@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="18F2AB674FEB6BCBCFCBFBC2A8CC3162" CODE_SIGNATURE="C6606A5A7FA97F9D6905B31E6CFFAA4F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
- <DIRECTORY DEVCLASS="ZAPLINK-FRAMEWORK-DEVTOOLS" MASTERLANG="E"/>
+<ZL_OBJECT CHECKSUM="5DA3C8B63E5C6E815613D3C8EB679BA4" CODE_SIGNATURE="162768D3ABC642E9C21A12E79D505C42" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
    <INHERITANCE REFCLSNAME="ZAPLINK_DEPENDENCIES_ANALYSER" STATE="1"/>
@@ -30,6 +30,15 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   application</ITEM>
    </TEXTS>
   </A0_MAINDATA>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="ABAP_SOURCECODE" EXPOSURE="1" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE"/>
+   <ITEM CMPNAME="CONNECTORS_SOURCECODE" EXPOSURE="1" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE"/>
+   <ITEM CMPNAME="MASTER_PROGRAM" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTRDONLY="X" TYPTYPE="1" TYPE="TD_PROGNAME">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Master Program Name"/>
+    </TEXTS>
+   </ITEM>
+  </ATTRIBUTS>
   <LOCAL>
    <TYPES>`
 *&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
@@ -61,12 +70,85 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   END-OF-DEFINITION.</MACROS>
   </LOCAL>
   <METHODS>
-   <ITEM CMPNAME="GENERATE" EXPOSURE="2" STATE="1" EDITORDER="1 ">
+   <ITEM CMPNAME="ADD_CONNECTORS" EXPOSURE="2" STATE="1" EDITORDER="3 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Add Connectors to Source Code"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA _line LIKE LINE OF connectors_sourcecode.
+  DATA _comp TYPE REF TO zaplink_component.
+  DATA _classname TYPE zaplink_component=&gt;td_connclass.
+  DATA o_conn TYPE REF TO zaplink_connector.
+  DATA _classes TYPE SORTED TABLE OF zaplink_component=&gt;td_connclass WITH UNIQUE KEY table_line.
+  FIELD-SYMBOLS:
+    &lt;c&gt; LIKE LINE OF zaplink_connectors=&gt;supported_types.
+
+  REFRESH connectors_sourcecode.
+*  SORT t_connectors BY classname.
+*  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING classname.
+  add_object( &apos;ZAPLINK_CONNECTORS&apos; ).                       &quot;#EC NOTEXT
+  _line = &apos;ZAPLINK_CONNECTORS=&gt;clear_connectors( ).&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT : remove ABAP class connector to add only local ones
+  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT
+  _line = &apos;TRY.&apos;. APPEND _line TO connectors_sourcecode.    &quot;#EC NOTEXT
+  LOOP AT zaplink_connectors=&gt;supported_types ASSIGNING &lt;c&gt;.
+    CREATE OBJECT _comp.
+    _comp-&gt;set_type( &lt;c&gt;-type ).
+    o_conn = _comp-&gt;connector( ).
+    _classname = zaplink_connectors=&gt;get_classname( o_conn ).
+    CHECK NOT _classname IS INITIAL.
+    READ TABLE _classes TRANSPORTING NO FIELDS
+         WITH TABLE KEY table_line = _classname.
+    IF sy-subrc &lt;&gt; 0.
+      INSERT _classname INTO TABLE _classes.
+      add_object( _classname ).
+      CLEAR _line.
+      CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line. &quot;#EC NOTEXT
+      APPEND _line TO connectors_sourcecode.
+    ENDIF.
+  ENDLOOP.
+  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT
+  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT
+  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT
+  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT
+  _line = &apos;ENDTRY.&apos;. APPEND _line TO connectors_sourcecode. &quot;#EC NOTEXT</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDTYPE="2" MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="MASTER" CMPTYPE="1" MTDTYPE="2" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PROGNAME" PAROPTIONL="X"/>
+    </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" MTDTYPE="2" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA sourcecode  TYPE tt_abaprawsource.
+  super-&gt;constructor( ).
+
+  master_program = master.
+  IF NOT master_program IS INITIAL.
+    sourcecode = zaplink_program_4sag=&gt;get_prog_rawsource( master_program ).
+    add_source( code = sourcecode   origin = master_program ).
+  ENDIF.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GENERATE" EXPOSURE="2" STATE="1" EDITORDER="2 ">
     <TEXTS>
      <ITEM LANG="E" TEXT="Generate ABAP Source Code"/>
     </TEXTS>
     <PARAMETERS>
-     <ITEM SCONAME="CODE" CMPTYPE="1" EDITORDER="1 " PARDECLTYP="3" TYPTYPE="1" TYPE="TD_SOURCECODE">
+     <ITEM SCONAME="CODE" CMPTYPE="1" EDITORDER="1 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
       <TEXTS>
        <ITEM LANG="E" TEXT="ABAP Source Code"/>
       </TEXTS>
@@ -75,7 +157,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     <SOURCE>`
   DATA _tmp_code TYPE ts_source.
   DATA _line     LIKE LINE OF _tmp_code-def.
-  DATA _tmp      TYPE td_sourcecode.
+  DATA _tmp      TYPE tt_abaprawsource.
   DATA _pos      TYPE sy-tabix.
   DATA _order    TYPE tt_order.
   DATA d_report  TYPE programm.
@@ -169,11 +251,115 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     APPEND LINES OF _tmp TO code.
   ENDLOOP.
 
-* reste of the object then
+* remaining of the object then
   APPEND LINES OF _tmp_code-macro TO code.
   APPEND LINES OF _tmp_code-impl TO code.
+
+  IF NOT connectors_sourcecode IS INITIAL.    APPEND LINES OF connectors_sourcecode TO code.    ENDIF.
+
 *  code = clean_code( code ).
-  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = code ).</SOURCE>
+  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = code ).
+  abap_sourcecode = code.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="SAVE_REPORT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Save generated code to report"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="CODE" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE" PAROPTIONL="X"/>
+     <ITEM SCONAME="PACKAGE" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_DEVCLASS" PARVALUE="&apos;$TMP&apos;" PAROPTIONL="X"/>
+     <ITEM SCONAME="REPORT" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PROGNAME"/>
+    </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA t_source TYPE tt_abaprawsource.
+  DATA _prog       TYPE progdir.
+  DATA _oname      TYPE e071-obj_name.
+
+  IF code IS INITIAL.
+    t_source = abap_sourcecode.
+  ELSE.
+    t_source = code.
+    zaplink_tools=&gt;remove_comment_on_source( CHANGING table = t_source ).
+  ENDIF.
+
+  CALL FUNCTION &apos;RS_CORR_INSERT&apos;
+    EXPORTING
+      object                         = report
+      object_class                   = &apos;ABAP&apos;
+      mode                           = &apos;I&apos;    &quot; Insert
+*         GLOBAL_LOCK                    = &apos; &apos;
+      devclass                       = package
+*         KORRNUM                        = &apos; &apos;
+*         USE_KORRNUM_IMMEDIATEDLY       = &apos; &apos;
+*         AUTHOR                         = &apos; &apos;
+*         MASTER_LANGUAGE                = &apos; &apos;
+*         GENFLAG                        = &apos; &apos;
+*         PROGRAM                        = &apos; &apos;
+*         OBJECT_CLASS_SUPPORTS_MA       = &apos; &apos;
+*         EXTEND                         = &apos; &apos;
+*         SUPPRESS_DIALOG                = &apos; &apos;
+*         MOD_LANGU                      = &apos; &apos;
+*         ACTIVATION_CALL                = &apos; &apos;
+*       IMPORTING
+*         DEVCLASS                       =
+*         KORRNUM                        =
+*         ORDERNUM                       =
+*         NEW_CORR_ENTRY                 =
+*         AUTHOR                         =
+*         TRANSPORT_KEY                  =
+*         NEW_EXTEND                     =
+    EXCEPTIONS
+      cancelled                      = 1
+      permission_failure             = 2
+      unknown_objectclass            = 3
+      OTHERS                         = 4.
+  IF sy-subrc &lt;&gt; 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  _oname = _prog.
+  CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
+    EXPORTING
+      object                  = &apos;REPS&apos;
+      obj_name                = _oname
+*         DELETED_FLAG            = &apos; &apos;
+*       IMPORTING
+*         OBJECT_INSERTED         =
+    EXCEPTIONS
+      wrong_object_name       = 1
+      OTHERS                  = 2.
+  IF sy-subrc &lt;&gt; 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  _prog-name = report.
+  _prog-state = &apos;I&apos;.
+  _prog-edtx = &apos;X&apos;.
+  _prog-varcl = &apos;X&apos;.
+*  _prog-fixpt = &apos;X&apos;.
+  _prog-rstat = &apos;T&apos;.
+  _prog-vern = 1.
+  _prog-subc = &apos;1&apos;.    &quot;Executable program
+  _prog-unam = _prog-cnam = sy-uname.
+  _prog-sdate = _prog-idate = _prog-udat = _prog-cdat = sy-datum.
+  _prog-stime = _prog-itime = sy-uzeit.
+  _prog-rmand = sy-mandt.
+  _prog-rload = sy-langu.
+  MODIFY progdir FROM _prog.
+  _prog-state = &apos;A&apos;.
+  MODIFY progdir FROM _prog.
+  zaplink_program_4sag=&gt;set_prog_rawsource( program = report
+                                                raw = t_source ).
+  set_textpool( report ).</SOURCE>
    </ITEM>
   </METHODS>
   <TYPEGROUPS>

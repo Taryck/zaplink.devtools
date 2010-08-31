@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="287099819E87C03B047041B255F09CF3" CODE_SIGNATURE="DCE56A87808C451750F5476F7CD9295A" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" CATEGORY="40" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" VARCL="X" UNICODE="X" RSTAT="S">
+   <INHERITANCE REFCLSNAME="ZAPLINK_CX" STATE="1"/>
+   <TEXTS>
+    <ITEM LANG="E" TEXT="ZAPlink Exception for GUI">U1&amp;FUNCTIONALITY&amp;
+ASZAPLINK_GUI&apos;s exception class. Exception class dedicated to error
+  handling of exception in ZAPLINK_GUI. Have a look to each Exception text
+  for more details.
+AS
+U1&amp;RELATIONS&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS
+U1&amp;HINTS&amp;
+AS
+U1&amp;FURTHER_SOURCES_OF_INF&amp;
+AS
+U1Memories
+ASThis application is dedicated to the memories of :
+B2My father : Lamri BENSIALI (1940-2004) without whom I never started
+  programming
+B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
+  application</ITEM>
+   </TEXTS>
+  </A0_MAINDATA>
+  <ALIASES>
+   <ITEM CMPNAME="TD_COMPTYPE" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_COMPTYPE"/>
+  </ALIASES>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="INCLUDE_NAME" EXPOSURE="2" STATE="1" EDITORDER="7 " TYPTYPE="1" TYPE="PROGRAMM">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ABAP Program Name"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="INSTALLER_NAME" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="1" TYPE="PROGRAMM">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ABAP Program Name"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="MASTER_NAME" EXPOSURE="2" STATE="1" EDITORDER="6 " TYPTYPE="1" TYPE="PROGRAMM">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ABAP Program Name"/>
+    </TEXTS>
+   </ITEM>
+  </ATTRIBUTS>
+  <EXCEPTIONS_TEXTS>
+   <ITEM EDITORDER="1 ">
+    <TEXTS>
+     <ITEM LANGU="E" SHORT_TXT="SAP Link Exception !!!"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="NOT_EXISTS" EDITORDER="2 ">
+    <TEXTS>
+     <ITEM LANGU="E" SHORT_TXT="Master (&amp;MASTER_NAME&amp;) do not exists"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="NO_INCLUDE" EDITORDER="4 ">
+    <TEXTS>
+     <ITEM LANGU="E" SHORT_TXT="Include (&amp;INCLUDE_NAME&amp;) not found in Master (&amp;MASTER_NAME&amp;)"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="NO_OVERWRITE" EDITORDER="3 ">
+    <TEXTS>
+     <ITEM LANGU="E" SHORT_TXT="Installer (&amp;INSTALLER_NAME&amp;) already exists"/>
+    </TEXTS>
+   </ITEM>
+  </EXCEPTIONS_TEXTS>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* USE THIS SOURCE FILE FOR ANY TYPE DECLARATIONS (CLASS
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* IMPLEMENTATION OR PRIVATE METHOD&apos;S SIGNATURE</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* LOCAL CLASS IMPLEMENTATION FOR PUBLIC CLASS
+*&quot;* use this source file for the implementation part of
+*&quot;* LOCAL HELPER CLASSES</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* USE THIS SOURCE FILE FOR ANY MACRO DEFINITIONS YOU NEED
+*&quot;* IN THE IMPLEMENTATION PART OF THE CLASS</MACROS>
+  </LOCAL>
+ </RAW>
+</ZL_OBJECT>

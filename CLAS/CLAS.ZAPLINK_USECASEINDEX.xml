@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="0AC66318099760E52791B4469EE0ACCA" CODE_SIGNATURE="002D3AA22184A2011D34519EADD9E84F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_USECASEINDEX" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
+   <TEXTS>
+    <ITEM LANG="E" TEXT="ZAPLink Devtools : Update UseCase Indexes"/>
+   </TEXTS>
+  </A0_MAINDATA>
+  <ALIASES>
+   <ITEM CMPNAME="TT_COMPKEYS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_COMPKEYS"/>
+   <ITEM CMPNAME="TT_GENSETC" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_GENSETC"/>
+  </ALIASES>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="T_PROGS" EXPOSURE="1" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="PROGRAMT">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Table of Program Names"/>
+    </TEXTS>
+   </ITEM>
+  </ATTRIBUTS>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</MACROS>
+  </LOCAL>
+  <METHODS>
+   <ITEM CMPNAME="ADD_ENTRIES" EXPOSURE="1" STATE="1" EDITORDER="1 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Add components (internal format)"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="ENTRIES" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_GENSETC"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA it_gensetc     TYPE tt_gensetc.
+  FIELD-SYMBOLS: &lt;obj&gt; LIKE LINE OF it_gensetc.
+
+  it_gensetc = zaplink_tools=&gt;check_valid_proglist( entries ).
+  LOOP AT it_gensetc ASSIGNING &lt;obj&gt;.     APPEND &lt;obj&gt;-name TO t_progs.       ENDLOOP.
+  SORT t_progs.   DELETE ADJACENT DUPLICATES FROM t_progs.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="ADD_KEYS" EXPOSURE="2" STATE="1" EDITORDER="4 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Add component as keys list"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="KEYS" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_COMPKEYS"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA t_entries    TYPE tt_gensetc.
+
+  t_entries = zaplink_tools=&gt;conv_compkey_2_proglist( keys ).
+  add_entries( t_entries ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="ADD_LIST" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Add component as List"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="O_LIST" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TO_LIST">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZapLink Components list"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA t_keys TYPE tt_compkeys.
+  CHECK o_list IS BOUND.
+  t_keys = o_list-&gt;get_keys( ).
+  CHECK NOT t_keys IS INITIAL.
+  add_keys( t_keys ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="RESET" EXPOSURE="2" STATE="1" EDITORDER="3 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Reset program list"/>
+    </TEXTS>
+    <SOURCE>`
+  REFRESH t_progs.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="UPDATE_INDEX" EXPOSURE="2" STATE="1" EDITORDER="1 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Update index"/>
+    </TEXTS>
+    <SOURCE>`
+  cl_wb_crossreference=&gt;activate_index( t_progs ).</SOURCE>
+   </ITEM>
+  </METHODS>
+  <TYPES>
+   <ITEM CMPNAME="TO_LIST" EXPOSURE="2" STATE="1" TYPTYPE="3" TYPE="ZAPLINK_LIST">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ZapLink Components list"/>
+    </TEXTS>
+   </ITEM>
+  </TYPES>
+ </RAW>
+</ZL_OBJECT>

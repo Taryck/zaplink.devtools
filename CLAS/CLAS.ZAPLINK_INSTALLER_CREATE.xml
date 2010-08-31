@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="7AFC02FC1FB95E56F83B81B0C3568E30" CODE_SIGNATURE="5767082324B46C4066341D7ACE507F8E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
+ <DEPENDENCIES>
+  <ITEM TYPE="CLAS" NAME="ZAPLINK_STANDALONE_GENERATOR"/>
+ </DEPENDENCIES>
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
+   <TEXTS>
+    <ITEM LANG="E" TEXT="ZAPLink DevTools : Installer Create"/>
+   </TEXTS>
+  </A0_MAINDATA>
+  <ALIASES>
+   <ITEM CMPNAME="TD_FILENAME" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_FILENAME"/>
+   <ITEM CMPNAME="TR_PACKAGES" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_PACKAGES"/>
+   <ITEM CMPNAME="TR_TR" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_TR"/>
+   <ITEM CMPNAME="TT_COMPKEYS" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_COMPKEYS"/>
+  </ALIASES>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="MASTER_SOURCECODE" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Master source code"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="MASTER_UP" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="MAster source code in upcase"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="OVERWRITE" EXPOSURE="1" STATE="1" EDITORDER="5 " TYPTYPE="1" TYPE="ABAP_BOOL"/>
+   <ITEM CMPNAME="O_GENERATOR" EXPOSURE="1" STATE="1" EDITORDER="1 " TYPTYPE="3" TYPE="ZAPLINK_STANDALONE_GENERATOR">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ZAPLink : Stand Alone Generator (local class&amp;intf)"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="O_OBJECTS" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTRDONLY="X" TYPTYPE="3" TYPE="ZAPLINK_LIST">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="ZapLink Components list"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="S_FILES" EXPOSURE="1" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="TS_FILES"/>
+   <ITEM CMPNAME="S_PROGRAMS" EXPOSURE="1" STATE="1" EDITORDER="4 " TYPTYPE="1" TYPE="TS_PROGRAMS"/>
+   <ITEM CMPNAME="S_SELECTION" EXPOSURE="1" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="TS_SELECTION"/>
+   <ITEM CMPNAME="T_LOADS" EXPOSURE="1" STATE="1" EDITORDER="6 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE"/>
+   <ITEM CMPNAME="T_ORDER" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_ORDER"/>
+  </ATTRIBUTS>
+  <DEFERRED>
+   <CLASSES>
+    <ITEM TYPEGROUP="ZAPLINK_STANDALONE_GENERATOR" TPUTYPE="1" IMPLICIT="X"/>
+   </CLASSES>
+  </DEFERRED>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</MACROS>
+  </LOCAL>
+  <METHODS>
+   <ITEM CMPNAME="BUILD_CLASS_POOL" EXPOSURE="1" STATE="1" EDITORDER="2 ">
+    <PARAMETERS>
+     <ITEM SCONAME="KEYS" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_COMPKEYS"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA _line LIKE LINE OF t_loads.
+  DATA _comp TYPE REF TO zaplink_component.
+  DATA _classname TYPE zaplink_component=&gt;td_connclass.
+  DATA o_conn TYPE REF TO zaplink_connector.
+  DATA _classes TYPE SORTED TABLE OF zaplink_component=&gt;td_connclass WITH UNIQUE KEY table_line.
+  DATA _cx         TYPE REF TO zaplink_cx.
+  FIELD-SYMBOLS:
+    &lt;c&gt; LIKE LINE OF keys.
+
+*  SORT keys BY classname.
+*  DELETE ADJACENT DUPLICATES FROM keys COMPARING classname.
+  _line = &apos;zaplink_connectors=&gt;clear_connectors( ).&apos;. APPEND _line TO t_loads. &quot; remove ABAP class connector to add only local ones
+  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO t_loads. &quot;#EC NOTEXT
+  _line = &apos;TRY.&apos;. APPEND _line TO t_loads.                  &quot;#EC NOTEXT
+  LOOP AT keys ASSIGNING &lt;c&gt;.
+    TRY.
+        CREATE OBJECT _comp.
+        _comp-&gt;set_type( &lt;c&gt;-type ).
+        o_conn = _comp-&gt;connector( ).
+        _classname = zaplink_connectors=&gt;get_classname( o_conn ).
+        CHECK NOT _classname IS INITIAL.
+        READ TABLE _classes TRANSPORTING NO FIELDS
+             WITH TABLE KEY table_line = _classname.
+        IF sy-subrc &lt;&gt; 0.
+          INSERT _classname INTO TABLE _classes.
+          o_generator-&gt;add_object( _classname ).
+          CLEAR _line.
+          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line. &quot;#EC NOTEXT
+          APPEND _line TO t_loads.
+        ENDIF.
+      CATCH zaplink_cx INTO _cx.
+        _cx-&gt;write( ).
+    ENDTRY.
+  ENDLOOP.
+  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO t_loads. &quot;#EC NOTEXT
+  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO t_loads. &quot;#EC NOTEXT
+  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO t_loads.          &quot;#EC NOTEXT
+  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO t_loads. &quot;#EC NOTEXT
+  _line = &apos;ENDTRY.&apos;. APPEND _line TO t_loads.               &quot;#EC NOTEXT</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CHECK_PROG_INCLUDE" EXPOSURE="1" STATE="1" EDITORDER="4 ">
+    <PARAMETERS>
+     <ITEM SCONAME="PROGRAMS" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_PROGRAMS"/>
+     <ITEM SCONAME="_INDEX" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="I"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA _search  TYPE string.
+  DATA tmp      TYPE string.
+
+  CLEAR _index.     CONCATENATE &apos;*INCLUDE*&apos; programs-include &apos;*&apos; INTO _search.      TRANSLATE _search TO UPPER CASE.
+  LOOP AT master_up INTO tmp.
+    CHECK tmp CP _search.
+    CHECK tmp(1) &lt;&gt; &apos;*&apos;. &quot; comment line
+    _index = sy-tabix.
+    EXIT.
+  ENDLOOP.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CHECK_PROG_POS" EXPOSURE="1" STATE="1" EDITORDER="3 " MTDDECLTYP="1">
+    <PARAMETERS>
+     <ITEM SCONAME="CODE" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE"/>
+     <ITEM SCONAME="POSITION" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="I"/>
+     <ITEM SCONAME="SEARCH" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="STRING"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA tmp      TYPE string.
+  DATA p_text   TYPE string.
+
+  p_text = search.    TRANSLATE p_text TO UPPER CASE.
+  LOOP AT code INTO tmp.
+    TRANSLATE tmp TO UPPER CASE.
+    CHECK tmp CP p_text.
+    CHECK tmp(1) &lt;&gt; &apos;*&apos;. &quot; comment line
+    position = sy-tabix.
+    EXIT.
+  ENDLOOP.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CREATE_INSTALLER" EXPOSURE="2" STATE="1" EDITORDER="2 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Generate Installer"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA gencode     TYPE TT_ABAPRAWSOURCE.
+  DATA finalcode   TYPE TT_ABAPRAWSOURCE.
+*  DATA abapcode    TYPE TT_ABAPRAWSOURCE.
+  DATA t_conns     TYPE tt_compkeys.
+  DATA idx_init    TYPE sy-tabix.
+*  DATA abapcode_up TYPE TT_ABAPRAWSOURCE.
+  DATA m_index     TYPE i.
+  DATA _prog       TYPE progdir.
+  DATA _oname      TYPE e071-obj_name.
+  DATA d_source    TYPE string.
+  DATA o_file      TYPE REF TO zaplink_file.
+  DATA t_data      TYPE zaplink_container=&gt;ts_contdata.
+  DATA o_cont      TYPE REF TO zaplink_container.
+  DATA t_type      TYPE zaplink_component=&gt;td_comptype.
+  DATA t_name      TYPE zaplink_component=&gt;td_compname.
+*  FIELD-SYMBOLS: &lt;l&gt; LIKE LINE OF abapcode_up.
+
+  IF overwrite IS INITIAL.
+    SELECT SINGLE name INTO _prog
+      FROM progdir
+      WHERE name = s_programs-program.
+    IF sy-subrc = 0.
+      RAISE EXCEPTION TYPE zaplink_cx_installer_create
+            EXPORTING textid = zaplink_cx_installer_create=&gt;no_overwrite
+              installer_name = s_programs-program.
+    ENDIF.
+  ENDIF.
+  SELECT SINGLE name INTO _prog
+    FROM progdir
+    WHERE name = s_programs-master.
+  IF sy-subrc &lt;&gt; 0.
+    RAISE EXCEPTION TYPE zaplink_cx_installer_create
+          EXPORTING textid = zaplink_cx_installer_create=&gt;not_exists
+               master_name = s_programs-master.
+  ENDIF.
+  m_index = check_prog_include( s_programs ).
+  IF m_index IS INITIAL.
+    RAISE EXCEPTION TYPE zaplink_cx_installer_create
+          EXPORTING textid = zaplink_cx_installer_create=&gt;no_include
+              include_name = s_programs-include
+               master_name = s_programs-master.
+  ENDIF.
+  CREATE OBJECT o_generator.
+* Add Framework
+*  READ REPORT s_programs-master INTO abapcode STATE &apos;I&apos;.
+*  IF sy-subrc &lt;&gt; 0.
+*    READ REPORT s_programs-master INTO abapcode STATE &apos;A&apos;.
+*  ENDIF.
+*  abapcode_up = abapcode.
+*  LOOP AT abapcode_up ASSIGNING &lt;l&gt;.
+*    TRANSLATE &lt;l&gt; TO UPPER CASE.                           &quot;#EC SYNTCHAR
+*  ENDLOOP.
+  o_generator-&gt;add_object( &apos;ZAPLINK_MESSAGE_COLLECTOR&apos; ).
+*  o_generator-&gt;add_source( abapcode ).
+  o_generator-&gt;add_source( code = master_sourcecode    origin = s_programs-master ).
+  t_conns = getobj_list( s_selection ).
+  build_class_pool( t_conns ).
+
+  gencode = o_generator-&gt;generate( ).
+  finalcode = master_sourcecode.
+
+  idx_init = check_prog_pos( code = master_up
+                           search = &apos;*INITIALIZATION*.*&apos;).
+  IF idx_init IS INITIAL.
+    idx_init = check_prog_pos( code = master_up
+                             search = &apos;*START-OF-SELECTION*.*&apos;).
+  ENDIF.
+
+  IF idx_init &gt; m_index.
+* Initialize is after include : Normal case
+* Adding Connector local class load
+    IF idx_init IS INITIAL.
+      APPEND LINES OF t_loads TO finalcode.
+    ELSE.
+      ADD 1 TO idx_init.
+      INSERT LINES OF t_loads INTO finalcode INDEX idx_init.
+    ENDIF.
+* Then Adding local classes (INCLUDE).
+    DELETE finalcode INDEX m_index.
+    INSERT LINES OF gencode INTO finalcode INDEX m_index.
+  ELSE.
+* Initialize is before include : Anormal case that should lead to compiling error
+* Adding local classes (INCLUDE).
+    DELETE finalcode INDEX m_index.
+    INSERT LINES OF gencode INTO finalcode INDEX m_index.
+* Then Adding Connector local class load
+    IF idx_init IS INITIAL.
+      APPEND LINES OF t_loads TO finalcode.
+    ELSE.
+      ADD 1 TO idx_init.
+      INSERT LINES OF t_loads INTO finalcode INDEX idx_init.
+    ENDIF.
+  ENDIF.
+
+  t_order = o_generator-&gt;order.
+
+  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = finalcode ).
+  IF NOT s_programs-program IS INITIAL.
+    CALL FUNCTION &apos;RS_CORR_INSERT&apos;
+      EXPORTING
+        object                         = s_programs-program
+        object_class                   = &apos;ABAP&apos;
+        mode                           = &apos;I&apos;    &quot; Insert
+*         GLOBAL_LOCK                    = &apos; &apos;
+        devclass                       = s_programs-package
+*         KORRNUM                        = &apos; &apos;
+*         USE_KORRNUM_IMMEDIATEDLY       = &apos; &apos;
+*         AUTHOR                         = &apos; &apos;
+*         MASTER_LANGUAGE                = &apos; &apos;
+*         GENFLAG                        = &apos; &apos;
+*         PROGRAM                        = &apos; &apos;
+*         OBJECT_CLASS_SUPPORTS_MA       = &apos; &apos;
+*         EXTEND                         = &apos; &apos;
+*         SUPPRESS_DIALOG                = &apos; &apos;
+*         MOD_LANGU                      = &apos; &apos;
+*         ACTIVATION_CALL                = &apos; &apos;
+*       IMPORTING
+*         DEVCLASS                       =
+*         KORRNUM                        =
+*         ORDERNUM                       =
+*         NEW_CORR_ENTRY                 =
+*         AUTHOR                         =
+*         TRANSPORT_KEY                  =
+*         NEW_EXTEND                     =
+      EXCEPTIONS
+        cancelled                      = 1
+        permission_failure             = 2
+        unknown_objectclass            = 3
+        OTHERS                         = 4.
+    IF sy-subrc &lt;&gt; 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+              WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
+
+    _oname = _prog.
+    CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
+      EXPORTING
+        object                  = &apos;REPS&apos;
+        obj_name                = _oname
+*         DELETED_FLAG            = &apos; &apos;
+*       IMPORTING
+*         OBJECT_INSERTED         =
+      EXCEPTIONS
+        wrong_object_name       = 1
+        OTHERS                  = 2.
+    IF sy-subrc &lt;&gt; 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+              WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+    ENDIF.
+
+    _prog-name = s_programs-program.
+    _prog-state = &apos;I&apos;.
+    _prog-edtx = &apos;X&apos;.
+    _prog-varcl = &apos;X&apos;.
+*  _prog-fixpt = &apos;X&apos;.
+    _prog-rstat = &apos;T&apos;.
+    _prog-vern = 1.
+    _prog-subc = &apos;1&apos;.    &quot;Executable program
+    _prog-unam = _prog-cnam = sy-uname.
+    _prog-sdate = _prog-idate = _prog-udat = _prog-cdat = sy-datum.
+    _prog-stime = _prog-itime = sy-uzeit.
+    _prog-rmand = sy-mandt.
+    _prog-rload = sy-langu.
+    MODIFY progdir FROM _prog.
+*  INSERT progdir FROM _prog.
+    INSERT REPORT _prog-name FROM finalcode STATE _prog-state.
+    _prog-state = &apos;A&apos;.
+    MODIFY progdir FROM _prog.
+    INSERT REPORT _prog-name FROM finalcode STATE _prog-state.
+
+    COMMIT WORK AND WAIT.
+  ENDIF.
+
+  CREATE OBJECT o_file.
+  IF NOT s_files-installer IS INITIAL.
+    d_source = zaplink_standalone_generator=&gt;source_2_string( finalcode ).
+    o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+    o_file-&gt;set_filename( s_files-installer ).
+    o_file-&gt;set_filecontent( d_source ).
+    o_file-&gt;save( ).
+  ENDIF.
+
+  o_file-&gt;set_filename( s_files-container ).
+  CONCATENATE sy-cprog sy-uname sy-datum sy-uzeit INTO t_data-name.
+  o_cont = zaplink_container=&gt;create_new( data = t_data
+                                        o_file = o_file ).
+  o_cont-&gt;add_components( o_objects ).
+  o_cont-&gt;save_to_file( ).
+  o_objects = o_cont-&gt;get_content( ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="DISPLAY_CONTAINER_CONTENT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Display container&apos;s content"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA o_comp      TYPE REF TO zaplink_component.
+  DATA t_type      TYPE zaplink_component=&gt;td_comptype.
+  DATA t_name      TYPE zaplink_component=&gt;td_compname.
+
+  o_objects-&gt;init_iter( ).
+  o_objects-&gt;display_progress = abap_false.
+  o_comp = o_objects-&gt;get_next( ).
+  WRITE:/ &apos;Container&apos;&apos;s containt :&apos;(001).
+  WHILE NOT o_comp IS INITIAL.
+    t_type = o_comp-&gt;get_type( ).
+    t_name = o_comp-&gt;get_name( ).
+    WRITE:/ t_type, t_name.
+    o_comp = o_objects-&gt;get_next( ).
+  ENDWHILE.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="DISPLAY_OBJECT_ORDER" EXPOSURE="2" STATE="1" EDITORDER="3 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Display object order in Installer"/>
+    </TEXTS>
+    <SOURCE>`
+  FIELD-SYMBOLS:  &lt;o&gt; LIKE LINE OF t_order.
+
+  LOOP AT t_order ASSIGNING &lt;o&gt;.
+    CASE &lt;o&gt;-type.
+      WHEN zaplink_standalone_generator=&gt;objtype-exception_class.
+        WRITE :/ &apos;CXCL&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
+      WHEN zaplink_standalone_generator=&gt;objtype-class.
+        WRITE :/ &apos;CLAS&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
+      WHEN zaplink_standalone_generator=&gt;objtype-interface.
+        WRITE :/ &apos;INTF&apos;, &lt;o&gt;-name, &lt;o&gt;-defered.
+      WHEN OTHERS.
+        WRITE :/ &lt;o&gt;-type, &lt;o&gt;-name, &lt;o&gt;-defered.
+    ENDCASE.
+  ENDLOOP.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GETOBJ_LIST" EXPOSURE="1" STATE="1" EDITORDER="1 ">
+    <PARAMETERS>
+     <ITEM SCONAME="RESULT" CMPTYPE="1" EDITORDER="2 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_COMPKEYS"/>
+     <ITEM SCONAME="SELECTION" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_SELECTION"/>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA so_tr   TYPE tr_tr.
+  DATA _tr     LIKE LINE OF so_tr.
+  DATA _count  TYPE i.
+  DATA t_objs  TYPE tt_compkeys.
+  DATA _cx     TYPE REF TO zaplink_cx.
+
+  IF NOT selection-request IS INITIAL. result = zaplink_gui=&gt;get_keys_from_tr( selection-request ).   ENDIF.
+
+  IF NOT selection-packages[] IS INITIAL.
+    t_objs = zaplink_gui=&gt;get_keys_from_package( packages = selection-packages
+                                                 ext      = abap_true ).
+    APPEND LINES OF t_objs TO result.
+  ENDIF.
+
+  SORT result.
+  DELETE ADJACENT DUPLICATES FROM result.
+
+  TRY.
+      CREATE OBJECT o_objects.
+      o_objects-&gt;add_keys( result ).
+      o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+    CATCH zaplink_cx INTO _cx.
+      CLEAR result.   _cx-&gt;write( ).
+  ENDTRY.
+  SORT result BY type.
+  DELETE ADJACENT DUPLICATES FROM result COMPARING type.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="SET_PARAMETERS" EXPOSURE="2" STATE="1" EDITORDER="1 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Set Install cretaer&apos;s parameters"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="FILES" CMPTYPE="1" EDITORDER="4 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_FILES">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Container and program filename"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="OVERWRITE" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Overwrite target program"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="PROGRAMS" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_PROGRAMS">
+      <TEXTS>
+       <ITEM LANG="E" TEXT=" ABAP Programs Name"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="SELECTION" CMPTYPE="1" EDITORDER="3 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_SELECTION">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Selection crietera"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  FIELD-SYMBOLS: &lt;l&gt; LIKE LINE OF master_up.
+
+  s_programs = programs.
+  s_files = files.
+  s_selection = selection.
+  me-&gt;overwrite = overwrite.
+  READ REPORT s_programs-master INTO master_sourcecode STATE &apos;I&apos;.
+  IF sy-subrc &lt;&gt; 0.
+    READ REPORT s_programs-master INTO master_sourcecode STATE &apos;A&apos;.
+  ENDIF.
+  master_up = master_sourcecode.
+  LOOP AT master_up ASSIGNING &lt;l&gt;.
+    TRANSLATE &lt;l&gt; TO UPPER CASE.                          &quot;#EC SYNTCHAR
+  ENDLOOP.</SOURCE>
+   </ITEM>
+  </METHODS>
+  <TEXTSPOOL>
+   <ITEM ID="I" KEY="001">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Container&apos;s containt :" LENGTH="40 "/>
+    </TEXTS>
+   </ITEM>
+  </TEXTSPOOL>
+  <TYPEGROUPS>
+   <ITEM TYPEGROUP="ABAP" EXPLICIT="X" IMPLICIT="X"/>
+  </TYPEGROUPS>
+  <TYPES>
+   <ITEM CMPNAME="TS_FILES" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="4">BEGIN OF ts_files,
+        container      TYPE td_filename,
+        installer      TYPE td_filename,
+      END OF ts_files
+`</ITEM>
+   <ITEM CMPNAME="TS_PROGRAMS" EXPOSURE="2" STATE="1" EDITORDER="4 " TYPTYPE="4">BEGIN OF ts_programs,
+        master  TYPE programm,
+        include TYPE programm,
+        program TYPE programm,
+        PAckage type devclass,
+      END OF ts_programs
+`</ITEM>
+   <ITEM CMPNAME="TS_SELECTION" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="4">BEGIN OF ts_selection,
+        request     TYPE tr_tr,
+        packages    TYPE tr_packages,
+      END OF ts_selection
+`</ITEM>
+   <ITEM CMPNAME="TT_ABAPRAWSOURCE" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="ZAPLINK_STANDALONE_GENERATOR=&gt;TT_ABAPRAWSOURCE"/>
+   <ITEM CMPNAME="TT_ORDER" EXPOSURE="2" STATE="1" EDITORDER="5 " TYPTYPE="1" TYPE="ZAPLINK_STANDALONE_GENERATOR=&gt;TT_ORDER"/>
+  </TYPES>
+ </RAW>
+</ZL_OBJECT>
