@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="5B6ED96846E93EF9991B46FB28189059" CODE_SIGNATURE="6D6F336025B01E3B0B65D9B2F41ECCAF" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="EDB33E87CC91C532B8A5002350C1E1F5" CODE_SIGNATURE="B96F47D058C0501A85595BF3147C5A3C" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -39,7 +39,13 @@ PARAMETERS p_a_ext TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 SELECTION-SCREEN END OF BLOCK actions.
 
 TYPES td_sourcecode TYPE zaplink_standalone_generator=&gt;tt_abaprawsource.
-*CONSTANTS:
+CONSTANTS:
+  c_prog_nfo_sa     TYPE zaplink_standalone_generator=&gt;td_progname VALUE &apos;ZAPLINK_INFOS_STANDALONE&apos;,
+  c_prog_ext_sa     TYPE zaplink_standalone_generator=&gt;td_progname VALUE &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;,
+  c_temp_pack       TYPE zaplink_standalone_generator=&gt;td_devclass VALUE &apos;ZAPLINK-TEMP&apos;,
+  c_tutorial_pack   TYPE zaplink_standalone_generator=&gt;td_devclass VALUE &apos;ZAPLINK-TUTORIALS&apos;,
+  c_devtools_pack   TYPE zaplink_standalone_generator=&gt;td_devclass VALUE &apos;ZAPLINK-DEVTOOLS&apos;,
+  c_gen_pack        TYPE zaplink_standalone_generator=&gt;td_devclass VALUE &apos;ZAPLINK-GENERATED&apos;.
 *  c_stand_a   TYPE trdir-name VALUE &apos;ZAPLINK_STANDALONE_CREATE&apos;,
 *  c_installer TYPE trdir-name VALUE &apos;ZAPLINK_INSTALLER_CREATE&apos;,
 *  c_usecase   TYPE trdir-name VALUE &apos;YTBE_USECASEINDEX&apos;,
@@ -79,6 +85,7 @@ START-OF-SELECTION.
   DATA d_content    TYPE string.
   DATA s_programs   TYPE zaplink_installer_create=&gt;ts_programs.
   DATA s_selection  TYPE zaplink_installer_create=&gt;ts_selection.
+  DATA s_key        LIKE LINE OF s_selection-keys.
   DATA s_files      TYPE zaplink_installer_create=&gt;ts_files.
   DATA o_cx         TYPE REF TO cx_root.
   DATA o_zlcx       TYPE REF TO zaplink_cx.
@@ -306,8 +313,21 @@ START-OF-SELECTION.
             master = &apos;ZAPLINK_INFOS&apos;.
         o_generator-&gt;add_connectors( ).
         o_generator-&gt;generate( ).
-        o_generator-&gt;save_report( report = &apos;ZAPLINK_INFOS_STANDALONE&apos;
-                                 package = &apos;ZAPLINK-FRAMEWORK-CORE&apos; ).
+        o_generator-&gt;save_report( report = c_prog_nfo_sa
+                                 package = c_gen_pack ).
+        REFRESH t_keys.
+        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_nfo_sa.   APPEND s_key TO t_keys.
+        CREATE OBJECT o_activ
+          EXPORTING
+            obj_list = t_keys.
+        t_keys_ko = o_activ-&gt;activate( ).
+        IF t_keys_ko IS INITIAL.
+          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_nfo_sa.
+        ELSE.
+          WRITE:/ &apos;List of components with errors&apos;(sko).
+          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
+        ENDIF.
+
       CATCH zaplink_cx INTO o_zlcx.
         WRITE:/ &apos;ZL_Infos Stand Alone Generation exception :&apos;(cxn).
         o_zlcx-&gt;write( ).
@@ -339,10 +359,12 @@ START-OF-SELECTION.
     s_programs-program = p_prog.
     s_programs-package = &apos;$TMP&apos;.
 
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = &apos;ZAPLINK-TUTORIALS&apos;.    APPEND s_package TO r_packages.
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = &apos;ZAPLINK-DEVTOOLS&apos;.     APPEND s_package TO r_packages.
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = &apos;ZAPLINK-TEMP&apos;.         APPEND s_package TO r_packages.
+    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_tutorial_pack.     APPEND s_package TO r_packages.
+    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_devtools_pack.     APPEND s_package TO r_packages.
+    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_temp_pack.         APPEND s_package TO r_packages.
+    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_gen_pack.          APPEND s_package TO r_packages.
     s_selection-packages = r_packages.
+    s_key-type = &apos;PROG&apos;.    s_key-name = c_prog_nfo_sa.   APPEND s_key TO s_selection-keys.
 
     s_files-container = d_contfn.
     s_files-installer = d_instfn.
@@ -362,7 +384,7 @@ START-OF-SELECTION.
 
     DELETE r_packages WHERE sign = &apos;I&apos;.
     s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
-    DELETE r_packages WHERE LOW CP &apos;*DEVTOOLS*&apos;.
+    DELETE r_packages WHERE low CP &apos;*DEVTOOLS*&apos;.
     t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
                                                       ext = abap_false ).
     CONCATENATE &apos;ZAPLINK Other objects version&apos;(ott) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
@@ -383,7 +405,7 @@ START-OF-SELECTION.
 
     r_packages = s_selection-packages.
     DELETE r_packages WHERE sign = &apos;I&apos;.
-    DELETE r_packages WHERE not LOW CP &apos;*DEVTOOLS*&apos;.
+    DELETE r_packages WHERE NOT low CP &apos;*DEVTOOLS*&apos;.
     s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
     t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
                                                       ext = abap_false ).
@@ -436,8 +458,22 @@ START-OF-SELECTION.
             master = &apos;ZAPLINK_EXTRACTOR&apos;.
         o_generator-&gt;add_connectors( ).
         abapcode = o_generator-&gt;generate( ).
-        o_generator-&gt;save_report( report = &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;
-                                 package = &apos;ZAPLINK-FRAMEWORK-CORE&apos; ).
+        o_generator-&gt;save_report( report = c_prog_ext_sa
+                                 package = c_gen_pack ).
+
+        REFRESH t_keys.
+        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_ext_sa.   APPEND s_key TO t_keys.
+        CREATE OBJECT o_activ
+          EXPORTING
+            obj_list = t_keys.
+        t_keys_ko = o_activ-&gt;activate( ).
+        IF t_keys_ko IS INITIAL.
+          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_ext_sa.
+        ELSE.
+          WRITE:/ &apos;List of components with errors&apos;(sko).
+          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
+        ENDIF.
+
         CREATE OBJECT o_file.
         o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
         o_file-&gt;set_filename( d_extfn ).
@@ -581,6 +617,11 @@ ENDFORM.                    &quot; UPDATE_FILENAMES</SOURCE>
    <ITEM ID="I" KEY="PUC">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Calling Use Case update" LENGTH="50 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="SKO">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="List of components with errors" LENGTH="30 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="I" KEY="VER">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="5DA3C8B63E5C6E815613D3C8EB679BA4" CODE_SIGNATURE="162768D3ABC642E9C21A12E79D505C42" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="37680525C4A91A2271CFCBCE47B1C47C" CODE_SIGNATURE="1DB1A004C12F21E5AE92CA199082F199" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -36,6 +36,11 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
    <ITEM CMPNAME="MASTER_PROGRAM" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTRDONLY="X" TYPTYPE="1" TYPE="TD_PROGNAME">
     <TEXTS>
      <ITEM LANG="E" TEXT="Master Program Name"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="MASTER_SOURCECODE" EXPOSURE="1" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Source code of Master program"/>
     </TEXTS>
    </ITEM>
   </ATTRIBUTS>
@@ -139,7 +144,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
 
   master_program = master.
   IF NOT master_program IS INITIAL.
-    sourcecode = zaplink_program_4sag=&gt;get_prog_rawsource( master_program ).
+    master_sourcecode = sourcecode = zaplink_program_4sag=&gt;get_prog_rawsource( master_program ).
     add_source( code = sourcecode   origin = master_program ).
   ENDIF.</SOURCE>
    </ITEM>
@@ -176,9 +181,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
 
   _clean_up( ).
   resolve( ).
-  LOOP AT typegroups ASSIGNING &lt;t&gt;.
-    IF _line IS INITIAL. CONCATENATE &apos;TYPE-POOLS: &apos; &lt;t&gt;-name INTO _line. ELSE. CONCATENATE _line &apos;, &apos; &lt;t&gt;-name INTO _line. ENDIF.
-  ENDLOOP.
+  LOOP AT typegroups ASSIGNING &lt;t&gt;.   IF _line IS INITIAL. CONCATENATE &apos;TYPE-POOLS: &apos; &lt;t&gt;-name INTO _line. ELSE. CONCATENATE _line &apos;, &apos; &lt;t&gt;-name INTO _line. ENDIF.   ENDLOOP.
   IF NOT _line IS INITIAL. CONCATENATE _line &apos;.&apos; INTO _line. APPEND _line TO code. ENDIF.
 
 * DEFERRED declaration first
@@ -255,11 +258,39 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   APPEND LINES OF _tmp_code-macro TO code.
   APPEND LINES OF _tmp_code-impl TO code.
 
-  IF NOT connectors_sourcecode IS INITIAL.    APPEND LINES OF connectors_sourcecode TO code.    ENDIF.
+* Insert into MAster source code
+  abap_sourcecode = master_sourcecode.
+  IF NOT abap_sourcecode IS INITIAL.
+    REFRESH t_kw.
+*  s_kw = &apos;INITIALIZATION&apos;.        APPEND s_kw TO t_kw.
+    s_kw = &apos;START-OF-SELECTION&apos;.    APPEND s_kw TO t_kw.
+    s_kw = &apos;REPORT&apos;.                APPEND s_kw TO t_kw.
+    SCAN ABAP-SOURCE abap_sourcecode TOKENS INTO t_tokens
+                                 STATEMENTS INTO t_statements
+                                   KEYWORDS FROM t_kw.
+    IF NOT connectors_sourcecode IS INITIAL.
+      READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; WITH KEY str = &apos;START-OF-SELECTION&apos;.
+      ASSERT sy-subrc = 0.  _pos = sy-tabix.
+      READ TABLE t_statements ASSIGNING &lt;st&gt; WITH KEY FROM = _pos.
+      ASSERT sy-subrc = 0.
+      READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-to.
+      ASSERT sy-subrc = 0.
+      _pos = &lt;t_deb&gt;-row + 1.
+      INSERT LINES OF connectors_sourcecode INTO abap_sourcecode INDEX _pos.
+    ENDIF.
+
+    READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; WITH KEY str = &apos;REPORT&apos;.
+    ASSERT sy-subrc = 0.  _pos = sy-tabix.
+    READ TABLE t_statements ASSIGNING &lt;st&gt; WITH KEY FROM = _pos.
+    ASSERT sy-subrc = 0.
+    READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-to.
+    ASSERT sy-subrc = 0.
+    _pos = &lt;t_deb&gt;-row + 1.
+    INSERT LINES OF code INTO abap_sourcecode INDEX _pos.
+  ENDIF.
 
 *  code = clean_code( code ).
-  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = code ).
-  abap_sourcecode = code.</SOURCE>
+  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = abap_sourcecode ).</SOURCE>
    </ITEM>
    <ITEM CMPNAME="SAVE_REPORT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
     <TEXTS>
@@ -278,7 +309,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
      </ITEM>
     </EXCEPTIONS>
     <SOURCE>`
-  DATA t_source TYPE tt_abaprawsource.
+  DATA t_source    TYPE tt_abaprawsource.
   DATA _prog       TYPE progdir.
   DATA _oname      TYPE e071-obj_name.
 
@@ -325,7 +356,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
             WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
 
-  _oname = _prog.
+  _oname = report.
   CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
     EXPORTING
       object                  = &apos;REPS&apos;
@@ -355,8 +386,8 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   _prog-rmand = sy-mandt.
   _prog-rload = sy-langu.
   MODIFY progdir FROM _prog.
-  _prog-state = &apos;A&apos;.
-  MODIFY progdir FROM _prog.
+*  _prog-state = &apos;A&apos;.
+*  MODIFY progdir FROM _prog.
   zaplink_program_4sag=&gt;set_prog_rawsource( program = report
                                                 raw = t_source ).
   set_textpool( report ).</SOURCE>

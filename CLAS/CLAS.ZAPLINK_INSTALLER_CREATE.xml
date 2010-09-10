@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="7AFC02FC1FB95E56F83B81B0C3568E30" CODE_SIGNATURE="5767082324B46C4066341D7ACE507F8E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="EC5F7BAC907A4A97059908CB471D3469" CODE_SIGNATURE="826435B8624ACC97C77A3904E1B1C001" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_STANDALONE_GENERATOR"/>
  </DEPENDENCIES>
@@ -14,7 +14,7 @@
    <ITEM CMPNAME="TD_FILENAME" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_FILENAME"/>
    <ITEM CMPNAME="TR_PACKAGES" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_PACKAGES"/>
    <ITEM CMPNAME="TR_TR" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_TR"/>
-   <ITEM CMPNAME="TT_COMPKEYS" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_COMPKEYS"/>
+   <ITEM CMPNAME="TT_COMPKEYS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_COMPKEYS"/>
   </ALIASES>
   <ATTRIBUTS>
    <ITEM CMPNAME="MASTER_SOURCECODE" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
@@ -159,8 +159,8 @@
      </ITEM>
     </EXCEPTIONS>
     <SOURCE>`
-  DATA gencode     TYPE TT_ABAPRAWSOURCE.
-  DATA finalcode   TYPE TT_ABAPRAWSOURCE.
+  DATA gencode     TYPE tt_abaprawsource.
+  DATA finalcode   TYPE tt_abaprawsource.
 *  DATA abapcode    TYPE TT_ABAPRAWSOURCE.
   DATA t_conns     TYPE tt_compkeys.
   DATA idx_init    TYPE sy-tabix.
@@ -175,6 +175,10 @@
   DATA t_type      TYPE zaplink_component=&gt;td_comptype.
   DATA t_name      TYPE zaplink_component=&gt;td_compname.
 *  FIELD-SYMBOLS: &lt;l&gt; LIKE LINE OF abapcode_up.
+  DATA o_activ     TYPE REF TO zaplink_activate.
+  DATA t_keys      TYPE tt_compkeys.
+  DATA t_keys_ko   TYPE tt_compkeys.
+  DATA s_key       LIKE LINE OF t_keys.
 
   IF overwrite IS INITIAL.
     SELECT SINGLE name INTO _prog
@@ -201,7 +205,10 @@
               include_name = s_programs-include
                master_name = s_programs-master.
   ENDIF.
-  CREATE OBJECT o_generator.
+  CREATE OBJECT o_generator
+*    EXPORTING
+*      master = s_programs-master
+      .
 * Add Framework
 *  READ REPORT s_programs-master INTO abapcode STATE &apos;I&apos;.
 *  IF sy-subrc &lt;&gt; 0.
@@ -293,7 +300,7 @@
               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
     ENDIF.
 
-    _oname = _prog.
+    _oname = s_programs-program.
     CALL FUNCTION &apos;RS_INSERT_INTO_WORKING_AREA&apos;
       EXPORTING
         object                  = &apos;REPS&apos;
@@ -325,11 +332,22 @@
     MODIFY progdir FROM _prog.
 *  INSERT progdir FROM _prog.
     INSERT REPORT _prog-name FROM finalcode STATE _prog-state.
-    _prog-state = &apos;A&apos;.
-    MODIFY progdir FROM _prog.
-    INSERT REPORT _prog-name FROM finalcode STATE _prog-state.
+*    _prog-state = &apos;A&apos;.
+*    MODIFY progdir FROM _prog.
+*    INSERT REPORT _prog-name FROM finalcode STATE _prog-state.
 
     COMMIT WORK AND WAIT.
+  ENDIF.
+
+  REFRESH t_keys.
+  s_key-type = &apos;PROG&apos;.   s_key-name = s_programs-program.   APPEND s_key TO t_keys.
+  CREATE OBJECT o_activ
+    EXPORTING
+      obj_list = t_keys.
+  t_keys = o_activ-&gt;activate( ).
+  IF NOT t_keys_ko IS INITIAL.
+    RAISE EXCEPTION TYPE zaplink_cx_installer_create
+          EXPORTING textid = zaplink_cx_installer_create=&gt;activation_error.
   ENDIF.
 
   CREATE OBJECT o_file.
@@ -416,6 +434,8 @@
     APPEND LINES OF t_objs TO result.
   ENDIF.
 
+  APPEND LINES OF selection-keys TO result.
+
   SORT result.
   DELETE ADJACENT DUPLICATES FROM result.
 
@@ -498,6 +518,7 @@
    <ITEM CMPNAME="TS_SELECTION" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="4">BEGIN OF ts_selection,
         request     TYPE tr_tr,
         packages    TYPE tr_packages,
+        keys        type tt_compkeys,
       END OF ts_selection
 `</ITEM>
    <ITEM CMPNAME="TT_ABAPRAWSOURCE" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="ZAPLINK_STANDALONE_GENERATOR=&gt;TT_ABAPRAWSOURCE"/>
