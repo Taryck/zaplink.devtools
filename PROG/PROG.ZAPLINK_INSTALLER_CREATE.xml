@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="BFDBCA0ADBD94223C3394B8DC459D6D3" CODE_SIGNATURE="277DA75E14D6BAAD9E99DF51BFE034CB" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="19FE84B5FD87956067E996AA94543ACA" CODE_SIGNATURE="DF3D17DDC1CD1CD35B221E03FD627364" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="P" RMAND="220" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -30,7 +30,7 @@ PARAMETERS p_ifn    TYPE zaplink_file=&gt;td_filename LOWER CASE.
 
 TYPES t_obj_list TYPE zaplink_list=&gt;tt_compkeys.
 TYPES tr_pack    TYPE zaplink_gui=&gt;tr_packages.
-TYPES td_sourcecode TYPE zaplink_standalone_generator=&gt;td_sourcecode.
+TYPES td_sourcecode TYPE zaplink_standalone_generator=&gt;tt_abaprawsource.
 DATA t_conns     TYPE t_obj_list.
 DATA o_generator TYPE REF TO zaplink_standalone_generator.
 DATA o_objects   TYPE REF TO zaplink_list.
@@ -333,8 +333,8 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
 *  SORT t_connectors BY classname.
 *  DELETE ADJACENT DUPLICATES FROM t_connectors COMPARING classname.
   _line = &apos;zaplink_connectors=&gt;clear_connectors( ).&apos;. APPEND _line TO ac_loadlocal. &quot; remove ABAP class connector to add only local ones
-  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal.   &quot;#EC NOTEXT
-  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.                                                             &quot;#EC NOTEXT
+  _line = &apos;DATA _cx_90335e5d44316adf4805a732f type ref to ZAPLINK_CX_COMPONENT.&apos;. APPEND _line TO ac_loadlocal. &quot;#EC NOTEXT
+  _line = &apos;TRY.&apos;. APPEND _line TO ac_loadlocal.             &quot;#EC NOTEXT
   LOOP AT t_connectors ASSIGNING &lt;c&gt;.
     TRY.
         CREATE OBJECT _comp.
@@ -348,18 +348,18 @@ FORM build_class_pool  USING    t_connectors TYPE t_obj_list.
           INSERT _classname INTO TABLE _classes.
           o_generator-&gt;add_object( _classname ).
           CLEAR _line.
-          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line.            &quot;#EC NOTEXT
+          CONCATENATE &apos;ZAPLINK_CONNECTORS=&gt;ADD_LOCAL_CONNECTOR(&apos;&apos;&apos; _classname &apos;&apos;&apos;).&apos; INTO _line. &quot;#EC NOTEXT
           APPEND _line TO ac_loadlocal.
         ENDIF.
       CATCH zaplink_cx INTO _cx.
         _cx-&gt;write( ).
     ENDTRY.
   ENDLOOP.
-  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.   &quot;#EC NOTEXT
-  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal.                         &quot;#EC NOTEXT
-  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.                                                     &quot;#EC NOTEXT
-  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal.                   &quot;#EC NOTEXT
-  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.                                                          &quot;#EC NOTEXT
+  _line = &apos;CATCH ZAPLINK_CX_COMPONENT INTO _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal. &quot;#EC NOTEXT
+  _line = &apos;_cx_90335e5d44316adf4805a732f-&gt;write( ).&apos;. APPEND _line TO ac_loadlocal. &quot;#EC NOTEXT
+  _line = &apos;BREAK-POINT.&apos;. APPEND _line TO ac_loadlocal.     &quot;#EC NOTEXT
+  _line = &apos;RAISE EXCEPTION _cx_90335e5d44316adf4805a732f.&apos;. APPEND _line TO ac_loadlocal. &quot;#EC NOTEXT
+  _line = &apos;ENDTRY.&apos;. APPEND _line TO ac_loadlocal.          &quot;#EC NOTEXT
 
 ENDFORM.                    &quot; BUILD_CLASS_POOL
 *&amp;---------------------------------------------------------------------*
@@ -507,12 +507,23 @@ ENDFORM.                    &quot; CHECK_PROG_NOTEXISTS</SOURCE>
   </TEXTSPOOL>
   <VARIANTS>
    <ITEM>
-    <ZL_OBJECT CHECKSUM="4C8F30152B6797E90DB1DDB624EA68E1" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE                CUS&amp;INSTALLER" TYPE="VARI" VERSION="1.0">
+    <ZL_OBJECT CHECKSUM="B427A91A055F1ABD78D9B83D9224DE9F" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_CREATE                CUS&amp;INSTALLER" TYPE="VARI" VERSION="1.0">
      <RAW>
       <A0_MAINDATA TRANSPORT="F" ENVIRONMNT="A" PROTECTED="S" VERSION="1 " MLANGU="E"/>
       <TEXTS>
        <ITEM LANG="E" TEXT="Installer V0.006"/>
       </TEXTS>
+      <VALUES>
+       <ITEM NAME="P_DEVC" VALUE="$TMP"/>
+       <ITEM NAME="P_FN" APPENDAGE="O" VALUE="C:\Documents and Settings\tbensial\Bureau\ZAPLink Framework.V0.006.xml"/>
+       <ITEM NAME="P_IFN" VALUE="C:\Documents and Settings\tbensial\Bureau\ZAPLink Installer.ABAP Program.V0.006.txt"/>
+       <ITEM NAME="P_INCL" APPENDAGE="O" VALUE="ZAPLINK_INSTALLER_MASTER_CL"/>
+       <ITEM NAME="P_MASTER" APPENDAGE="O" VALUE="ZAPLINK_INSTALLER_MASTER"/>
+       <ITEM NAME="P_OVERW" APPENDAGE="C" VALUE="X"/>
+       <ITEM NAME="P_PROG" VALUE="ZAPLINK_INSTALLER"/>
+       <ITEM NAME="P_TRKORR" VALUE="OD4K900163"/>
+       <ITEM NAME="S_PACK"/>
+      </VALUES>
      </RAW>
     </ZL_OBJECT>
    </ITEM>
