@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="EDB33E87CC91C532B8A5002350C1E1F5" CODE_SIGNATURE="B96F47D058C0501A85595BF3147C5A3C" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="7F76C13FF9F6FE3E9115E0B10302ACAA" CODE_SIGNATURE="7CEAA2001BEEAF185E255F6AC7A7A553" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -107,8 +107,20 @@ START-OF-SELECTION.
   DATA o_cont       TYPE REF TO zaplink_container.
   DATA o_objects    TYPE REF TO	zaplink_list.
   DATA t_data       TYPE zaplink_container=&gt;ts_contdata.
+  DATA t_trdirt     TYPE STANDARD TABLE OF trdirt.
+  DATA s_trdirt     LIKE LINE OF t_trdirt.
   FIELD-SYMBOLS:
     &lt;k&gt; LIKE LINE OF t_keys.
+
+*modify trdirti
+*modify TRDIRT
+  SELECT * INTO TABLE t_trdirt
+    FROM trdirt
+    WHERE name = &apos;ZAPLINK&apos;.
+  CONCATENATE &apos;ZAPLINK V&apos; zaplink_datatypes=&gt;framework_version INTO s_trdirt-text.
+  MODIFY t_trdirt FROM s_trdirt TRANSPORTING text WHERE text IS INITIAL OR text IS NOT INITIAL.
+  MODIFY trdirt FROM TABLE t_trdirt.
+  COMMIT WORK.
 
   PERFORM update_filenames.
   s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = &apos;ZAPLINK&apos;.    APPEND s_package TO r_packages.
