@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="49B042483B43383B0D6B7BC471AFD3C8" CODE_SIGNATURE="CFE9C50151F5FFE4F49B080861E73788" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="C5DB8502B3B48AE1A1E95EC74B9237AC" CODE_SIGNATURE="19BACF85C031D04776E4515CC2811228" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VARCL="X" SUBC="1" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -17,9 +17,10 @@ SELECTION-SCREEN COMMENT 1(30) t_file FOR FIELD p_file.
 PARAMETERS p_file TYPE zaplink_file=&gt;td_filename OBLIGATORY.
 SELECTION-SCREEN END OF LINE.
 
+SELECTION-SCREEN BEGIN OF BLOCK mode WITH FRAME TITLE t_action.
 SELECTION-SCREEN BEGIN OF LINE.
 SELECTION-SCREEN COMMENT 1(30) t_dsp FOR FIELD p_dsp.
-PARAMETERS p_dsp TYPE flag RADIOBUTTON GROUP mod DEFAULT &apos;X&apos;.
+PARAMETERS p_dsp TYPE flag RADIOBUTTON GROUP mod DEFAULT &apos;X&apos; USER-COMMAND just_to_call_event.
 SELECTION-SCREEN END OF LINE.
 
 SELECTION-SCREEN BEGIN OF LINE.
@@ -31,21 +32,36 @@ SELECTION-SCREEN BEGIN OF LINE.
 SELECTION-SCREEN COMMENT 1(30) t_uninst FOR FIELD p_uninst.
 PARAMETERS p_uninst TYPE flag RADIOBUTTON GROUP mod.
 SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK mode.
 
+SELECTION-SCREEN BEGIN OF BLOCK devclass WITH FRAME TITLE t_devc.
+SELECTION-SCREEN BEGIN OF LINE.
+SELECTION-SCREEN COMMENT 1(30) t_novw FOR FIELD p_novw MODIF ID dev.
+PARAMETERS p_novw TYPE flag MODIF ID dev RADIOBUTTON GROUP devc.
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN BEGIN OF LINE.
+SELECTION-SCREEN COMMENT 1(30) t_usec FOR FIELD p_usec MODIF ID dev.
+PARAMETERS p_usec TYPE flag MODIF ID dev RADIOBUTTON GROUP devc DEFAULT &apos;X&apos;.
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN BEGIN OF LINE.
+SELECTION-SCREEN COMMENT 1(30) t_local FOR FIELD p_local MODIF ID dev.
+PARAMETERS p_local TYPE flag MODIF ID dev RADIOBUTTON GROUP devc.
+SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK devclass.
+
+DATA s_scr_name_devc     TYPE RANGE OF screen-name.
 DATA o_file     TYPE REF TO zaplink_file.
 DATA cx_file    TYPE REF TO zaplink_cx_file.
 
 INITIALIZATION.
-  t_file = &apos;Container&apos;&apos;s file&apos;.                             &quot;#EC NOTEXT
-  t_dsp = &apos;Display container&apos;&apos;s containt&apos;.                  &quot;#EC NOTEXT
-  t_inst = &apos;Install container&apos;.                             &quot;#EC NOTEXT
-  t_uninst = &apos;Uninstall container&apos;.                         &quot;#EC NOTEXT
-  TRY.
-      CREATE OBJECT o_file.
-      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-    CATCH zaplink_cx_file INTO cx_file.
-      cx_file-&gt;write( ).
-  ENDTRY.
+  PERFORM on_initialization.
+
+AT SELECTION-SCREEN.
+
+AT SELECTION-SCREEN OUTPUT.
+  PERFORM on_scr_output.
 
 AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_file.
   TRY.
@@ -89,7 +105,11 @@ START-OF-SELECTION.
       o_options-&gt;set_directory( o_o_dir ).
       o_o_dir-&gt;set_devclass( o_o_devc ).
       o_o_dir-&gt;set_transport_request( o_o_tr ).
-      o_o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-no_overwrite ).
+      CASE abap_true.
+        WHEN p_novw.    o_o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-no_overwrite ).
+        WHEN p_usec.    o_o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-use_container ).
+        WHEN p_local.   o_o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-local ).
+      ENDCASE.
       o_o_tr-&gt;set_substitutionkind( zaplink_opt_transport_request=&gt;substitutionkinds-user ). &quot; let user select a transport request for all components
       o_file-&gt;set_filename( p_file ).
     CATCH zaplink_cx_file INTO cx_file.
@@ -188,7 +208,89 @@ FORM activate .
       LOOP AT t_comps ASSIGNING &lt;c&gt;.    WRITE:/ &lt;c&gt;-type, &lt;c&gt;-name.   ENDLOOP.
     ENDIF.
   ENDIF.
-ENDFORM.                    &quot; ACTIVATE</SOURCE>
+ENDFORM.                    &quot; ACTIVATE
+*&amp;---------------------------------------------------------------------*
+*&amp;      Form  ON_INITIALIZATION
+*&amp;---------------------------------------------------------------------*
+FORM on_initialization .
+*  DATA clskey TYPE seoclskey.
+*  DATA not_active TYPE seox_boolean.
+  DATA t_fields TYPE  dyfatc_tab.
+  DATA _scr LIKE LINE OF s_scr_name_devc.
+  FIELD-SYMBOLS:
+    &lt;f&gt; LIKE LINE OF t_fields.
+
+  t_file = &apos;Container&apos;&apos;s file&apos;.                             &quot;#EC NOTEXT
+  t_dsp = &apos;Display container&apos;&apos;s containt&apos;.                  &quot;#EC NOTEXT
+  t_inst = &apos;Install container&apos;.                             &quot;#EC NOTEXT
+  t_uninst = &apos;Uninstall container&apos;.                         &quot;#EC NOTEXT
+  t_action = &apos;Action :&apos;.                                    &quot;#EC NOTEXT
+  t_devc = &apos;Package :&apos;.                                     &quot;#EC NOTEXT
+  t_novw = &apos;Do not overwrite&apos;.                              &quot;#EC NOTEXT
+  t_usec = &apos;Use container&apos;&apos;s package&apos;.                      &quot;#EC NOTEXT
+  t_local = &apos;Use $TMP&apos;.                                     &quot;#EC NOTEXT
+  TRY.
+      CREATE OBJECT o_file.
+      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+    CATCH zaplink_cx_file INTO cx_file.
+      cx_file-&gt;write( ).
+  ENDTRY.
+
+  CALL FUNCTION &apos;RPY_DYNPRO_READ&apos;
+    EXPORTING
+      progname                    = sy-cprog
+      dynnr                       = sy-dynnr
+*     SUPPRESS_EXIST_CHECKS       = &apos; &apos;
+*     SUPPRESS_CORR_CHECKS        = &apos; &apos;
+*   IMPORTING
+*     HEADER                      =
+    TABLES
+*     CONTAINERS                  =
+      fields_to_containers        = t_fields
+*     FLOW_LOGIC                  =
+*     PARAMS                      =
+    EXCEPTIONS
+      cancelled                   = 1
+      not_found                   = 2
+      permission_error            = 3
+      OTHERS                      = 4.
+  IF sy-subrc &lt;&gt; 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+            WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  _scr-sign = &apos;I&apos;. _scr-option = &apos;EQ&apos;.
+  LOOP AT t_fields ASSIGNING &lt;f&gt;.
+    _scr-low = &lt;f&gt;-name.
+    CASE &lt;f&gt;-group1.
+      WHEN &apos;DEV&apos;.
+        APPEND _scr TO s_scr_name_devc.
+    ENDCASE.
+*    _scr-high = &lt;f&gt;-push_fcode.
+*    CASE &lt;f&gt;-push_fcode.      &quot;USER-COMMAND
+*      WHEN &apos;DEV&apos;.
+*        APPEND _scr TO s_scr_name_devc.
+*    ENDCASE.
+  ENDLOOP.
+ENDFORM.                    &quot; ON_INITIALIZATION
+*---------------------------------------------------------------------*
+*      Form  on_scr_output
+*---------------------------------------------------------------------*
+FORM on_scr_output .
+* Options : DEVC &amp; TR
+  DATA _tab LIKE LINE OF s_scr_name_devc.
+  DATA _active TYPE i.
+  DATA _name TYPE string.
+
+  IF p_inst IS INITIAL.   _active = 0.    ELSE.   _active = 1.    ENDIF.
+  CASE sy-dynnr.
+    WHEN &apos;1000&apos;.
+      LOOP AT SCREEN.
+        CHECK screen-name IN s_scr_name_devc.
+        screen-active = _active. MODIFY SCREEN.
+      ENDLOOP.
+  ENDCASE.
+ENDFORM.                    &quot; ON_SCR_OUTPUT</SOURCE>
   <TEXTSPOOL>
    <ITEM ID="R">
     <TEXTS>
