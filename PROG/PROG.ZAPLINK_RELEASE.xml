@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="4CABC263677F44D9C45D9266A48DD149" CODE_SIGNATURE="7CEAA2001BEEAF185E255F6AC7A7A553" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="39FD3E042E7164395A9D06977F9C1EB3" CODE_SIGNATURE="CA4162EC67C749A3994B610DF45AB9B2" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -398,7 +398,7 @@ START-OF-SELECTION.
     s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
     DELETE r_packages WHERE low CP &apos;*DEVTOOLS*&apos;.
     t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
-                                                      ext = abap_false ).
+                                                      ext = abap_true ).
     CONCATENATE &apos;ZAPLINK Other objects version&apos;(ott) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
     CREATE OBJECT o_file.
     o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
@@ -420,7 +420,7 @@ START-OF-SELECTION.
     DELETE r_packages WHERE NOT low CP &apos;*DEVTOOLS*&apos;.
     s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
     t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
-                                                      ext = abap_false ).
+                                                      ext = abap_true ).
     CONCATENATE &apos;ZAPLINK Devlopper tools version&apos;(dvt) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
     CREATE OBJECT o_file.
     o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
