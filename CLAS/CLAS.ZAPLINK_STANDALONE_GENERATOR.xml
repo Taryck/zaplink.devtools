@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="37680525C4A91A2271CFCBCE47B1C47C" CODE_SIGNATURE="1DB1A004C12F21E5AE92CA199082F199" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="FF5E49CDA6C93D25A32DD3DB7884EB6F" CODE_SIGNATURE="C9BE94FD448C9C448F886E8E4B6ECBC1" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -258,7 +258,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   APPEND LINES OF _tmp_code-macro TO code.
   APPEND LINES OF _tmp_code-impl TO code.
 
-* Insert into MAster source code
+* Insert into Master source code
   abap_sourcecode = master_sourcecode.
   IF NOT abap_sourcecode IS INITIAL.
     REFRESH t_kw.
@@ -287,10 +287,99 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     ASSERT sy-subrc = 0.
     _pos = &lt;t_deb&gt;-row + 1.
     INSERT LINES OF code INTO abap_sourcecode INDEX _pos.
+    code = abap_sourcecode.
   ENDIF.
 
 *  code = clean_code( code ).
-  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = abap_sourcecode ).</SOURCE>
+  remove_checkpoints( CHANGING code = code ).           &quot; Issue 107
+  zaplink_tools=&gt;remove_comment_on_source( CHANGING table = code ).
+  abap_sourcecode = code.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="REMOVE_CHECKPOINTS" EXPOSURE="1" STATE="1" EDITORDER="5 " MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Remove checkpoints on source code"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="CODE" CMPTYPE="1" EDITORDER="1 " PARDECLTYP="2" PARPASSTYP="1" TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Table source code"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA c_log        TYPE string VALUE &apos;LOG-POINT&apos;.
+  DATA c_assert     TYPE string VALUE &apos;ASSERT&apos;.
+  DATA c_break      TYPE string VALUE &apos;BREAK-POINT&apos;.
+  DATA t_tokens     TYPE STANDARD TABLE OF stokes.
+  DATA t_statements TYPE STANDARD TABLE OF sstmnt.
+  DATA t_kw         TYPE STANDARD TABLE OF char255.
+  DATA s_kw         LIKE LINE OF t_kw.
+  DATA d_line       TYPE i.
+  DATA d_start      TYPE i.
+  DATA d_end        TYPE i.
+  DATA d_sdeb       TYPE string.
+  DATA d_sfin       TYPE string.
+  FIELD-SYMBOLS:
+    &lt;t_deb&gt; LIKE LINE OF t_tokens,
+    &lt;t_fin&gt; LIKE LINE OF t_tokens,
+    &lt;l&gt;  LIKE LINE OF code,
+    &lt;st&gt; LIKE LINE OF t_statements.
+
+* Include third
+  s_kw = c_assert.      APPEND s_kw TO t_kw.
+  s_kw = c_log.         APPEND s_kw TO t_kw.
+  s_kw = c_break.       APPEND s_kw TO t_kw.
+  SCAN ABAP-SOURCE code TOKENS INTO t_tokens
+                    STATEMENTS INTO t_statements
+                      KEYWORDS FROM t_kw.
+  zaplink_tools=&gt;inverse_table_order( CHANGING my_table = t_statements ).
+*  LOOP at t_tokens ASSIGNING &lt;t_deb&gt; where str = c_Log.
+*
+*  endloop.
+  LOOP AT t_statements ASSIGNING &lt;st&gt;.
+    READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    CHECK sy-subrc = 0.
+    CASE &lt;t_deb&gt;-str.
+      WHEN c_log.
+      WHEN OTHERS.
+        d_line = &lt;st&gt;-from + 1.   CHECK d_line &lt;= &lt;st&gt;-to.
+        READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX d_line.    CHECK sy-subrc = 0.
+        IF &lt;t_deb&gt;-str &lt;&gt; &apos;ID&apos;.   CONTINUE.   ENDIF.
+    ENDCASE.
+* Need to remove statement
+    READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    ASSERT sy-subrc = 0.
+    READ TABLE t_tokens ASSIGNING &lt;t_fin&gt; INDEX &lt;st&gt;-to.      ASSERT sy-subrc = 0.
+    READ TABLE code ASSIGNING &lt;l&gt; INDEX &lt;t_fin&gt;-row.          ASSERT sy-subrc = 0.
+    IF &lt;t_deb&gt;-row = &lt;t_fin&gt;-row.     &quot; on the same line
+
+      CLEAR: d_sdeb, d_sfin.
+      d_end = &lt;t_fin&gt;-col + STRLEN( &lt;t_fin&gt;-str ).
+      d_sdeb = &lt;l&gt;(&lt;t_deb&gt;-col).    d_sfin = &lt;l&gt;+d_end.
+*      CLEAR &lt;l&gt;+&lt;t_deb&gt;-col(&lt;t_fin&gt;-row).
+      CONCATENATE d_sdeb d_sfin INTO &lt;l&gt;.
+      CONDENSE &lt;l&gt;.
+
+    ELSE.
+* Last line
+      CLEAR: d_sdeb, d_sfin.
+      d_end = &lt;t_fin&gt;-col + STRLEN( &lt;t_fin&gt;-str ).
+      d_sfin = &lt;l&gt;+d_end.
+*      CLEAR &lt;l&gt;(&lt;t_fin&gt;-row).
+      &lt;l&gt; = d_sfin.
+      CONDENSE &lt;l&gt;.
+
+* Middle lines
+      d_start = &lt;t_deb&gt;-row + 1.      d_end = &lt;t_fin&gt;-row - 1.
+      IF d_start &lt;= d_end.      DELETE code FROM d_start TO d_end.     ENDIF.
+
+* First line
+      READ TABLE code ASSIGNING &lt;l&gt; INDEX &lt;t_deb&gt;-row.         ASSERT sy-subrc = 0.
+      CLEAR: d_sdeb, d_sfin.
+      d_sdeb = &lt;l&gt;(&lt;t_deb&gt;-col).
+*      CLEAR &lt;l&gt;(&lt;t_fin&gt;-row).
+      &lt;l&gt; = d_sdeb.
+      CONDENSE &lt;l&gt;.
+    ENDIF.
+  ENDLOOP.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="SAVE_REPORT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
     <TEXTS>

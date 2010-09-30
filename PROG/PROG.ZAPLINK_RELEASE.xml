@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="39FD3E042E7164395A9D06977F9C1EB3" CODE_SIGNATURE="CA4162EC67C749A3994B610DF45AB9B2" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="FA4E98AF65C9B3CE6673B4067FB6EEE4" CODE_SIGNATURE="97B30201FF464FD260DBC7F17B105D08" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -34,8 +34,8 @@ PARAMETERS p_a_act TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 PARAMETERS p_a_use TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 PARAMETERS p_a_chk TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 PARAMETERS p_a_nfo TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
-PARAMETERS p_a_ins TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 PARAMETERS p_a_ext TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
+PARAMETERS p_a_ins TYPE abap_bool AS CHECKBOX DEFAULT abap_true.
 SELECTION-SCREEN END OF BLOCK actions.
 
 TYPES td_sourcecode TYPE zaplink_standalone_generator=&gt;tt_abaprawsource.
@@ -111,6 +111,8 @@ START-OF-SELECTION.
   DATA s_trdirt     LIKE LINE OF t_trdirt.
   FIELD-SYMBOLS:
     &lt;k&gt; LIKE LINE OF t_keys.
+
+* Save parameters
 
 *modify trdirti
 *modify TRDIRT
@@ -346,11 +348,70 @@ START-OF-SELECTION.
     ENDTRY.
   ENDIF.
 
-* Installer
-  IF NOT p_a_ins IS INITIAL.
+* StandAlone Extractor
+  IF NOT p_a_ext IS INITIAL.
     CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
       EXPORTING
         percentage = 70
+        text       = text-pin.
+*  SELECT SINGLE name INTO d_name
+*    FROM trdir
+*    WHERE name = c_stand_a.
+*  IF sy-subrc = 0.
+*    SUBMIT (c_stand_a)
+*      WITH p_prog = &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;
+*      WITH p_master =  &apos;ZAPLINK_EXTRACTOR&apos;
+*      WITH p_devc = &apos;$TMP&apos;
+*      AND RETURN.
+*    READ REPORT &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos; INTO t_code.
+*    IF sy-subrc = 0.
+*      CREATE OBJECT o_file.
+*      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+*      o_file-&gt;set_filename( d_extfn ).
+*      d_content = zaplink_tools=&gt;table_2_string( t_code ).
+*      o_file-&gt;set_filecontent( d_content ).
+*      o_file-&gt;save( ).
+*    ENDIF.
+*  ENDIF.
+    TRY.
+        CREATE OBJECT o_generator
+          EXPORTING
+            master = &apos;ZAPLINK_EXTRACTOR&apos;.
+        o_generator-&gt;add_connectors( ).
+        abapcode = o_generator-&gt;generate( ).
+        o_generator-&gt;save_report( report = c_prog_ext_sa
+                                 package = c_gen_pack ).
+
+        REFRESH t_keys.
+        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_ext_sa.   APPEND s_key TO t_keys.
+        CREATE OBJECT o_activ
+          EXPORTING
+            obj_list = t_keys.
+        t_keys_ko = o_activ-&gt;activate( ).
+        IF t_keys_ko IS INITIAL.
+          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_ext_sa.
+        ELSE.
+          WRITE:/ &apos;List of components with errors&apos;(sko).
+          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
+        ENDIF.
+
+        CREATE OBJECT o_file.
+        o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+        o_file-&gt;set_filename( d_extfn ).
+        d_content = zaplink_tools=&gt;table_2_string( abapcode ).
+        o_file-&gt;set_filecontent( d_content ).
+        o_file-&gt;save( ).
+      CATCH zaplink_cx INTO o_zlcx.
+        WRITE:/ &apos;ZL_Extractor Stand Alone Generation exception :&apos;(cxx).
+        o_zlcx-&gt;write( ).
+    ENDTRY.
+  ENDIF.
+
+* Installer =&gt; Always at the end because parameters and select-options will be change by the exctractor (when loading variants)
+  IF NOT p_a_ins IS INITIAL.
+    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
+      EXPORTING
+        percentage = 85
         text       = text-pin.
 *  SELECT SINGLE name INTO d_name
 *    FROM trdir
@@ -437,65 +498,6 @@ START-OF-SELECTION.
 *    write:/ &apos;Developer tools content :&apos;(dtc).
 *    o_objects-&gt;write( ).
 
-  ENDIF.
-
-* StandAlone Extractor
-  IF NOT p_a_ext IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 85
-        text       = text-pin.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_stand_a.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_stand_a)
-*      WITH p_prog = &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;
-*      WITH p_master =  &apos;ZAPLINK_EXTRACTOR&apos;
-*      WITH p_devc = &apos;$TMP&apos;
-*      AND RETURN.
-*    READ REPORT &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos; INTO t_code.
-*    IF sy-subrc = 0.
-*      CREATE OBJECT o_file.
-*      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-*      o_file-&gt;set_filename( d_extfn ).
-*      d_content = zaplink_tools=&gt;table_2_string( t_code ).
-*      o_file-&gt;set_filecontent( d_content ).
-*      o_file-&gt;save( ).
-*    ENDIF.
-*  ENDIF.
-    TRY.
-        CREATE OBJECT o_generator
-          EXPORTING
-            master = &apos;ZAPLINK_EXTRACTOR&apos;.
-        o_generator-&gt;add_connectors( ).
-        abapcode = o_generator-&gt;generate( ).
-        o_generator-&gt;save_report( report = c_prog_ext_sa
-                                 package = c_gen_pack ).
-
-        REFRESH t_keys.
-        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_ext_sa.   APPEND s_key TO t_keys.
-        CREATE OBJECT o_activ
-          EXPORTING
-            obj_list = t_keys.
-        t_keys_ko = o_activ-&gt;activate( ).
-        IF t_keys_ko IS INITIAL.
-          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_ext_sa.
-        ELSE.
-          WRITE:/ &apos;List of components with errors&apos;(sko).
-          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
-        ENDIF.
-
-        CREATE OBJECT o_file.
-        o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-        o_file-&gt;set_filename( d_extfn ).
-        d_content = zaplink_tools=&gt;table_2_string( abapcode ).
-        o_file-&gt;set_filecontent( d_content ).
-        o_file-&gt;save( ).
-      CATCH zaplink_cx INTO o_zlcx.
-        WRITE:/ &apos;ZL_Extractor Stand Alone Generation exception :&apos;(cxx).
-        o_zlcx-&gt;write( ).
-    ENDTRY.
   ENDIF.
 
 END-OF-SELECTION.
