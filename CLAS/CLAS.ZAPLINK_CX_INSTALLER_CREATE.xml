@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="B110B77D8431D67C78B5478D7D157D30" CODE_SIGNATURE="2FCA4D0352C93C2276AA8143E98647B6" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="9ECF95CD07FEFCAF48610A4E7ADD5371" CODE_SIGNATURE="4DF72265E4EC0C0720D5D6A9E2DF217F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" CATEGORY="40" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" VARCL="X" UNICODE="X" RSTAT="S">
@@ -30,6 +30,15 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
    <ITEM CMPNAME="TD_COMPTYPE" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_COMPTYPE"/>
   </ALIASES>
   <ATTRIBUTS>
+   <ITEM CMPNAME="ACTIVATION_ERROR" EXPOSURE="2" STATE="1" EDITORDER="8 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ACTIVATION_ERROR,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;503&apos;,
+      attr1 type scx_attrname value &apos;&apos;,
+      attr2 type scx_attrname value &apos;&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of ACTIVATION_ERROR
+`</ITEM>
    <ITEM CMPNAME="INCLUDE_NAME" EXPOSURE="2" STATE="1" EDITORDER="7 " ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
     <TEXTS>
      <ITEM LANG="E" TEXT="ABAP Program Name"/>
@@ -45,34 +54,43 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
      <ITEM LANG="E" TEXT="ABAP Program Name"/>
     </TEXTS>
    </ITEM>
+   <ITEM CMPNAME="NOT_EXISTS" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NOT_EXISTS,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;500&apos;,
+      attr1 type scx_attrname value &apos;MASTER_NAME&apos;,
+      attr2 type scx_attrname value &apos;&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of NOT_EXISTS
+`</ITEM>
+   <ITEM CMPNAME="NO_INCLUDE" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_INCLUDE,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;502&apos;,
+      attr1 type scx_attrname value &apos;INCLUDE_NAME&apos;,
+      attr2 type scx_attrname value &apos;MASTER_NAME&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of NO_INCLUDE
+`</ITEM>
+   <ITEM CMPNAME="NO_OVERWRITE" EXPOSURE="2" STATE="1" EDITORDER="3 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_OVERWRITE,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;501&apos;,
+      attr1 type scx_attrname value &apos;INSTALLER_NAME&apos;,
+      attr2 type scx_attrname value &apos;&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of NO_OVERWRITE
+`</ITEM>
+   <ITEM CMPNAME="ZAPLINK_CX_INSTALLER_CREATE" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ZAPLINK_CX_INSTALLER_CREATE,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;499&apos;,
+      attr1 type scx_attrname value &apos;CX_NAME&apos;,
+      attr2 type scx_attrname value &apos;&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of ZAPLINK_CX_INSTALLER_CREATE
+`</ITEM>
   </ATTRIBUTS>
-  <EXCEPTIONS_TEXTS>
-   <ITEM EDITORDER="1 ">
-    <TEXTS>
-     <ITEM LANGU="E" SHORT_TXT="SAP Link Exception !!!"/>
-    </TEXTS>
-   </ITEM>
-   <ITEM CMPNAME="ACTIVATION_ERROR" EDITORDER="8 ">
-    <TEXTS>
-     <ITEM LANGU="E" SHORT_TXT="Error while activating Installer"/>
-    </TEXTS>
-   </ITEM>
-   <ITEM CMPNAME="NOT_EXISTS" EDITORDER="2 ">
-    <TEXTS>
-     <ITEM LANGU="E" SHORT_TXT="Master (&amp;MASTER_NAME&amp;) do not exists"/>
-    </TEXTS>
-   </ITEM>
-   <ITEM CMPNAME="NO_INCLUDE" EDITORDER="4 ">
-    <TEXTS>
-     <ITEM LANGU="E" SHORT_TXT="Include (&amp;INCLUDE_NAME&amp;) not found in Master (&amp;MASTER_NAME&amp;)"/>
-    </TEXTS>
-   </ITEM>
-   <ITEM CMPNAME="NO_OVERWRITE" EDITORDER="3 ">
-    <TEXTS>
-     <ITEM LANGU="E" SHORT_TXT="Installer (&amp;INSTALLER_NAME&amp;) already exists"/>
-    </TEXTS>
-   </ITEM>
-  </EXCEPTIONS_TEXTS>
   <INTERFACES>
    <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
   </INTERFACES>

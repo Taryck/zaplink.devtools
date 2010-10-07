@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FA4E98AF65C9B3CE6673B4067FB6EEE4" CODE_SIGNATURE="97B30201FF464FD260DBC7F17B105D08" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="BB2696FA9060BAB3AF2EDD71F6A0ED5F" CODE_SIGNATURE="31094B755FBCF08A3F830492A8930A29" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -107,61 +107,39 @@ START-OF-SELECTION.
   DATA o_cont       TYPE REF TO zaplink_container.
   DATA o_objects    TYPE REF TO	zaplink_list.
   DATA t_data       TYPE zaplink_container=&gt;ts_contdata.
-  DATA t_trdirt     TYPE STANDARD TABLE OF trdirt.
-  DATA s_trdirt     LIKE LINE OF t_trdirt.
+*  DATA t_trdirt     TYPE STANDARD TABLE OF trdirt.
+*  DATA s_trdirt     LIKE LINE OF t_trdirt.
   FIELD-SYMBOLS:
     &lt;k&gt; LIKE LINE OF t_keys.
-
-* Save parameters
-
-*modify trdirti
-*modify TRDIRT
-  SELECT * INTO TABLE t_trdirt
-    FROM trdirt
-    WHERE name = &apos;ZAPLINK&apos;.
-  CONCATENATE &apos;ZAPLINK V&apos; zaplink_datatypes=&gt;framework_version INTO s_trdirt-text.
-  MODIFY t_trdirt FROM s_trdirt TRANSPORTING text WHERE text IS INITIAL OR text IS NOT INITIAL.
-  MODIFY trdirt FROM TABLE t_trdirt.
-  COMMIT WORK.
+  DATA o_release    TYPE REF TO zaplink_release.
+  DATA s_files2      TYPE zaplink_release=&gt;ts_files.
 
   PERFORM update_filenames.
-  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = &apos;ZAPLINK&apos;.    APPEND s_package TO r_packages.
-* SGEN : Activate all comp
-*  t_keys = zaplink_tools=&gt;get_keys_from_tadir( srcsystem = r_srcsystem
-*                                                   type  = r_type
-*                                                    name = r_name
-*                                                packages = r_packages
-*                                                     ext = abap_true
-*                                                  author = r_author ).
-  t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
-                                                    ext = abap_true ).
-* Not only programs but also dictionary component
-*  t_programs = zaplink_tools=&gt;conv_compkey_2_proglist( t_keys ).
-*  t_programs = zaplink_tools=&gt;check_valid_proglist( t_programs ).
-*  t_keys = zaplink_tools=&gt;conv_proglist_2_compkey( t_programs ).
-  DELETE t_keys WHERE type = &apos;PROG&apos; AND name = sy-repid.    &quot; remove myself
-  d_count = LINES( t_keys ).
+  s_files2-c_devtools = d_devfn.
+  s_files2-c_others = d_othfn.
+  s_files2-c_fw = d_contfn.
+  s_files2-installer = d_instfn.
+  s_files2-extractor = d_extfn.
+
+  s_programs-master = p_master.
+  s_programs-include = p_incl.
+  s_programs-program = p_prog.
+  s_programs-package = &apos;$TMP&apos;.
+
+  CREATE OBJECT o_release
+    EXPORTING
+      files    = s_files2
+      programs = s_programs.
+  o_release-&gt;replicate_version_on_framework( ).
+  COMMIT WORK.
+
+  d_count = LINES( o_release-&gt;all_components ).
   IF NOT p_a_act IS INITIAL.
     CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
       EXPORTING
         percentage = 1
         text       = text-psg.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_sgen.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_sgen)
-*      WITH p_sgen = abap_true
-*      WITH p_comp = &apos;HOME&apos;
-*      WITH s_devc IN r_packages[]
-*      WITH p_lsmw = abap_false
-*      WITH p_$tmp = abap_false
-*      AND RETURN.
-*  ENDIF.
-    CREATE OBJECT o_activ
-      EXPORTING
-        obj_list = t_keys.
-    t_keys_ko = o_activ-&gt;activate( ).
+    t_keys_ko = o_release-&gt;generate_framework( ).
     IF t_keys_ko IS INITIAL.
       d_content = d_count.
 * &amp;1 component(s) succefully activated
@@ -181,19 +159,8 @@ START-OF-SELECTION.
       EXPORTING
         percentage = 25
         text       = text-puc.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_usecase.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_usecase)
-*      WITH p_comp = &apos;HOME&apos;
-*      WITH s_devc = &apos;ZAPLINK*&apos;
-*      AND RETURN.
-*  ENDIF.
     TRY.
-        CREATE OBJECT o_usecase.
-        o_usecase-&gt;add_keys( t_keys ).
-        o_usecase-&gt;update_index( ).
+        o_release-&gt;update_framework_usecaseindex( ).
       CATCH zaplink_cx INTO o_zlcx.
         WRITE:/ &apos;Usecase update exception :&apos;(cxu).
         o_zlcx-&gt;write( ).
@@ -207,100 +174,17 @@ START-OF-SELECTION.
       EXPORTING
         percentage = 40
         text       = text-prs.
-    t_keys_ko = t_keys.       d_bal_sobj = sy-repid.
-    DELETE t_keys_ko WHERE type &lt;&gt; &apos;CLAS&apos;.
-    LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.
-      classkey-clsname = d_bal_extn = &lt;k&gt;-name.
 
-      CALL FUNCTION &apos;SEO_CLIF_GET&apos;
-        EXPORTING
-          cifkey       = classkey
-        IMPORTING
-          clstype      = clstype
-          class        = class
-        EXCEPTIONS
-          not_existing = 1
-          deleted      = 2.
-      IF sy-subrc = 1.
-        MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-           WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4 INTO d_content.
-        WRITE:/ icon_light_out AS ICON, d_content.
-      ENDIF.
-      CHECK sy-subrc = 0.
+    t_keys_ko = o_release-&gt;check_framework_classes( ).
 
-      CREATE OBJECT o_log.
-      CALL METHOD o_log-&gt;init
-        EXPORTING
-          id_object      = zaplink_datatypes=&gt;ballog_object
-          id_subobject   = d_bal_sobj
-          id_extnumber   = d_bal_extn
-          auto_upd_custo = abap_true
-          id_activity    = zaplink_message_collector=&gt;actions-create
-        EXCEPTIONS
-          error          = 1
-          OTHERS         = 2.
-      TRY.
-          CALL METHOD zaplink_object=&gt;check_class_sections
-            EXPORTING
-              classkey        = classkey
-              application_log = o_log.
-          IF o_log-&gt;has_messages_of_msgt( &apos;W&apos; ) = abap_true.
-            d_regenflag = abap_true.
-            WRITE:/ &apos;Class&apos;(cls), classkey-clsname.
-            CALL FUNCTION &apos;SEO_CLIF_SAVE_ALL&apos;
-              EXPORTING
-                cifkey                              = classkey
-*             NO_SECTIONS                         = SEOX_FALSE
-                sections_only                       = seox_true
-              EXCEPTIONS
-                not_existing                        = 1
-                nothing_to_do                       = 2
-                access_error                        = 3
-                db_error                            = 4
-                error_in_code_generation            = 5
-                OTHERS                              = 6.
-            IF sy-subrc &lt;&gt; 0.
-              o_log-&gt;add_symsg( ).
-            ENDIF.
-            o_log-&gt;write( ).
-          ENDIF.
-        CATCH zaplink_cx_connector INTO o_zlcx.
-          d_regenflag = abap_true.
-          WRITE:/ &apos;Classe&apos;(cls), classkey-clsname.
-          o_zlcx-&gt;write( ).
-      ENDTRY.
-
-      IF clstype = seoc_clstype_class AND class-category = seoc_category_exception.
-        CREATE OBJECT o_oo_cx
-          EXPORTING
-            clskey = classkey.
-        IF o_oo_cx-&gt;check_constructor( ) = abap_false.
-          d_regenflag = abap_true.
-          WRITE:/ &apos;Exception Class&apos;(cxs), classkey-clsname, &apos;Constructor rebuild&apos;(crb).
-          o_oo_cx-&gt;create_constructor_definition( ).
-          CALL FUNCTION &apos;SEO_CLIF_SAVE_ALL&apos;
-            EXPORTING
-              cifkey                              = classkey
-*            NO_SECTIONS                         = SEOX_FALSE
-*            sections_only                       = seox_true
-            EXCEPTIONS
-              not_existing                        = 1
-              nothing_to_do                       = 2
-              access_error                        = 3
-              db_error                            = 4
-              error_in_code_generation            = 5
-              OTHERS                              = 6.
-          IF sy-subrc &lt;&gt; 0.
-            WRITE:/ &apos;SEO_CLIF_SAVE_ALL&apos;, classkey, d_content.
-          ENDIF.
-        ENDIF.
-      ENDIF.
-
-    ENDLOOP.
-
-    IF NOT d_regenflag IS INITIAL.
+    IF NOT t_keys_ko IS INITIAL.
       WRITE:/ &apos;Some classes have been regenerated. Please restart this program.&apos;(gen).
+      LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
+      o_release-&gt;o_log-&gt;write( ).
       COMMIT WORK AND WAIT.
+      EXIT.
+    ELSEIF o_release-&gt;o_log-&gt;has_messages_of_msgt( &apos;W&apos; ) = abap_true.
+      o_release-&gt;o_log-&gt;write( ).
       EXIT.
     ENDIF.
   ENDIF.
@@ -311,39 +195,10 @@ START-OF-SELECTION.
       EXPORTING
         percentage = 60
         text       = text-pis.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_stand_a.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_stand_a)
-*      WITH p_prog = &apos;ZAPLINK_INFOS_STANDALONE&apos;
-*      WITH p_master =  &apos;ZAPLINK_INFOS&apos;
-*      WITH p_devc = &apos;ZAPLINK-FRAMEWORK-CORE&apos;
-*      AND RETURN.
-*  ENDIF.
     TRY.
-        CREATE OBJECT o_generator
-          EXPORTING
-            master = &apos;ZAPLINK_INFOS&apos;.
-        o_generator-&gt;add_connectors( ).
-        o_generator-&gt;generate( ).
-        o_generator-&gt;save_report( report = c_prog_nfo_sa
-                                 package = c_gen_pack ).
-        REFRESH t_keys.
-        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_nfo_sa.   APPEND s_key TO t_keys.
-        CREATE OBJECT o_activ
-          EXPORTING
-            obj_list = t_keys.
-        t_keys_ko = o_activ-&gt;activate( ).
-        IF t_keys_ko IS INITIAL.
-          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_nfo_sa.
-        ELSE.
-          WRITE:/ &apos;List of components with errors&apos;(sko).
-          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
-        ENDIF.
-
+        o_release-&gt;generate_infos_sa( ).
+        WRITE:/ &apos;Generated program :&apos;(gpr), o_release-&gt;programs-infos_sa.
       CATCH zaplink_cx INTO o_zlcx.
-        WRITE:/ &apos;ZL_Infos Stand Alone Generation exception :&apos;(cxn).
         o_zlcx-&gt;write( ).
     ENDTRY.
   ENDIF.
@@ -354,55 +209,10 @@ START-OF-SELECTION.
       EXPORTING
         percentage = 70
         text       = text-pin.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_stand_a.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_stand_a)
-*      WITH p_prog = &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;
-*      WITH p_master =  &apos;ZAPLINK_EXTRACTOR&apos;
-*      WITH p_devc = &apos;$TMP&apos;
-*      AND RETURN.
-*    READ REPORT &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos; INTO t_code.
-*    IF sy-subrc = 0.
-*      CREATE OBJECT o_file.
-*      o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-*      o_file-&gt;set_filename( d_extfn ).
-*      d_content = zaplink_tools=&gt;table_2_string( t_code ).
-*      o_file-&gt;set_filecontent( d_content ).
-*      o_file-&gt;save( ).
-*    ENDIF.
-*  ENDIF.
     TRY.
-        CREATE OBJECT o_generator
-          EXPORTING
-            master = &apos;ZAPLINK_EXTRACTOR&apos;.
-        o_generator-&gt;add_connectors( ).
-        abapcode = o_generator-&gt;generate( ).
-        o_generator-&gt;save_report( report = c_prog_ext_sa
-                                 package = c_gen_pack ).
-
-        REFRESH t_keys.
-        s_key-type = &apos;PROG&apos;.   s_key-name = c_prog_ext_sa.   APPEND s_key TO t_keys.
-        CREATE OBJECT o_activ
-          EXPORTING
-            obj_list = t_keys.
-        t_keys_ko = o_activ-&gt;activate( ).
-        IF t_keys_ko IS INITIAL.
-          WRITE:/ &apos;Generated program :&apos;(gpr), c_prog_ext_sa.
-        ELSE.
-          WRITE:/ &apos;List of components with errors&apos;(sko).
-          LOOP AT t_keys_ko ASSIGNING &lt;k&gt;.   WRITE:/ &lt;k&gt;-type, &lt;k&gt;-name.   ENDLOOP.
-        ENDIF.
-
-        CREATE OBJECT o_file.
-        o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-        o_file-&gt;set_filename( d_extfn ).
-        d_content = zaplink_tools=&gt;table_2_string( abapcode ).
-        o_file-&gt;set_filecontent( d_content ).
-        o_file-&gt;save( ).
+        o_release-&gt;generate_extract_sa( ).
+        WRITE:/ &apos;Generated program :&apos;(gpr), o_release-&gt;programs-extractor_sa.
       CATCH zaplink_cx INTO o_zlcx.
-        WRITE:/ &apos;ZL_Extractor Stand Alone Generation exception :&apos;(cxx).
         o_zlcx-&gt;write( ).
     ENDTRY.
   ENDIF.
@@ -413,90 +223,19 @@ START-OF-SELECTION.
       EXPORTING
         percentage = 85
         text       = text-pin.
-*  SELECT SINGLE name INTO d_name
-*    FROM trdir
-*    WHERE name = c_installer.
-*  IF sy-subrc = 0.
-*    SUBMIT (c_installer)
-*      WITH p_incl = p_incl
-*      WITH p_overw =  p_overw
-*      WITH p_prog = p_prog
-*      WITH d_fn = d_contfn
-*      WITH d_ifn = d_instfn
-*      WITH p_master = p_master
-*      WITH s_pack IN r_packages[]
-*      AND RETURN.
-*  ENDIF.
-    s_programs-master = p_master.
-    s_programs-include = p_incl.
-    s_programs-program = p_prog.
-    s_programs-package = &apos;$TMP&apos;.
-
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_tutorial_pack.     APPEND s_package TO r_packages.
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_devtools_pack.     APPEND s_package TO r_packages.
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_temp_pack.         APPEND s_package TO r_packages.
-    s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = c_gen_pack.          APPEND s_package TO r_packages.
-    s_selection-packages = r_packages.
-    s_key-type = &apos;PROG&apos;.    s_key-name = c_prog_nfo_sa.   APPEND s_key TO s_selection-keys.
-
-    s_files-container = d_contfn.
-    s_files-installer = d_instfn.
-
-    CREATE OBJECT o_installer.
     TRY.
-        o_installer-&gt;set_parameters(
-            programs  = s_programs
-            overwrite = p_overw
-            selection = s_selection
-            files     = s_files ).
-        o_installer-&gt;create_installer( ).
+        o_release-&gt;create_installer( ).
       CATCH zaplink_cx INTO o_zlcx.
         WRITE:/ &apos;Install Generator exception :&apos;(cxi).
         o_zlcx-&gt;write( ).
     ENDTRY.
 
-    DELETE r_packages WHERE sign = &apos;I&apos;.
-    s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
-    DELETE r_packages WHERE low CP &apos;*DEVTOOLS*&apos;.
-    t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
-                                                      ext = abap_true ).
-    CONCATENATE &apos;ZAPLINK Other objects version&apos;(ott) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
-    CREATE OBJECT o_file.
-    o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-    o_file-&gt;set_filename( d_othfn ).
-
-    CREATE OBJECT o_objects .
-    o_objects-&gt;add_keys( t_keys ).
-    o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
-    o_cont = zaplink_container=&gt;create_new( data = t_data
-                                          o_file = o_file ).
-    o_cont-&gt;add_components( o_objects ).
-    o_cont-&gt;save_to_file( ).
-*    o_objects = o_cont-&gt;get_content( ).
-*    write:/ &apos;Developer tools content :&apos;(dtc).
-*    o_objects-&gt;write( ).
-
-    r_packages = s_selection-packages.
-    DELETE r_packages WHERE sign = &apos;I&apos;.
-    DELETE r_packages WHERE NOT low CP &apos;*DEVTOOLS*&apos;.
-    s_package-sign = &apos;I&apos;.   MODIFY r_packages FROM s_package TRANSPORTING sign WHERE sign &lt;&gt; s_package-sign.
-    t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
-                                                      ext = abap_true ).
-    CONCATENATE &apos;ZAPLINK Devlopper tools version&apos;(dvt) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
-    CREATE OBJECT o_file.
-    o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-    o_file-&gt;set_filename( d_devfn ).
-
-    CREATE OBJECT o_objects .
-    o_objects-&gt;add_keys( t_keys ).
-    o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
-    o_cont = zaplink_container=&gt;create_new( data = t_data
-                                          o_file = o_file ).
-    o_cont-&gt;add_components( o_objects ).
-    o_cont-&gt;save_to_file( ).
-*    o_objects = o_cont-&gt;get_content( ).
-*    write:/ &apos;Developer tools content :&apos;(dtc).
-*    o_objects-&gt;write( ).
+    TRY.
+        o_release-&gt;create_containers( ).
+      CATCH zaplink_cx INTO o_zlcx.
+        WRITE:/ &apos;Exception in container Generation :&apos;(ccg).
+        o_zlcx-&gt;write( ).
+    ENDTRY.
 
   ENDIF.
 
@@ -530,6 +269,11 @@ ENDFORM.                    &quot; UPDATE_FILENAMES</SOURCE>
    <ITEM ID="I" KEY="BPA">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Parameters :" LENGTH="20 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="CCG">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Exception in container Generation :" LENGTH="35 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="I" KEY="CLS">

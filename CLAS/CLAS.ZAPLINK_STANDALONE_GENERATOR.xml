@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FF5E49CDA6C93D25A32DD3DB7884EB6F" CODE_SIGNATURE="C9BE94FD448C9C448F886E8E4B6ECBC1" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="9D69AD331F321C105EA368E4C169CBE5" CODE_SIGNATURE="4EC77BCACFB57346930E5543A21CF7F5" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -333,9 +333,6 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
                     STATEMENTS INTO t_statements
                       KEYWORDS FROM t_kw.
   zaplink_tools=&gt;inverse_table_order( CHANGING my_table = t_statements ).
-*  LOOP at t_tokens ASSIGNING &lt;t_deb&gt; where str = c_Log.
-*
-*  endloop.
   LOOP AT t_statements ASSIGNING &lt;st&gt;.
     READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    CHECK sy-subrc = 0.
     CASE &lt;t_deb&gt;-str.
@@ -345,40 +342,10 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
         READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX d_line.    CHECK sy-subrc = 0.
         IF &lt;t_deb&gt;-str &lt;&gt; &apos;ID&apos;.   CONTINUE.   ENDIF.
     ENDCASE.
-* Need to remove statement
-    READ TABLE t_tokens ASSIGNING &lt;t_deb&gt; INDEX &lt;st&gt;-from.    ASSERT sy-subrc = 0.
-    READ TABLE t_tokens ASSIGNING &lt;t_fin&gt; INDEX &lt;st&gt;-to.      ASSERT sy-subrc = 0.
-    READ TABLE code ASSIGNING &lt;l&gt; INDEX &lt;t_fin&gt;-row.          ASSERT sy-subrc = 0.
-    IF &lt;t_deb&gt;-row = &lt;t_fin&gt;-row.     &quot; on the same line
 
-      CLEAR: d_sdeb, d_sfin.
-      d_end = &lt;t_fin&gt;-col + STRLEN( &lt;t_fin&gt;-str ).
-      d_sdeb = &lt;l&gt;(&lt;t_deb&gt;-col).    d_sfin = &lt;l&gt;+d_end.
-*      CLEAR &lt;l&gt;+&lt;t_deb&gt;-col(&lt;t_fin&gt;-row).
-      CONCATENATE d_sdeb d_sfin INTO &lt;l&gt;.
-      CONDENSE &lt;l&gt;.
-
-    ELSE.
-* Last line
-      CLEAR: d_sdeb, d_sfin.
-      d_end = &lt;t_fin&gt;-col + STRLEN( &lt;t_fin&gt;-str ).
-      d_sfin = &lt;l&gt;+d_end.
-*      CLEAR &lt;l&gt;(&lt;t_fin&gt;-row).
-      &lt;l&gt; = d_sfin.
-      CONDENSE &lt;l&gt;.
-
-* Middle lines
-      d_start = &lt;t_deb&gt;-row + 1.      d_end = &lt;t_fin&gt;-row - 1.
-      IF d_start &lt;= d_end.      DELETE code FROM d_start TO d_end.     ENDIF.
-
-* First line
-      READ TABLE code ASSIGNING &lt;l&gt; INDEX &lt;t_deb&gt;-row.         ASSERT sy-subrc = 0.
-      CLEAR: d_sdeb, d_sfin.
-      d_sdeb = &lt;l&gt;(&lt;t_deb&gt;-col).
-*      CLEAR &lt;l&gt;(&lt;t_fin&gt;-row).
-      &lt;l&gt; = d_sdeb.
-      CONDENSE &lt;l&gt;.
-    ENDIF.
+    zaplink_tools=&gt;comment_statement( EXPORTING statement = &lt;st&gt;
+                                                   tokens = t_tokens
+                                            CHANGING code = code ).
   ENDLOOP.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="SAVE_REPORT" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">

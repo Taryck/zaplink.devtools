@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="625231E04AA4CDAC977FCCFE7A1CF42B" CODE_SIGNATURE="A458D99E4104DED7A50A165D586D0783" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_RELEASE" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" CATEGORY="40" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
+   <INHERITANCE REFCLSNAME="ZAPLINK_CX" STATE="1"/>
+   <TEXTS>
+    <ITEM LANG="E" TEXT="ZAPLink Framework : Exception for release process"/>
+   </TEXTS>
+  </A0_MAINDATA>
+  <ALIASES>
+   <ITEM CMPNAME="TD_PROGNAME" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_PROGNAME"/>
+  </ALIASES>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="GENERATION_FAILED" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of GENERATION_FAILED,
+      msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
+      msgno type symsgno value &apos;017&apos;,
+      attr1 type scx_attrname value &apos;TARGET_PROGRAM&apos;,
+      attr2 type scx_attrname value &apos;MASTER_PROGRAM&apos;,
+      attr3 type scx_attrname value &apos;&apos;,
+      attr4 type scx_attrname value &apos;&apos;,
+    end of GENERATION_FAILED
+`</ITEM>
+   <ITEM CMPNAME="MASTER_PROGRAM" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="TD_PROGNAME">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Master program name"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TARGET_PROGRAM" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="TD_PROGNAME">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Target program name"/>
+    </TEXTS>
+   </ITEM>
+  </ATTRIBUTS>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</MACROS>
+  </LOCAL>
+ </RAW>
+</ZL_OBJECT>

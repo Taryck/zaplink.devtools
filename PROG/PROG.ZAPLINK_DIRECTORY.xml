@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FE6A8B74EA12C4CEE5D978C08EACACCE" CODE_SIGNATURE="489C9311A1D43BF068A02764F7DAC0B5" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="012E433E9C7B6D6DA77C3C71450B652E" CODE_SIGNATURE="CB6A013AB4CDB10E6E30D777CC9A1F0A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -206,7 +206,7 @@ MODULE ok_code INPUT.
           o_file-&gt;save_dialog( ).
           o_file-&gt;save( ).
         CATCH zaplink_cx INTO o_cx.
-          IF o_cx-&gt;textid = zaplink_cx_file=&gt;dialog_canceled.   d_msgty = &apos;S&apos;.    ELSE.   d_msgty = &apos;W&apos;.    ENDIF.
+          IF o_cx-&gt;is_exception_text( zaplink_cx_file=&gt;dialog_canceled ) = abap_true.   d_msgty = &apos;S&apos;.    ELSE.   d_msgty = &apos;W&apos;.    ENDIF.
           d_msg = o_cx-&gt;get_text( ).
           MESSAGE d_msg TYPE d_msgty.
       ENDTRY.

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="999BC08BBF8BD9F4D876CC0DA00FA4C7" CODE_SIGNATURE="52E0339949D9B51ADEC591F3A9F967E4" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
- <DEPENDENCIES>
-  <ITEM TYPE="CLAS" NAME="ZAPLINK_FILE"/>
- </DEPENDENCIES>
+<ZL_OBJECT CHECKSUM="909F4AAA2FFE23EC6B182A5A8D6C920F" CODE_SIGNATURE="49425F5F2C8F08CA3B70772D024695F8" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
@@ -149,11 +146,6 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
     </TEXTS>
    </ITEM>
   </ATTRIBUTS>
-  <DEFERRED>
-   <CLASSES>
-    <ITEM TYPEGROUP="ZAPLINK_FILE" TPUTYPE="1" IMPLICIT="X"/>
-   </CLASSES>
-  </DEFERRED>
   <INTERFACES>
    <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
    <ITEM REFCLSNAME="ZAPLINK_KERNEL_TYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
@@ -888,7 +880,7 @@ END-OF-DEFINITION.</MACROS>
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
-                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+                IF o_cx-&gt;is_exception_text( zaplink_cx_list=&gt;already_exists ) IS INITIAL. RAISE EXCEPTION o_cx. ENDIF.
             ENDTRY.
           ENDLOOP.
           LOOP AT o_generator-&gt;includes ASSIGNING &lt;i&gt;.
@@ -897,7 +889,7 @@ END-OF-DEFINITION.</MACROS>
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
-                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+                IF o_cx-&gt;is_exception_text( zaplink_cx_list=&gt;already_exists ) IS INITIAL. RAISE EXCEPTION o_cx. ENDIF.
             ENDTRY.
           ENDLOOP.
           LOOP AT o_generator-&gt;messages ASSIGNING &lt;m&gt;.
@@ -906,7 +898,7 @@ END-OF-DEFINITION.</MACROS>
             TRY.
                 o_cnxlist-&gt;add( o_cnxcomp ).
               CATCH zaplink_cx INTO o_cx.
-                IF o_cx-&gt;textid &lt;&gt; zaplink_cx_list=&gt;already_exists. RAISE EXCEPTION o_cx. ENDIF.
+                IF o_cx-&gt;is_exception_text( zaplink_cx_list=&gt;already_exists ) IS INITIAL. RAISE EXCEPTION o_cx. ENDIF.
             ENDTRY.
           ENDLOOP.
 

@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-16"?>
+<ZL_OBJECT CHECKSUM="F6C482523A70CAA4FEF7692600557F2B" CODE_SIGNATURE="C59E218DC75EE91EDC10B0F27069B752" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="CLAS" VERSION="1.01">
+ <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
+ <RAW>
+  <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
+   <TEXTS>
+    <ITEM LANG="E" TEXT="ZAPLink : Release automation"/>
+   </TEXTS>
+  </A0_MAINDATA>
+  <ALIASES>
+   <ITEM CMPNAME="FRAMEWORK_VERSION" EXPOSURE="1" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="FRAMEWORK_VERSION"/>
+   <ITEM CMPNAME="TD_DEVCLASS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_DEVCLASS"/>
+   <ITEM CMPNAME="TD_FILENAME" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_FILENAME"/>
+   <ITEM CMPNAME="TD_PROGNAME" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_PROGNAME"/>
+   <ITEM CMPNAME="TR_PACKAGES" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TR_PACKAGES"/>
+   <ITEM CMPNAME="TT_ABAPRAWSOURCE" EXPOSURE="1" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_ABAPRAWSOURCE"/>
+   <ITEM CMPNAME="TT_COMPKEYS" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TT_COMPKEYS"/>
+  </ALIASES>
+  <ATTRIBUTS>
+   <ITEM CMPNAME="ALL_COMPONENTS" EXPOSURE="2" STATE="1" EDITORDER="3 " ATTRDONLY="X" TYPTYPE="1" TYPE="TT_COMPKEYS">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="All FW components"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="FILES" EXPOSURE="2" STATE="1" EDITORDER="5 " ATTRDONLY="X" TYPTYPE="1" TYPE="TS_FILES">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Filenames list"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="INSTALLER_PROGRAMS" EXPOSURE="2" STATE="1" EDITORDER="6 " ATTRDONLY="X" TYPTYPE="1" TYPE="TS_PROGRAMS">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Programs for installer"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="O_LOG" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTRDONLY="X" TYPTYPE="1" TYPE="TO_LOG">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Application log"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="PACKAGES" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="2" TYPTYPE="4">
+    BEGIN OF packages,
+          root            TYPE td_devclass VALUE &apos;ZAPLINK&apos;,
+          temp_dev        TYPE td_devclass VALUE &apos;ZAPLINK-TEMP&apos;,
+          tutorial        TYPE td_devclass VALUE &apos;ZAPLINK-TUTORIALS&apos;,
+          devtools        TYPE td_devclass VALUE &apos;ZAPLINK-DEVTOOLS&apos;,
+          generated       TYPE td_devclass VALUE &apos;ZAPLINK-GENERATED&apos;,
+        END OF packages
+`
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Packages of the framework"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="PROGRAMS" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTDECLTYP="2" TYPTYPE="4">
+    BEGIN OF programs,
+          zaplink         TYPE td_progname VALUE &apos;ZAPLINK&apos;,
+          infos           TYPE td_progname VALUE &apos;ZAPLINK_INFOS&apos;,
+          infos_sa        TYPE td_progname VALUE &apos;ZAPLINK_INFOS_STANDALONE&apos;,
+          extractor       TYPE td_progname VALUE &apos;ZAPLINK_EXTRACTOR&apos;,
+          extractor_sa    TYPE td_progname VALUE &apos;ZAPLINK_EXTRACTOR_STANDALONE&apos;,
+        END OF programs
+`
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Program names"/>
+    </TEXTS>
+   </ITEM>
+  </ATTRIBUTS>
+  <INTERFACES>
+   <ITEM REFCLSNAME="ZAPLINK_DATATYPES" EXPOSURE="2" STATE="1" RELTYPE="1"/>
+  </INTERFACES>
+  <LOCAL>
+   <TYPES>`
+*&quot;* use this source file for any type declarations (class
+*&quot;* definitions, interfaces or data types) you need for method
+*&quot;* implementation or private method&apos;s signature</TYPES>
+   <IMPLEMENTATIONS>`
+*&quot;* local class implementation for public class
+*&quot;* use this source file for the implementation part of
+*&quot;* local helper classes</IMPLEMENTATIONS>
+   <MACROS>`
+*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</MACROS>
+  </LOCAL>
+  <METHODS>
+   <ITEM CMPNAME="CHECK_FRAMEWORK_CLASSES" EXPOSURE="2" STATE="1" EDITORDER="5 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Check/update Framework classes"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="CHANGED" CMPTYPE="1" EDITORDER="1 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_COMPKEYS">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="List of classes that have been updated"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA t_comps        TYPE tt_compkeys.
+  DATA d_bal_sobj     TYPE balsubobj.
+  DATA d_bal_extn     TYPE balnrext.
+  DATA classkey       TYPE seoclskey.
+  DATA clstype        TYPE seoclstype.
+  DATA class          TYPE vseoclass.
+  DATA o_oo_cx        TYPE REF TO cl_oo_exception_class.
+  DATA o_zlcx         TYPE REF TO zaplink_cx.
+  DATA o_local_log    TYPE to_log.
+  DATA f_has_changed  TYPE abap_bool.
+  FIELD-SYMBOLS:
+    &lt;k&gt; LIKE LINE OF t_comps.
+
+  t_comps = all_components.       d_bal_sobj = sy-repid.
+  DELETE t_comps WHERE type &lt;&gt; &apos;CLAS&apos;.
+
+  d_bal_sobj = &apos;ZAPLINK_RELEASE&apos;.
+  CREATE OBJECT o_log.
+  CALL METHOD o_log-&gt;init
+    EXPORTING
+      id_object      = zaplink_datatypes=&gt;ballog_object
+      id_subobject   = d_bal_sobj
+      id_extnumber   = d_bal_extn
+      auto_upd_custo = abap_true
+      id_activity    = zaplink_message_collector=&gt;actions-create
+    EXCEPTIONS
+      error          = 1
+      OTHERS         = 2.
+
+  CHECK NOT t_comps IS INITIAL.
+
+  LOOP AT t_comps ASSIGNING &lt;k&gt;.
+    CONCATENATE &lt;k&gt;-type &apos;/&apos; &lt;k&gt;-name INTO d_bal_extn.
+
+    CREATE OBJECT o_local_log.
+    CALL METHOD o_local_log-&gt;init
+      EXPORTING
+        id_object      = zaplink_datatypes=&gt;ballog_object
+        id_subobject   = d_bal_sobj
+        id_extnumber   = d_bal_extn
+        auto_upd_custo = abap_true
+        id_activity    = zaplink_message_collector=&gt;actions-create
+      EXCEPTIONS
+        error          = 1
+        OTHERS         = 2.
+
+    classkey-clsname = d_bal_extn = &lt;k&gt;-name.
+
+    CALL FUNCTION &apos;SEO_CLIF_GET&apos;
+      EXPORTING
+        cifkey       = classkey
+      IMPORTING
+        clstype      = clstype
+        class        = class
+      EXCEPTIONS
+        not_existing = 1
+        deleted      = 2.
+    IF sy-subrc = 1.
+      o_log-&gt;add_symsg( ).
+    ENDIF.
+    CHECK sy-subrc = 0.
+
+    TRY.
+        CALL METHOD zaplink_object=&gt;check_class_sections
+          EXPORTING
+            classkey        = classkey
+            application_log = o_local_log.
+        IF o_local_log-&gt;has_messages_of_msgt( &apos;W&apos; ) = abap_true.
+          o_log-&gt;add_from_instance( io_msglist = o_local_log
+                             if_add_as_subnode = ABAP_true ).
+          o_local_log-&gt;store( ).
+          APPEND &lt;k&gt; TO changed.
+          CALL FUNCTION &apos;SEO_CLIF_SAVE_ALL&apos;
+            EXPORTING
+              cifkey                              = classkey
+*             NO_SECTIONS                         = SEOX_FALSE
+              sections_only                       = seox_true
+            EXCEPTIONS
+              not_existing                        = 1
+              nothing_to_do                       = 2
+              access_error                        = 3
+              db_error                            = 4
+              error_in_code_generation            = 5
+              OTHERS                              = 6.
+          IF sy-subrc &lt;&gt; 0.
+            o_log-&gt;add_symsg( ).
+          ENDIF.
+        ENDIF.
+
+        f_has_changed = zaplink_object=&gt;cleanup_class( classkey ).
+        IF NOT f_has_changed IS INITIAL.
+          APPEND &lt;k&gt; TO changed.
+        ENDIF.
+
+      CATCH zaplink_cx_connector INTO o_zlcx.
+        APPEND &lt;k&gt; TO changed.
+        o_log-&gt;add_exception( o_zlcx ).
+    ENDTRY.
+
+    IF clstype = seoc_clstype_class AND class-category = seoc_category_exception.
+      CREATE OBJECT o_oo_cx
+        EXPORTING
+          clskey = classkey.
+      IF o_oo_cx-&gt;check_constructor( ) = abap_false.
+        APPEND &lt;k&gt; TO changed.
+        o_oo_cx-&gt;create_constructor_definition( ).
+        CALL FUNCTION &apos;SEO_CLIF_SAVE_ALL&apos;
+          EXPORTING
+            cifkey                              = classkey
+*            NO_SECTIONS                         = SEOX_FALSE
+*            sections_only                       = seox_true
+          EXCEPTIONS
+            not_existing                        = 1
+            nothing_to_do                       = 2
+            access_error                        = 3
+            db_error                            = 4
+            error_in_code_generation            = 5
+            OTHERS                              = 6.
+        IF sy-subrc &lt;&gt; 0.
+          o_zlcx = zaplink_cx=&gt;create_from_mf_cx( funcname = &apos;SEO_CLIF_SAVE_ALL&apos;
+                                                     subrc = sy-subrc
+                                                 classname = &apos;ZAPLINK_CX_CONNECTOR&apos; ).
+          o_log-&gt;add_exception( o_zlcx ).
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+  ENDLOOP.
+  SORT changed. DELETE ADJACENT DUPLICATES FROM changed.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="1 " MTDTYPE="2">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="FILES" CMPTYPE="1" MTDTYPE="2" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_FILES">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Filenames list"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="PROGRAMS" CMPTYPE="1" MTDTYPE="2" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TS_PROGRAMS">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="List of programs"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA r_packages   TYPE tr_packages.
+  DATA s_package    LIKE LINE OF r_packages.
+
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-root.    APPEND s_package TO r_packages.
+  all_components = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
+                                                            ext = abap_true ).
+  me-&gt;files = files.
+  me-&gt;installer_programs = programs.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CREATE_CONTAINERS" EXPOSURE="2" STATE="1" EDITORDER="10 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Createcontainers for devtools, temp, ..."/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA r_packages   TYPE zaplink_tools=&gt;tr_packages.
+  DATA s_package    LIKE LINE OF r_packages.
+  DATA t_keys       TYPE zaplink_tools=&gt;tt_compkeys.
+  DATA t_data       TYPE zaplink_container=&gt;ts_contdata.
+  DATA o_file       TYPE REF TO zaplink_file.
+  DATA o_objects    TYPE REF TO	zaplink_list.
+  DATA o_cont       TYPE REF TO zaplink_container.
+
+* DEVTOOLS ***********************************************
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-devtools.     APPEND s_package TO r_packages.
+  t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
+                                                    ext = abap_true ).
+  CONCATENATE &apos;ZAPLINK Devlopper tools version&apos;(dvt) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
+  CREATE OBJECT o_file.
+  o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+  o_file-&gt;set_filename( files-c_devtools ).
+
+  CREATE OBJECT o_objects .
+  o_objects-&gt;add_keys( t_keys ).
+  o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+  o_cont = zaplink_container=&gt;create_new( data = t_data
+                                        o_file = o_file ).
+  o_cont-&gt;add_components( o_objects ).
+  o_cont-&gt;save_to_file( ).
+
+* OTHERS ***********************************************
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-tutorial.     APPEND s_package TO r_packages.
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-temp_dev.     APPEND s_package TO r_packages.
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-generated.    APPEND s_package TO r_packages.
+  t_keys = zaplink_tools=&gt;get_keys_from_tadir( packages = r_packages
+                                                    ext = abap_true ).
+  CONCATENATE &apos;ZAPLINK Other objects version&apos;(ott) zaplink_datatypes=&gt;framework_version ` - ` sy-datum sy-uzeit INTO t_data-name.
+  CREATE OBJECT o_file.
+  o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+  o_file-&gt;set_filename( files-c_others ).
+
+  CREATE OBJECT o_objects .
+  o_objects-&gt;add_keys( t_keys ).
+  o_objects-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+  o_cont = zaplink_container=&gt;create_new( data = t_data
+                                        o_file = o_file ).
+  o_cont-&gt;add_components( o_objects ).
+  o_cont-&gt;save_to_file( ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="CREATE_INSTALLER" EXPOSURE="2" STATE="1" EDITORDER="9 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Create installer and containers"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA r_packages   TYPE zaplink_tools=&gt;tr_packages.
+  DATA s_package    LIKE LINE OF r_packages.
+  DATA s_selection  TYPE zaplink_installer_create=&gt;ts_selection.
+  DATA s_key        LIKE LINE OF s_selection-keys.
+  DATA s_files      TYPE zaplink_installer_create=&gt;ts_files.
+  DATA o_installer  TYPE REF TO zaplink_installer_create.
+
+  installer_programs-package = &apos;$TMP&apos;.
+
+  s_package-sign = &apos;I&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-root.         APPEND s_package TO r_packages.
+  s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-tutorial.     APPEND s_package TO r_packages.
+  s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-devtools.     APPEND s_package TO r_packages.
+  s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-temp_dev.     APPEND s_package TO r_packages.
+  s_package-sign = &apos;E&apos;.     s_package-option = &apos;EQ&apos;.      s_package-low = packages-generated.    APPEND s_package TO r_packages.
+  s_selection-packages = r_packages.
+  s_key-type = &apos;PROG&apos;.    s_key-name = programs-infos_sa.   APPEND s_key TO s_selection-keys.
+
+  s_files-container = files-c_fw.
+  s_files-installer = files-installer.
+
+  CREATE OBJECT o_installer.
+  o_installer-&gt;set_parameters(
+      programs  = installer_programs
+      overwrite = abap_true
+      selection = s_selection
+      files     = s_files ).
+  o_installer-&gt;create_installer( ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GENERATE_EXTRACT_SA" EXPOSURE="2" STATE="1" EDITORDER="7 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Generated Extract standalone"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA abapcode     TYPE tt_abaprawsource.
+  DATA d_content    TYPE string.
+  DATA o_file       TYPE REF TO zaplink_file.
+
+  abapcode = generate_sa( master = programs-extractor
+                          target = programs-extractor_sa ).
+
+  CREATE OBJECT o_file.
+  o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+  o_file-&gt;set_filename( files-extractor ).
+  d_content = zaplink_tools=&gt;table_2_string( abapcode ).
+  o_file-&gt;set_filecontent( d_content ).
+  o_file-&gt;save( ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GENERATE_FRAMEWORK" EXPOSURE="2" STATE="1" EDITORDER="2 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Generate the whole framework"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="ERRORS" CMPTYPE="1" EDITORDER="1 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_COMPKEYS">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Components that can&apos;t be activated"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  DATA t_comps      TYPE tt_compkeys.
+  DATA o_activ      TYPE REF TO zaplink_activate.
+
+  t_comps = all_components.
+  DELETE t_comps WHERE type = &apos;PROG&apos; AND name = sy-repid.    &quot; remove calling program
+
+  CREATE OBJECT o_activ
+    EXPORTING
+      obj_list = t_comps.
+  errors = o_activ-&gt;generate( ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GENERATE_INFOS_SA" EXPOSURE="2" STATE="1" EDITORDER="6 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Generated Infos standalone"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  generate_sa( master = programs-infos
+               target = programs-infos_sa ).</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="GENERATE_SA" EXPOSURE="1" STATE="1" EDITORDER="8 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Generated standalone version"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="MASTER" CMPTYPE="1" EDITORDER="1 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PROGNAME">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Master program"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="SOURCECODE" CMPTYPE="1" EDITORDER="3 " PARDECLTYP="3" TYPTYPE="1" TYPE="TT_ABAPRAWSOURCE">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Generated source code"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="TARGET" CMPTYPE="1" EDITORDER="2 " PARPASSTYP="1" TYPTYPE="1" TYPE="TD_PROGNAME">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Generated program"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA o_generator  TYPE REF TO zaplink_standalone_generator.
+  DATA o_activ      TYPE REF TO zaplink_activate.
+  DATA t_comps      TYPE tt_compkeys.
+  DATA s_key        LIKE LINE OF t_comps.
+
+  CREATE OBJECT o_generator
+    EXPORTING
+      master = master.
+  o_generator-&gt;add_connectors( ).
+  sourcecode = o_generator-&gt;generate( ).
+  o_generator-&gt;save_report( report = target
+                           package = packages-generated ).
+
+  s_key-type = &apos;PROG&apos;.   s_key-name = programs-infos_sa.   APPEND s_key TO t_comps.
+  CREATE OBJECT o_activ
+    EXPORTING
+      obj_list = t_comps.
+  t_comps = o_activ-&gt;activate( ).
+  IF NOT t_comps IS INITIAL.
+    RAISE EXCEPTION TYPE zaplink_cx_release EXPORTING textid = zaplink_cx_release=&gt;generation_failed
+                                              master_program = master
+                                              target_program = target.
+  ENDIF.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="REPLICATE_VERSION_ON_FRAMEWORK" EXPOSURE="2" STATE="1" EDITORDER="3 ">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Update component&apos;s framework with current FW version"/>
+    </TEXTS>
+    <SOURCE>`
+  DATA t_trdirt     TYPE STANDARD TABLE OF trdirt.
+  DATA s_trdirt     LIKE LINE OF t_trdirt.
+
+  SELECT * INTO TABLE t_trdirt
+    FROM trdirt
+    WHERE name = programs-zaplink.
+  CONCATENATE &apos;ZAPLINK V&apos; framework_version INTO s_trdirt-text.
+  MODIFY t_trdirt FROM s_trdirt TRANSPORTING text WHERE text IS INITIAL OR text IS NOT INITIAL.
+  MODIFY trdirt FROM TABLE t_trdirt.</SOURCE>
+   </ITEM>
+   <ITEM CMPNAME="UPDATE_FRAMEWORK_USECASEINDEX" EXPOSURE="2" STATE="1" EDITORDER="4 " MTDNEWEXC="X">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Update framwork use case indexes"/>
+    </TEXTS>
+    <EXCEPTIONS>
+     <ITEM SCONAME="ZAPLINK_CX" LANGU="E" EDITORDER="1 ">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="ZAPlink Framework : Root exception class"/>
+      </TEXTS>
+     </ITEM>
+    </EXCEPTIONS>
+    <SOURCE>`
+  DATA o_usecase    TYPE REF TO zaplink_usecaseindex.
+
+  CREATE OBJECT o_usecase.
+  o_usecase-&gt;add_keys( all_components ).
+  o_usecase-&gt;update_index( ).</SOURCE>
+   </ITEM>
+  </METHODS>
+  <TEXTSPOOL>
+   <ITEM ID="I" KEY="DVT">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="ZAPLINK Devlopper tools version" LENGTH="31 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="OTT">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="ZAPLINK Other objects version" LENGTH="29 "/>
+    </TEXTS>
+   </ITEM>
+  </TEXTSPOOL>
+  <TYPEGROUPS>
+   <ITEM TYPEGROUP="ABAP" IMPLICIT="X"/>
+   <ITEM TYPEGROUP="SEOC" EXPLICIT="X"/>
+  </TYPEGROUPS>
+  <TYPES>
+   <ITEM CMPNAME="TO_LOG" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="3" TYPE="ZAPLINK_MESSAGE_COLLECTOR">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Message Collector"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_FILES" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="4">
+    BEGIN OF ts_files,
+        installer   TYPE td_filename,   &quot; Installer source code
+        extractor   TYPE td_filename,   &quot; Extractor stand alone source code
+        c_fw        TYPE td_filename,   &quot; Container of framework
+        c_devtools  TYPE td_filename,   &quot; Container of devtools
+        c_others    TYPE td_filename,   &quot; Container of other components
+      END OF ts_files
+`
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Filenames list"/>
+    </TEXTS>
+   </ITEM>
+   <ITEM CMPNAME="TS_PROGRAMS" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="ZAPLINK_INSTALLER_CREATE=&gt;TS_PROGRAMS">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="List of programs"/>
+    </TEXTS>
+   </ITEM>
+  </TYPES>
+ </RAW>
+</ZL_OBJECT>
