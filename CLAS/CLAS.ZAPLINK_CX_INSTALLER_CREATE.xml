@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="9ECF95CD07FEFCAF48610A4E7ADD5371" CODE_SIGNATURE="4DF72265E4EC0C0720D5D6A9E2DF217F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="1D1182F07AE61E377CD013559D37C42B" CODE_SIGNATURE="4DF72265E4EC0C0720D5D6A9E2DF217F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_CX_INSTALLER_CREATE" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" CATEGORY="40" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" VARCL="X" UNICODE="X" RSTAT="S">
@@ -30,7 +30,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
    <ITEM CMPNAME="TD_COMPTYPE" EXPOSURE="2" CMPTYPE="3" REFCLSNAME="ZAPLINK_DATATYPES" REFCMPNAME="TD_COMPTYPE"/>
   </ALIASES>
   <ATTRIBUTS>
-   <ITEM CMPNAME="ACTIVATION_ERROR" EXPOSURE="2" STATE="1" EDITORDER="8 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ACTIVATION_ERROR,
+   <ITEM CMPNAME="ACTIVATION_ERROR" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ACTIVATION_ERROR,
       msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
       msgno type symsgno value &apos;503&apos;,
       attr1 type scx_attrname value &apos;&apos;,
@@ -39,22 +39,22 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
       attr4 type scx_attrname value &apos;&apos;,
     end of ACTIVATION_ERROR
 `</ITEM>
-   <ITEM CMPNAME="INCLUDE_NAME" EXPOSURE="2" STATE="1" EDITORDER="7 " ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
+   <ITEM CMPNAME="INCLUDE_NAME" EXPOSURE="2" STATE="1" ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
     <TEXTS>
      <ITEM LANG="E" TEXT="ABAP Program Name"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="INSTALLER_NAME" EXPOSURE="2" STATE="1" EDITORDER="5 " ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
+   <ITEM CMPNAME="INSTALLER_NAME" EXPOSURE="2" STATE="1" ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
     <TEXTS>
      <ITEM LANG="E" TEXT="ABAP Program Name"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="MASTER_NAME" EXPOSURE="2" STATE="1" EDITORDER="6 " ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
+   <ITEM CMPNAME="MASTER_NAME" EXPOSURE="2" STATE="1" ATTRDONLY="X" TYPTYPE="1" TYPE="PROGRAMM">
     <TEXTS>
      <ITEM LANG="E" TEXT="ABAP Program Name"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="NOT_EXISTS" EXPOSURE="2" STATE="1" EDITORDER="2 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NOT_EXISTS,
+   <ITEM CMPNAME="NOT_EXISTS" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NOT_EXISTS,
       msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
       msgno type symsgno value &apos;500&apos;,
       attr1 type scx_attrname value &apos;MASTER_NAME&apos;,
@@ -63,7 +63,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
       attr4 type scx_attrname value &apos;&apos;,
     end of NOT_EXISTS
 `</ITEM>
-   <ITEM CMPNAME="NO_INCLUDE" EXPOSURE="2" STATE="1" EDITORDER="4 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_INCLUDE,
+   <ITEM CMPNAME="NO_INCLUDE" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_INCLUDE,
       msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
       msgno type symsgno value &apos;502&apos;,
       attr1 type scx_attrname value &apos;INCLUDE_NAME&apos;,
@@ -72,7 +72,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
       attr4 type scx_attrname value &apos;&apos;,
     end of NO_INCLUDE
 `</ITEM>
-   <ITEM CMPNAME="NO_OVERWRITE" EXPOSURE="2" STATE="1" EDITORDER="3 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_OVERWRITE,
+   <ITEM CMPNAME="NO_OVERWRITE" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of NO_OVERWRITE,
       msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
       msgno type symsgno value &apos;501&apos;,
       attr1 type scx_attrname value &apos;INSTALLER_NAME&apos;,
@@ -81,7 +81,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
       attr4 type scx_attrname value &apos;&apos;,
     end of NO_OVERWRITE
 `</ITEM>
-   <ITEM CMPNAME="ZAPLINK_CX_INSTALLER_CREATE" EXPOSURE="2" STATE="1" EDITORDER="1 " ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ZAPLINK_CX_INSTALLER_CREATE,
+   <ITEM CMPNAME="ZAPLINK_CX_INSTALLER_CREATE" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4" LOCKED="X">begin of ZAPLINK_CX_INSTALLER_CREATE,
       msgid type symsgid value &apos;ZAPLINK_DEVTOOLS&apos;,
       msgno type symsgno value &apos;499&apos;,
       attr1 type scx_attrname value &apos;CX_NAME&apos;,
