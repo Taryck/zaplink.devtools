@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="C1E98F3DC5059BADCCEFA2D12A4C86AB" CODE_SIGNATURE="A791E60C6DAF3BFE3D1569E9E2F734FD" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="3D1BF5743C36B867D00043069DBF262F" CODE_SIGNATURE="6CECFF06B96BCCDDA12BCAD1479F4C4E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -470,13 +470,32 @@
     <SOURCE>`
   DATA t_trdirt     TYPE STANDARD TABLE OF trdirt.
   DATA s_trdirt     LIKE LINE OF t_trdirt.
+  DATA t_textpool TYPE STANDARD TABLE OF textpool.
+  DATA t_langlist TYPE instlang.
+  FIELD-SYMBOLS:
+    &lt;l&gt; LIKE LINE OF t_langlist,
+    &lt;t&gt; LIKE LINE OF t_textpool.
 
   SELECT * INTO TABLE t_trdirt
     FROM trdirt
     WHERE name = programs-zaplink.
   CONCATENATE &apos;ZAPLINK V&apos; framework_version INTO s_trdirt-text.
   MODIFY t_trdirt FROM s_trdirt TRANSPORTING text WHERE text IS INITIAL OR text IS NOT INITIAL.
-  MODIFY trdirt FROM TABLE t_trdirt.</SOURCE>
+  MODIFY trdirt FROM TABLE t_trdirt.
+
+  CALL FUNCTION &apos;RS_TEXTLOG_GET_PARAMETERS&apos;
+    CHANGING
+      installed_languages = t_langlist.
+
+  LOOP AT t_langlist ASSIGNING &lt;l&gt;.
+    READ TEXTPOOL programs-zaplink INTO t_textpool LANGUAGE &lt;l&gt;.
+    CHECK sy-subrc = 0.
+    READ TABLE t_textpool ASSIGNING &lt;t&gt;
+         WITH KEY id = &apos;R&apos;.     &quot; Report Name
+    &lt;t&gt;-entry = s_trdirt-text.
+    &lt;t&gt;-length = STRLEN( &lt;t&gt;-entry ).
+    INSERT textpool programs-zaplink FROM t_textpool LANGUAGE &lt;l&gt;.
+  ENDLOOP.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="UPDATE_FRAMEWORK_USECASEINDEX" EXPOSURE="2" STATE="1" MTDNEWEXC="X">
     <TEXTS>
