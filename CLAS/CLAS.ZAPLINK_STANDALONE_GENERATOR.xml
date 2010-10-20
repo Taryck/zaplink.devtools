@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="D6744BE9F6CBF835238ACC5613879169" CODE_SIGNATURE="4EC77BCACFB57346930E5543A21CF7F5" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="47F3C0DD257AEC635AC9D8A0FB4A7E71" CODE_SIGNATURE="7DFCE3CA550AE0767DFD9322C99EEAEE" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_STANDALONE_GENERATOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -144,7 +144,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
 
   master_program = master.
   IF NOT master_program IS INITIAL.
-    master_sourcecode = sourcecode = zaplink_program_4sag=&gt;get_prog_rawsource( master_program ).
+    master_sourcecode = sourcecode = zaplink_program_4dep_analyser=&gt;get_prog_rawsource( master_program ). &quot; Issue 110
     add_source( code = sourcecode   origin = master_program ).
   ENDIF.</SOURCE>
    </ITEM>
@@ -444,8 +444,8 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
   MODIFY progdir FROM _prog.
 *  _prog-state = &apos;A&apos;.
 *  MODIFY progdir FROM _prog.
-  zaplink_program_4sag=&gt;set_prog_rawsource( program = report
-                                                raw = t_source ).
+  zaplink_program_4dep_analyser=&gt;set_prog_rawsource( program = report
+                                                         raw = t_source ).      &quot; Issue 110
   set_textpool( report ).</SOURCE>
    </ITEM>
   </METHODS>
