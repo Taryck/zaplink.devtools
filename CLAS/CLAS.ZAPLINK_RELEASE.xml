@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="3D1BF5743C36B867D00043069DBF262F" CODE_SIGNATURE="6CECFF06B96BCCDDA12BCAD1479F4C4E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="2B8A0D47F75850032018C6F62C56A589" CODE_SIGNATURE="D6D9A74B35AF425E15DE82A96FFC2772" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X">
@@ -150,10 +150,10 @@
       EXCEPTIONS
         not_existing = 1
         deleted      = 2.
-    IF sy-subrc = 1.
-      o_log-&gt;add_symsg( ).
+    IF sy-subrc &lt;&gt; 0.
+      o_log-&gt;add_symsg( ID_MSGTY = &apos;W&apos; ).
+      CONTINUE.
     ENDIF.
-    CHECK sy-subrc = 0.
 
     TRY.
         CALL METHOD zaplink_object=&gt;check_class_sections
@@ -162,7 +162,7 @@
             application_log = o_local_log.
         IF o_local_log-&gt;has_messages_of_msgt( &apos;W&apos; ) = abap_true.
           o_log-&gt;add_from_instance( io_msglist = o_local_log
-                             if_add_as_subnode = ABAP_true ).
+                             if_add_as_subnode = abap_true ).
           o_local_log-&gt;store( ).
           APPEND &lt;k&gt; TO changed.
           CALL FUNCTION &apos;SEO_CLIF_SAVE_ALL&apos;
