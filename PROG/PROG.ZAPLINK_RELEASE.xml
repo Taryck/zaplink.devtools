@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="FD49AD8EAF0F436239A6FFA9FDBF8E3E" CODE_SIGNATURE="FAEA59476A5B9E85B96A4589456AC17D" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="5534094D15066496DF1FB964D77E510C" CODE_SIGNATURE="D440E66217E9D201E4BFC8BAF2F82FB0" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_RELEASE" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -112,8 +112,22 @@ START-OF-SELECTION.
   FIELD-SYMBOLS:
     &lt;k&gt; LIKE LINE OF t_keys.
   DATA o_release    TYPE REF TO zaplink_release.
-  DATA s_files2      TYPE zaplink_release=&gt;ts_files.
+  DATA s_files2     TYPE zaplink_release=&gt;ts_files.
+  CONSTANTS:
+    BEGIN OF c_progress,
+      a_mini TYPE i VALUE 1,
+      a_act TYPE i VALUE 25,
+      a_use TYPE i VALUE 25,
+      a_chk TYPE i VALUE 25,
+      a_nfo TYPE i VALUE 25,
+      a_ext TYPE i VALUE 25,
+      a_ins TYPE i VALUE 25,
+    END OF c_progress.
+  DATA d_progress   TYPE i.
+  DATA d_total_p    TYPE i.
 
+  ADD c_progress-a_mini TO d_progress.
+  PERFORM calc_total_p.
   PERFORM update_filenames.
   s_files2-c_devtools = d_devfn.
   s_files2-c_others = d_othfn.
@@ -135,10 +149,8 @@ START-OF-SELECTION.
 
   d_count = LINES( o_release-&gt;all_components ).
   IF NOT p_a_act IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 1
-        text       = text-psg.
+    ADD c_progress-a_act TO d_progress.
+    PERFORM progress USING text-psg.
     t_keys_ko = o_release-&gt;generate_framework( ).
     IF t_keys_ko IS INITIAL.
       d_content = d_count.
@@ -155,10 +167,8 @@ START-OF-SELECTION.
 
 * Update UseCase
   IF NOT p_a_use IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 25
-        text       = text-puc.
+    ADD c_progress-a_use TO d_progress.
+    PERFORM progress USING text-puc.
     TRY.
         o_release-&gt;update_framework_usecaseindex( ).
       CATCH zaplink_cx INTO o_zlcx.
@@ -170,10 +180,8 @@ START-OF-SELECTION.
 
 * Regenerate sections : Also Regenerate Exception class constructors if needed
   IF NOT p_a_chk IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 40
-        text       = text-prs.
+    ADD c_progress-a_chk TO d_progress.
+    PERFORM progress USING text-prs.
 
     t_keys_ko = o_release-&gt;check_framework_classes( ).
 
@@ -191,10 +199,8 @@ START-OF-SELECTION.
 
 * Generate ZL_infos standalone
   IF NOT p_a_nfo IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 60
-        text       = text-pis.
+    ADD c_progress-a_nfo TO d_progress.
+    PERFORM progress USING text-pis.
     TRY.
         o_release-&gt;generate_infos_sa( ).
         WRITE:/ &apos;Generated program :&apos;(gpr), o_release-&gt;programs-infos_sa.
@@ -205,10 +211,8 @@ START-OF-SELECTION.
 
 * StandAlone Extractor
   IF NOT p_a_ext IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 70
-        text       = text-pin.
+    ADD c_progress-a_ext TO d_progress.
+    PERFORM progress USING text-pes.
     TRY.
         o_release-&gt;generate_extract_sa( ).
         WRITE:/ &apos;Generated program :&apos;(gpr), o_release-&gt;programs-extractor_sa.
@@ -219,10 +223,8 @@ START-OF-SELECTION.
 
 * Installer =&gt; Always at the end because parameters and select-options will be change by the exctractor (when loading variants)
   IF NOT p_a_ins IS INITIAL.
-    CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-      EXPORTING
-        percentage = 85
-        text       = text-pin.
+    ADD c_progress-a_ins TO d_progress.
+    PERFORM progress USING text-pin.
     TRY.
         o_release-&gt;create_installer( ).
       CATCH zaplink_cx INTO o_zlcx.
@@ -254,7 +256,32 @@ FORM update_filenames .
               &apos;V&apos;(ver) zaplink_datatypes=&gt;framework_version zaplink_datatypes=&gt;ext_sep &apos;txt&apos; INTO d_instfn.
   CONCATENATE p_path &apos;ZAPLink Framework&apos;(frm) zaplink_datatypes=&gt;ext_sep &apos;Extractor Standalone&apos;(est) zaplink_datatypes=&gt;ext_sep &apos;ABAP Program&apos;(aba) zaplink_datatypes=&gt;ext_sep
               &apos;V&apos;(ver) zaplink_datatypes=&gt;framework_version zaplink_datatypes=&gt;ext_sep &apos;txt&apos; INTO d_extfn.
-ENDFORM.                    &quot; UPDATE_FILENAMES</SOURCE>
+ENDFORM.                    &quot; UPDATE_FILENAMES
+*&amp;---------------------------------------------------------------------*
+*&amp;      Form  CALC_TOTAL_P
+*&amp;---------------------------------------------------------------------*
+FORM calc_total_p .
+  ADD c_progress-a_mini TO d_total_p.
+  IF NOT p_a_act IS INITIAL.      ADD c_progress-a_act TO d_total_p.    ENDIF.
+  IF NOT p_a_use IS INITIAL.      ADD c_progress-a_use TO d_total_p.    ENDIF.
+  IF NOT p_a_chk IS INITIAL.      ADD c_progress-a_chk TO d_total_p.    ENDIF.
+  IF NOT p_a_nfo IS INITIAL.      ADD c_progress-a_nfo TO d_total_p.    ENDIF.
+  IF NOT p_a_ext IS INITIAL.      ADD c_progress-a_ext TO d_total_p.    ENDIF.
+  IF NOT p_a_ins IS INITIAL.      ADD c_progress-a_ins TO d_total_p.    ENDIF.
+ENDFORM.                    &quot; CALC_TOTAL_P
+*&amp;---------------------------------------------------------------------*
+*&amp;      Form  PROGRESS
+*&amp;---------------------------------------------------------------------*
+FORM progress  USING    p_text.
+  DATA d_p TYPE i.
+
+  d_p = d_progress / d_total_p.
+  CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
+    EXPORTING
+      percentage = d_p
+      text       = p_text.
+
+ENDFORM.                    &quot; PROGRESS</SOURCE>
   <TEXTSPOOL>
    <ITEM ID="I" KEY="ABA">
     <TEXTS>
@@ -352,6 +379,11 @@ ENDFORM.                    &quot; UPDATE_FILENAMES</SOURCE>
      <ITEM LANGU="F" ENTRY="Mode d&apos;extraction" LENGTH="20 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="I" KEY="PES">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Generating ZAPLink Extractor Standalone" LENGTH="80 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="I" KEY="PIN">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Generate installer" LENGTH="80 "/>
@@ -364,7 +396,7 @@ ENDFORM.                    &quot; UPDATE_FILENAMES</SOURCE>
    </ITEM>
    <ITEM ID="I" KEY="PRS">
     <TEXTS>
-     <ITEM LANGU="E" ENTRY="Regenerating Object sections (Public, Protected, P" LENGTH="80 "/>
+     <ITEM LANGU="E" ENTRY="Regenerating Object sections (Public, Protected, Private)" LENGTH="80 "/>
     </TEXTS>
    </ITEM>
    <ITEM ID="I" KEY="PSG">

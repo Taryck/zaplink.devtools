@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="0AE3DA71F73997CCB8DF37B59FD60E5A" CODE_SIGNATURE="4A22DD4A9C6E505AF106740087933B42" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="406B4069110755513C487650E730F686" CODE_SIGNATURE="7E1071C16431BE8A048FA7783F9380FF" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -32,17 +32,17 @@ PARAMETERS em_pack TYPE c RADIOBUTTON GROUP r3.
 PARAMETERS em_cnx  TYPE c RADIOBUTTON GROUP r3.
 SELECTION-SCREEN END OF BLOCK mode.
 
-INITIALIZATION.
-  DATA t_pack LIKE LINE OF s_pack.
-
-  t_pack-sign = &apos;I&apos;.  t_pack-option = &apos;EQ&apos;.
-  t_pack-low = &apos;ZAPLINK&apos;.  APPEND t_pack TO s_pack.
-  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
-  t_pack-low = &apos;ZAPLINK-FRAMEWORK-DEVTOOLS&apos;.  APPEND t_pack TO s_pack.
-  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
-  t_pack-low = &apos;ZAPLINK-TUTORIALS&apos;.  APPEND t_pack TO s_pack.
-  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
-  t_pack-low = &apos;ZAPLINK-INSTALLER&apos;.  APPEND t_pack TO s_pack.
+*INITIALIZATION.
+*  DATA t_pack LIKE LINE OF s_pack.
+*
+*  t_pack-sign = &apos;I&apos;.  t_pack-option = &apos;EQ&apos;.
+*  t_pack-low = &apos;ZAPLINK&apos;.  APPEND t_pack TO s_pack.
+*  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+*  t_pack-low = &apos;ZAPLINK-FRAMEWORK-DEVTOOLS&apos;.  APPEND t_pack TO s_pack.
+*  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+*  t_pack-low = &apos;ZAPLINK-TUTORIALS&apos;.  APPEND t_pack TO s_pack.
+*  t_pack-sign = &apos;E&apos;.  t_pack-option = &apos;EQ&apos;.
+*  t_pack-low = &apos;ZAPLINK-INSTALLER&apos;.  APPEND t_pack TO s_pack.
 
 AT SELECTION-SCREEN OUTPUT.
   DATA active TYPE i.
