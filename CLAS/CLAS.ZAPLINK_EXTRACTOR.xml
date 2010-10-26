@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="74C93B3403D98351294EF1F3A641D7BC" CODE_SIGNATURE="49425F5F2C8F08CA3B70772D024695F8" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="F9074CB6C4A001E73F03185D05DE64B3" CODE_SIGNATURE="EADC924086E356EE8FD000D8AE0D326F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
@@ -461,22 +461,7 @@ END-OF-DEFINITION.</MACROS>
      <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
     </TEXTS>
     <SOURCE>`
-
-  CREATE OBJECT application_log.
-  CALL METHOD application_log-&gt;init
-    EXPORTING
-      id_object      = ballog_object
-      id_subobject   = ballog_subobject
-*      id_extnumber   =
-      auto_upd_custo = abap_true
-*      id_activity    = ACT_CREATE
-    EXCEPTIONS
-      error          = 1
-      OTHERS         = 2.
-  IF sy-subrc &lt;&gt; 0.
-    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.</SOURCE>
+  mac_create_log application_log ballog_subobject space.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FILENAME" EXPOSURE="1" STATE="1" MTDDECLTYP="1" MTDNEWEXC="X">
     <TEXTS>
@@ -721,6 +706,9 @@ END-OF-DEFINITION.</MACROS>
             CASE o_comp-&gt;get_action( ).
               WHEN actions-export.
                 o_data ?= o_comp-&gt;get_add_object(  ).
+                CHECK o_data IS BOUND.
+                ASSERT o_data-&gt;o_raw IS BOUND.
+
                 save_file( o_raw = o_data-&gt;o_raw
                         filename = o_data-&gt;filename ).
               WHEN actions-import.
