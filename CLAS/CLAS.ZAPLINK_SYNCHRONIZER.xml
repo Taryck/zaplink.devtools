@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="60110B7F8BAD3AFDC79863D69A3FBCA5" CODE_SIGNATURE="C454AF000DAE3E0EADE16D246B5F847A" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="6B93E1DDC0B617400578608AD0F6CD9B" CODE_SIGNATURE="8D3C7E7C48269FBEFEAB691280B5DECB" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
  </DEPENDENCIES>
@@ -314,6 +314,12 @@ END-OF-DEFINITION.</MACROS>
   DATA _cx_list TYPE REF TO zaplink_cx_list.
   DATA s_key    TYPE ts_key.
   DATA s_data   TYPE ts_fulldata.
+  DATA o_list   TYPE to_list.
+  DATA o_activ  TYPE REF TO zaplink_activate.
+  DATA d_answer    TYPE c.
+  DATA d_count     TYPE string.
+  DATA t_comps     TYPE zaplink_list=&gt;tt_compkeys.
+  FIELD-SYMBOLS &lt;c&gt; LIKE LINE OF t_comps.
 
   analyse( target_dir = target_dir
            srcsystem  = srcsystem
@@ -332,16 +338,17 @@ END-OF-DEFINITION.</MACROS>
     o_directory = o_options-&gt;get_directory( ).
   ELSE.
     CREATE OBJECT o_options.
-    CREATE OBJECT o_directory.
-    CREATE OBJECT o_devc.
-    CREATE OBJECT o_tr.
-    o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-no_overwrite ).
+    o_directory = o_options-&gt;get_directory( ).
+    o_devc = o_directory-&gt;get_devclass( ).
+    o_devc-&gt;set_substitutionkind( zaplink_opt_devclass=&gt;substitutionkinds-use_container ).
+    o_tr = o_directory-&gt;get_transport_request( ).
     o_tr-&gt;set_substitutionkind( zaplink_opt_transport_request=&gt;substitutionkinds-user ).
   ENDIF.
 
 * Initialize Interator
   TRY.
-      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+      CREATE OBJECT o_list.
+      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-install.     &quot; no_order.
       working_list-&gt;init_sel_iter( ).
       working_list-&gt;display_progress = abap_true.
       o_comp_n = working_list-&gt;get_next( ).
@@ -355,6 +362,7 @@ END-OF-DEFINITION.</MACROS>
             s_key = o_data-&gt;get_key( ).
             CASE o_comp-&gt;get_action( ).
               WHEN actions-import.
+                o_list-&gt;add( o_comp ).
                 s_directory = o_options-&gt;directory-&gt;set_directory( o_data-&gt;o_raw_base ).
 
                 TRY.
@@ -436,6 +444,49 @@ END-OF-DEFINITION.</MACROS>
                                    name = _comp-name.
         ENDTRY.
       ENDWHILE.
+
+      IF o_list-&gt;is_empty( ) IS INITIAL.
+        t_comps = o_list-&gt;get_keys( ).
+        d_count = LINES( t_comps ).   CONDENSE d_count.
+        MESSAGE i018 WITH d_count INTO d_msg.               &quot;#EC NOTEXT
+        CALL FUNCTION &apos;POPUP_TO_CONFIRM&apos;
+          EXPORTING
+            titlebar              = &apos;Activate imported objects&apos;(ptb)
+            text_question         = d_msg
+            text_button_1         = &apos;Yes&apos;(yes)
+            icon_button_1         = &apos;ICON_ACTIVATE&apos;         &quot;#EC NOTEXT
+            text_button_2         = &apos;No&apos;(no_)
+            icon_button_2         = &apos;ICON_SKIP&apos;             &quot;#EC NOTEXT
+            default_button        = &apos;1&apos;                     &quot;#EC NOTEXT
+            display_cancel_button = abap_false
+            iv_quickinfo_button_1 = &apos;All object will be activate as far as possible&apos;(qi1) &quot;#EC NOTEXT
+            iv_quickinfo_button_2 = &apos;No object activation at all&apos;(qi2) &quot;#EC NOTEXT
+          IMPORTING
+            answer                = d_answer
+          EXCEPTIONS
+            text_not_found        = 1
+            OTHERS                = 2.
+        IF sy-subrc &lt;&gt; 0.
+          o_cx = zaplink_cx=&gt;create_from_mf_cx( funcname = &apos;POPUP_TO_CONFIRM&apos;
+                                                   subrc = sy-subrc ) .
+          RAISE EXCEPTION o_cx.
+        ENDIF.
+        IF d_answer CO &apos;YJ1&apos;.
+
+          CREATE OBJECT o_activ
+            EXPORTING
+              obj_list = t_comps.
+          t_comps = o_activ-&gt;activate( ).
+          IF t_comps IS INITIAL.
+            WRITE:/ &apos;All objects sucessfully activated :&apos;(asu), d_count. &quot;#EC NOTEXT
+          ELSE.
+            WRITE:/ &apos;Here is the list of the component(s) that can&apos;&apos;t be activated :&apos;(afa). &quot;#EC NOTEXT
+            LOOP AT t_comps ASSIGNING &lt;c&gt;.    WRITE:/ &lt;c&gt;-type, &lt;c&gt;-name.   ENDLOOP.
+          ENDIF.
+        ENDIF.
+
+      ENDIF.
+
     CATCH zaplink_cx_list INTO _cx_list.
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
       CREATE OBJECT o_mycx
@@ -484,71 +535,74 @@ END-OF-DEFINITION.</MACROS>
                                                      ext = abap_false
                                                   author = author ).
 
-  CHECK NOT t_keys IS INITIAL.
-  TRY.
-      CREATE OBJECT working_list.
-      working_list-&gt;add_keys( t_keys ).
-      working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
-      working_list-&gt;reverse_selection( ).
-      o_tmp_list = working_list-&gt;selection_as_list( ).
-      working_list-&gt;remove_list( o_tmp_list ).
+*  CHECK NOT t_keys IS INITIAL.         &quot; Issue 115
+  IF NOT t_keys IS INITIAL.             &quot; Issue 115
+    TRY.
+*      CREATE OBJECT working_list.      &quot; Issue 115
+        working_list-&gt;clear( ).         &quot; Issue 115
+        working_list-&gt;add_keys( t_keys ).
+        working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
+        working_list-&gt;reverse_selection( ).
+        o_tmp_list = working_list-&gt;selection_as_list( ).
+        working_list-&gt;remove_list( o_tmp_list ).
 
 * Initialize Interator
-      working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
-      working_list-&gt;init_iter( ).
-      working_list-&gt;display_progress = abap_true.
-      o_comp_n = working_list-&gt;get_next( ).
+        working_list-&gt;order_kind = zaplink_list=&gt;order_kinds-no_order.
+        working_list-&gt;init_iter( ).
+        working_list-&gt;display_progress = abap_true.
+        o_comp_n = working_list-&gt;get_next( ).
 
-      WHILE o_comp_n IS BOUND.
-        o_comp = o_comp_n.    o_comp_n = working_list-&gt;get_next( ).
-        TRY.
-            o_comp-&gt;set_with_subcomp( abap_false ).
-            _comp = o_comp-&gt;get_key( ).   o_conn = o_comp-&gt;connector( ).
+        WHILE o_comp_n IS BOUND.
+          o_comp = o_comp_n.    o_comp_n = working_list-&gt;get_next( ).
+          TRY.
+              o_comp-&gt;set_with_subcomp( abap_false ).
+              _comp = o_comp-&gt;get_key( ).   o_conn = o_comp-&gt;connector( ).
 
 * Extract Component
-            o_raw = o_conn-&gt;read_from_sap( o_comp ).
-            TRY.
-                CLEAR o_cnx_clean.
-                o_cnx_clean ?= o_conn.
-                o_cnx_clean-&gt;anonymize( o_raw ).
-              CATCH cx_root.
-            ENDTRY.
+              o_raw = o_conn-&gt;read_from_sap( o_comp ).
+              TRY.
+                  CLEAR o_cnx_clean.
+                  o_cnx_clean ?= o_conn.
+                  o_cnx_clean-&gt;anonymize( o_raw ).
+                CATCH cx_root.
+              ENDTRY.
 *            o_raw-&gt;set_checksum( ).   &quot; no longer needed done in Anonymize
-            s_my_file-o_raw = o_raw.
-            lmac_create_data o_data s_my_file.
-            o_comp-&gt;set_add_object( o_data ).
-            o_comp-&gt;set_checksum( o_data-&gt;checksum ).   o_comp-&gt;set_code_signature( o_data-&gt;signature ).
+              s_my_file-o_raw = o_raw.
+              lmac_create_data o_data s_my_file.
+              o_comp-&gt;set_add_object( o_data ).
+              o_comp-&gt;set_checksum( o_data-&gt;checksum ).   o_comp-&gt;set_code_signature( o_data-&gt;signature ).
 
-          CATCH zaplink_cx_connector INTO _cx_cnx.
-            o_comp-&gt;set_exception( _cx_cnx ).
-            TRY.
-                o_comp-&gt;set_msg_coll( o_conn-&gt;application_log ).
-              CATCH cx_root.
-            ENDTRY.
-          CATCH zaplink_cx_component INTO _cx_comp.
-            CREATE OBJECT _cx_cnx
-              EXPORTING
-                textid   = zaplink_cx_container=&gt;add_failed
-                previous = _cx_comp.
-            _cx_cnx-&gt;update( ).
-            o_comp-&gt;set_exception( _cx_cnx ).
+            CATCH zaplink_cx_connector INTO _cx_cnx.
+              o_comp-&gt;set_exception( _cx_cnx ).
+              TRY.
+                  o_comp-&gt;set_msg_coll( o_conn-&gt;application_log ).
+                CATCH cx_root.
+              ENDTRY.
+            CATCH zaplink_cx_component INTO _cx_comp.
+              CREATE OBJECT _cx_cnx
+                EXPORTING
+                  textid   = zaplink_cx_container=&gt;add_failed
+                  previous = _cx_comp.
+              _cx_cnx-&gt;update( ).
+              o_comp-&gt;set_exception( _cx_cnx ).
 * Failed to add component &apos;&amp;NAME&amp;&apos; (&amp;TYPE&amp;). Look at exception &amp; message collector in component to get the root cause.
-            RAISE EXCEPTION TYPE zaplink_cx_container
-                       EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
-                                   type = _comp-type
-                                   name = _comp-name.
-        ENDTRY.
-      ENDWHILE.
+              RAISE EXCEPTION TYPE zaplink_cx_container
+                         EXPORTING textid = zaplink_cx_container=&gt;add_comp_failed
+                                     type = _comp-type
+                                     name = _comp-name.
+          ENDTRY.
+        ENDWHILE.
 
-    CATCH zaplink_cx_list INTO _cx_list.
+      CATCH zaplink_cx_list INTO _cx_list.
 * Failed to components list. Due to exception &apos;&amp;CX_NAME&amp;&apos;.
-      CREATE OBJECT o_mycx
-        EXPORTING
-          textid   = zaplink_cx_component=&gt;invalid_exception
-          previous = _cx_list.
-      o_mycx-&gt;update( ).
-      RAISE EXCEPTION o_mycx.
-  ENDTRY.
+        CREATE OBJECT o_mycx
+          EXPORTING
+            textid   = zaplink_cx_component=&gt;invalid_exception
+            previous = _cx_list.
+        o_mycx-&gt;update( ).
+        RAISE EXCEPTION o_mycx.
+    ENDTRY.
+  ENDIF.            &quot; Issue 115
 
 * Searching in file repository
 
@@ -637,6 +691,16 @@ END-OF-DEFINITION.</MACROS>
    </ITEM>
   </REDEFINITIONS>
   <TEXTSPOOL>
+   <ITEM ID="I" KEY="AFA">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Here is the list of the component(s) that can&apos;&apos;t be activated :" LENGTH="80 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="ASU">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="All objects sucessfully activated :" LENGTH="80 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="I" KEY="DIR">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="Dir" LENGTH="4 "/>
@@ -652,9 +716,34 @@ END-OF-DEFINITION.</MACROS>
      <ITEM LANGU="E" ENTRY="Not in range" LENGTH="12 "/>
     </TEXTS>
    </ITEM>
+   <ITEM ID="I" KEY="NO_">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="No" LENGTH="10 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="PTB">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Activate imported objects" LENGTH="40 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="QI1">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="All object will be activate as far as possible" LENGTH="60 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="QI2">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="No object activation at all" LENGTH="60 "/>
+    </TEXTS>
+   </ITEM>
    <ITEM ID="I" KEY="SAP">
     <TEXTS>
      <ITEM LANGU="E" ENTRY="SAP" LENGTH="3 "/>
+    </TEXTS>
+   </ITEM>
+   <ITEM ID="I" KEY="YES">
+    <TEXTS>
+     <ITEM LANGU="E" ENTRY="Yes" LENGTH="10 "/>
     </TEXTS>
    </ITEM>
   </TEXTSPOOL>

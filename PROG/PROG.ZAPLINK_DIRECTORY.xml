@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="012E433E9C7B6D6DA77C3C71450B652E" CODE_SIGNATURE="CB6A013AB4CDB10E6E30D777CC9A1F0A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="A927292BB500A9508C3F89EE95212769" CODE_SIGNATURE="CB6A013AB4CDB10E6E30D777CC9A1F0A" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_DIRECTORY" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA EDTX="X" VARCL="X" SUBC="1" RSTAT="S" RMAND="200" RLOAD="E" UCCHECK="X"/>
@@ -246,6 +246,41 @@ MODULE create_container OUTPUT.
                    CHANGING data_table = t_xml ).
   o_html-&gt;show_url( s_url ).
 ENDMODULE.                 &quot; CREATE_CONTAINER  OUTPUT</SOURCE>
+  <TEXTS>
+   <ITEM LANGU="E">
+    <LONG_TXT TDFRELES="701" TDLINESIZE="072">U1&amp;PURPOSE&amp;
+ASDisplay directory&apos;s content. This directory is filled by repository
+  synchronization (transaction ZL_SYNCH) or extraction (transaction
+  ZL_EXTRACT).
+U1&amp;INTEGRATION&amp;
+AS
+U1&amp;PREREQUISITES&amp;
+AS
+U1&amp;FEATURES&amp;
+ASAllow to display component definition when the last
+  synchronization/extract occurs to help user when replication conflict
+  occurs. This conflict occurs when change are detected both on file
+  repository and SAP. In such case, user might need to know what was the
+  last common definition of the component (this definition is in the
+  directory).
+U2&amp;SELECTION&amp;
+ASComponent type : like in table TADIR, such as CLAS, PROG, ...
+ASComponent name
+U2&amp;STANDARD_VARIANTS&amp;
+AS
+U2&amp;OUTPUT&amp;
+ASDisplay :
+B1date and time of the version in the directory.
+B1Component checksum
+B1Component Code signature (if applies)
+B1XML definition of the component
+ASAllow to save the XML as local file to backup purpose.
+U1&amp;ACTIVITIES&amp;
+AS
+U1&amp;EXAMPLE&amp;
+AS</LONG_TXT>
+   </ITEM>
+  </TEXTS>
   <TEXTSPOOL>
    <ITEM ID="I" KEY="MOD">
     <TEXTS>
@@ -254,7 +289,7 @@ ENDMODULE.                 &quot; CREATE_CONTAINER  OUTPUT</SOURCE>
    </ITEM>
    <ITEM ID="R">
     <TEXTS>
-     <ITEM LANGU="E" ENTRY="ZAPLink : Extract all package to files" LENGTH="38 "/>
+     <ITEM LANGU="E" ENTRY="ZAPLink : Display directory content" LENGTH="35 "/>
      <ITEM LANGU="F" ENTRY="ZAPLink : Extraction en masse de componsants" LENGTH="70 "/>
     </TEXTS>
    </ITEM>

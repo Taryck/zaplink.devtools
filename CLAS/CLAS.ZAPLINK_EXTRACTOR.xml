@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="F9074CB6C4A001E73F03185D05DE64B3" CODE_SIGNATURE="EADC924086E356EE8FD000D8AE0D326F" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="A16C85E2CB8B1D8E805A935449004EB0" CODE_SIGNATURE="717709EE19D9D1D8F744260D6CE9233E" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
@@ -341,7 +341,8 @@ END-OF-DEFINITION.</MACROS>
                                                   author = author ).
   CHECK NOT t_keys IS INITIAL.
   TRY.
-      CREATE OBJECT working_list.
+*      CREATE OBJECT working_list.    &quot; Issue 115
+      working_list-&gt;clear( ).         &quot; Issue 115
       working_list-&gt;add_keys( t_keys ).
       working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
       working_list-&gt;reverse_selection( ).
@@ -461,7 +462,8 @@ END-OF-DEFINITION.</MACROS>
      <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
     </TEXTS>
     <SOURCE>`
-  mac_create_log application_log ballog_subobject space.</SOURCE>
+  mac_create_log application_log ballog_subobject space.
+  CREATE OBJECT working_list.       &quot; Issue 115</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FILENAME" EXPOSURE="1" STATE="1" MTDDECLTYP="1" MTDNEWEXC="X">
     <TEXTS>
