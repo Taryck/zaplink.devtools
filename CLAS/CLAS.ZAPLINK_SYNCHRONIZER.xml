@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="306AFEF8F73B79C5D77974CDCCBD8FAD" CODE_SIGNATURE="6843B68E741CD38E3265DABC8A25C61B" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="9B3F402F545E26BB4995E46EB79EB80D" CODE_SIGNATURE="D836AC1A63CEF3E7330E5CFBB4A9C37D" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_SYNCHRONIZER" TYPE="CLAS" VERSION="1.01">
  <DEPENDENCIES>
   <ITEM TYPE="CLAS" NAME="ZAPLINK_EXTRACTOR"/>
  </DEPENDENCIES>
@@ -263,6 +263,26 @@ END-OF-DEFINITION.</MACROS>
       RAISE EXCEPTION o_mycx.
   ENDTRY.</SOURCE>
    </ITEM>
+   <ITEM CMPNAME="GET_DIRECTORY_KEY" STATE="1" MTDDECLTYP="1">
+    <TEXTS>
+     <ITEM LANG="E" TEXT="Get key from Raw data"/>
+    </TEXTS>
+    <PARAMETERS>
+     <ITEM SCONAME="O_RAW" CMPTYPE="1" PARPASSTYP="1" TYPTYPE="1" TYPE="TO_RAW_BASE">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Raw data object"/>
+      </TEXTS>
+     </ITEM>
+     <ITEM SCONAME="RESULT" CMPTYPE="1" PARDECLTYP="3" TYPTYPE="1" TYPE="TS_KEY">
+      <TEXTS>
+       <ITEM LANG="E" TEXT="Directory key"/>
+      </TEXTS>
+     </ITEM>
+    </PARAMETERS>
+    <SOURCE>`
+  result-type = o_raw-&gt;get_type( ).
+  result-name = o_raw-&gt;get_name( ).</SOURCE>
+   </ITEM>
    <ITEM CMPNAME="SYNCHRONIZE" EXPOSURE="2" STATE="1" MTDNEWEXC="X">
     <TEXTS>
      <ITEM LANG="E" TEXT="Synchronize all components"/>
@@ -302,23 +322,22 @@ END-OF-DEFINITION.</MACROS>
   DATA o_conn      TYPE to_connector.
   DATA s_my_file   TYPE ts_my_file.
   DATA o_data      TYPE to_ldata.
-  DATA _comp       TYPE zaplink_component=&gt;ts_component.
-  DATA d_msg       TYPE string.
-  DATA o_options   TYPE to_options.
-  DATA o_directory TYPE to_opt_directory.
-  DATA s_directory TYPE ts_directory.
-  DATA o_devc      TYPE to_opt_devclass.
-  DATA o_tr        TYPE to_opt_transport_request.
-  DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
-  DATA _cx_comp TYPE REF TO zaplink_cx_component.
-  DATA _cx_list TYPE REF TO zaplink_cx_list.
-  DATA s_key    TYPE ts_key.
-  DATA s_data   TYPE ts_fulldata.
-  DATA o_list   TYPE to_list.
-  DATA o_activ  TYPE REF TO zaplink_activate.
-  DATA d_answer    TYPE c.
-  DATA d_count     TYPE string.
-  DATA t_comps     TYPE zaplink_list=&gt;tt_compkeys.
+  DATA _comp        TYPE zaplink_component=&gt;ts_component.
+  DATA d_msg        TYPE string.
+  DATA o_options    TYPE to_options.
+  DATA o_directory  TYPE to_opt_directory.
+  DATA s_directory  TYPE ts_directory.
+  DATA o_devc       TYPE to_opt_devclass.
+  DATA o_tr         TYPE to_opt_transport_request.
+  DATA _cx_cnx      TYPE REF TO zaplink_cx_connector.
+  DATA _cx_comp     TYPE REF TO zaplink_cx_component.
+  DATA _cx_list     TYPE REF TO zaplink_cx_list.
+  DATA s_key        TYPE ts_key.
+  DATA s_data       TYPE ts_fulldata.
+  DATA o_list       TYPE to_list.
+  DATA o_activ      TYPE REF TO zaplink_activate.
+  DATA t_comps      TYPE zaplink_list=&gt;tt_compkeys.
+  DATA o_file       TYPE to_file.
   FIELD-SYMBOLS &lt;c&gt; LIKE LINE OF t_comps.
 
   analyse( target_dir = target_dir
@@ -362,7 +381,6 @@ END-OF-DEFINITION.</MACROS>
             s_key = o_data-&gt;get_key( ).
             CASE o_comp-&gt;get_action( ).
               WHEN actions-import.
-                o_list-&gt;add( o_comp ).
                 s_directory = o_options-&gt;directory-&gt;set_directory( o_data-&gt;o_raw_base ).
 
                 TRY.
@@ -370,6 +388,7 @@ END-OF-DEFINITION.</MACROS>
 * (&amp;1) &amp;2 : Change detected - Imported from file &amp;3
                     MESSAGE s006 WITH o_data-&gt;type o_data-&gt;name o_data-&gt;filename INTO d_msg.
                     WRITE:/ zaplink_list_4extractor=&gt;lights-import AS ICON, zaplink_list_4extractor=&gt;lights-green AS ICON, d_msg.
+                    o_list-&gt;add( o_comp ).
                   CATCH zaplink_cx_connector INTO _cx_cnx.
 * (&amp;1) &amp;2 : Change detected - Failed to load from file &amp;3
                     MESSAGE s007 WITH o_data-&gt;type o_data-&gt;name o_data-&gt;filename INTO d_msg.
@@ -393,22 +412,30 @@ END-OF-DEFINITION.</MACROS>
                 zaplink_directory=&gt;set_directory( key = s_key
                                                  data = s_data-change ).
               WHEN actions-uninstall.
-                IF o_conn-&gt;do_exists( o_comp ) = abap_false.
-                  filename = o_data-&gt;o_file-&gt;get_filename( ).
-                  o_data-&gt;o_file-&gt;delete( ).
-                ELSE.
-                  TRY.
-                      o_conn-&gt;delete_from_sap( o_comp ).
+                TRY.
+                    o_conn-&gt;delete_from_sap( o_comp ).
 * (&amp;1) &amp;2 : Change detected - Component deleted
-                      MESSAGE s008 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
-                      WRITE:/ zaplink_list_4extractor=&gt;lights-uninst AS ICON, zaplink_list_4extractor=&gt;lights-green AS ICON, d_msg.
-                      zaplink_directory=&gt;del_directory( key = s_key ).
-                    CATCH zaplink_cx_connector INTO _cx_cnx.
+                    MESSAGE s008 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
+                    WRITE:/ zaplink_list_4extractor=&gt;lights-uninst AS ICON, zaplink_list_4extractor=&gt;lights-green AS ICON, d_msg.
+                    zaplink_directory=&gt;del_directory( key = s_key ).
+                  CATCH zaplink_cx_connector.
 * (&amp;1) &amp;2 : Change detected - Failed to deleted component
-                      MESSAGE s009 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
-                      WRITE:/ zaplink_list_4extractor=&gt;lights-uninst AS ICON, zaplink_list_4extractor=&gt;lights-red AS ICON, d_msg.
-                  ENDTRY.
-                ENDIF.
+                    MESSAGE s009 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
+                    WRITE:/ zaplink_list_4extractor=&gt;lights-uninst AS ICON, zaplink_list_4extractor=&gt;lights-red AS ICON, d_msg.
+                ENDTRY.
+              WHEN actions-delete_file.
+                filename = o_data-&gt;o_file-&gt;get_filename( ).
+                TRY.
+                    o_data-&gt;o_file-&gt;delete( ).
+* (&amp;1) &amp;2 : Change detected - File deleted
+                    MESSAGE s019 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
+                    WRITE:/ zaplink_list_4extractor=&gt;lights-delete_file AS ICON, zaplink_list_4extractor=&gt;lights-green AS ICON, d_msg.
+                    zaplink_directory=&gt;del_directory( key = s_key ).
+                  CATCH zaplink_cx_file.
+* (&amp;1) &amp;2 : Change detected - Failed to delete file
+                    MESSAGE s020 WITH o_data-&gt;type o_data-&gt;name INTO d_msg.
+                    WRITE:/ zaplink_list_4extractor=&gt;lights-delete_file AS ICON, zaplink_list_4extractor=&gt;lights-red AS ICON, d_msg.
+                ENDTRY.
               WHEN actions-unreplicable.
 * (&amp;1) &amp;2 : Replication Error - 3 differents checksums with file &amp;3
                 MESSAGE s010 WITH o_data-&gt;type o_data-&gt;name o_data-&gt;filename INTO d_msg.
@@ -447,42 +474,18 @@ END-OF-DEFINITION.</MACROS>
 
       IF o_list-&gt;is_empty( ) IS INITIAL.
         t_comps = o_list-&gt;get_keys( ).
-        d_count = LINES( t_comps ).   CONDENSE d_count.
-        MESSAGE i018 WITH d_count INTO d_msg.               &quot;#EC NOTEXT
-        CALL FUNCTION &apos;POPUP_TO_CONFIRM&apos;
-          EXPORTING
-            titlebar              = &apos;Activate imported objects&apos;(ptb)
-            text_question         = d_msg
-            text_button_1         = &apos;Yes&apos;(yes)
-            icon_button_1         = &apos;ICON_ACTIVATE&apos;         &quot;#EC NOTEXT
-            text_button_2         = &apos;No&apos;(no_)
-            icon_button_2         = &apos;ICON_SKIP&apos;             &quot;#EC NOTEXT
-            default_button        = &apos;1&apos;                     &quot;#EC NOTEXT
-            display_cancel_button = abap_false
-            iv_quickinfo_button_1 = &apos;All object will be activate as far as possible&apos;(qi1) &quot;#EC NOTEXT
-            iv_quickinfo_button_2 = &apos;No object activation at all&apos;(qi2) &quot;#EC NOTEXT
-          IMPORTING
-            answer                = d_answer
-          EXCEPTIONS
-            text_not_found        = 1
-            OTHERS                = 2.
-        IF sy-subrc &lt;&gt; 0.
-          o_cx = zaplink_cx=&gt;create_from_mf_cx( funcname = &apos;POPUP_TO_CONFIRM&apos;
-                                                   subrc = sy-subrc ) .
-          RAISE EXCEPTION o_cx.
-        ENDIF.
-        IF d_answer CO &apos;YJ1&apos;.
 
-          CREATE OBJECT o_activ
-            EXPORTING
-              obj_list = t_comps.
-          t_comps = o_activ-&gt;activate( ).
-          IF t_comps IS INITIAL.
-            WRITE:/ &apos;All objects sucessfully activated :&apos;(asu), d_count. &quot;#EC NOTEXT
-          ELSE.
-            WRITE:/ &apos;Here is the list of the component(s) that can&apos;&apos;t be activated :&apos;(afa). &quot;#EC NOTEXT
-            LOOP AT t_comps ASSIGNING &lt;c&gt;.    WRITE:/ &lt;c&gt;-type, &lt;c&gt;-name.   ENDLOOP.
-          ENDIF.
+        CREATE OBJECT o_activ
+          EXPORTING
+            obj_list = t_comps.
+        t_comps = o_activ-&gt;ask_for_activation( ).
+        IF o_activ-&gt;activation_requested IS INITIAL.
+          WRITE:/ &apos;No activation requested&apos;(nar).
+        ELSEIF t_comps IS INITIAL.
+          WRITE:/ &apos;All objects sucessfully activated :&apos;(asu), o_activ-&gt;object_count.
+        ELSE.
+          WRITE:/ &apos;Here is the list of the component(s) that can&apos;&apos;t be activated :&apos;(afa).
+          LOOP AT t_comps ASSIGNING &lt;c&gt;.    WRITE:/ &lt;c&gt;-type, &lt;c&gt;-name.   ENDLOOP.
         ENDIF.
 
       ENDIF.
@@ -501,33 +504,80 @@ END-OF-DEFINITION.</MACROS>
   <REDEFINITIONS>
    <ITEM REFCLSNAME="ZAPLINK_EXTRACTOR" MTDNAME="ANALYSE">
     <SOURCE>`
-  DATA o_file      TYPE to_file.
-  DATA t_filelist  TYPE zaplink_file=&gt;tt_file_list.
-  DATA d_mask      TYPE zaplink_file=&gt;td_filename.
-  DATA t_keys      TYPE tt_compkeys.
-  DATA o_tmp_list  TYPE to_list.
-  DATA o_comp      TYPE to_component.
-  DATA o_comp_n    TYPE to_component.
-  DATA o_srch_c    TYPE to_component.
-  DATA o_conn      TYPE to_connector.
-  DATA o_cnx_clean TYPE to_connector_cleaner.
-  DATA s_my_file   TYPE ts_my_file.
-  DATA o_raw       TYPE REF TO zaplink_raw.
-  DATA o_data      TYPE to_ldata.
-  DATA o_data_tmp  TYPE to_ldata.
-  DATA _comp       TYPE zaplink_component=&gt;ts_component.
-  DATA s_key    TYPE ts_key.
-  DATA s_data   TYPE ts_fulldata.
-  DATA _cx_cnx  TYPE REF TO zaplink_cx_connector.
-  DATA _cx_comp TYPE REF TO zaplink_cx_component.
-  DATA _cx_list TYPE REF TO zaplink_cx_list.
-  DATA msg       TYPE string.
-  DATA _pos      TYPE i.
-  DATA d_t_count TYPE sy-tabix.
-  DATA t_ext_pack TYPE tr_packages.
+  DATA o_file       TYPE to_file.
+  DATA t_filelist   TYPE zaplink_file=&gt;tt_file_list.
+  DATA d_mask       TYPE zaplink_file=&gt;td_filename.
+  DATA t_keys       TYPE tt_compkeys.
+  DATA o_tmp_list   TYPE to_list.
+  DATA o_comp       TYPE to_component.
+  DATA o_comp_n     TYPE to_component.
+  DATA o_srch_c     TYPE to_component.
+  DATA o_conn       TYPE to_connector.
+  DATA o_cnx_clean  TYPE to_connector_cleaner.
+  DATA s_my_file    TYPE ts_my_file.
+  DATA o_raw        TYPE to_raw.
+  DATA o_data       TYPE to_ldata.
+  DATA o_data_tmp   TYPE to_ldata.
+  DATA _comp        TYPE zaplink_component=&gt;ts_component.
+  DATA s_key        TYPE ts_key.
+  DATA s_data       TYPE ts_fulldata.
+  DATA sap_data     TYPE ts_fulldata.
+  DATA _cx_cnx      TYPE REF TO zaplink_cx_connector.
+  DATA _cx_comp     TYPE REF TO zaplink_cx_component.
+  DATA _cx_list     TYPE REF TO zaplink_cx_list.
+  DATA msg          TYPE string.
+  DATA _pos         TYPE i.
+  DATA d_t_count    TYPE sy-tabix.
+  DATA t_ext_pack   TYPE tr_packages.
+  DATA o_file_list  TYPE to_list.
   FIELD-SYMBOLS &lt;f&gt;    LIKE LINE OF t_filelist.
 
   IF ext = abap_true.   t_ext_pack = zaplink_tools=&gt;extend_packages( packages ).    ELSE.     t_ext_pack = packages.    ENDIF.
+
+* Searching in file repository
+  CONCATENATE &apos;*&apos; ext_sep file_ext INTO d_mask.
+  CREATE OBJECT o_file.
+  o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
+  t_filelist = o_file-&gt;search( mask = d_mask
+                           root_dir = target_dir ).
+  DELETE t_filelist WHERE kind &lt;&gt; zaplink_file=&gt;filedirkinds-file.
+
+  d_t_count = LINES( t_filelist ).
+  CREATE OBJECT o_file_list.
+* looking for file to import
+  LOOP AT t_filelist ASSIGNING &lt;f&gt;.
+
+    IF sy-batch = abap_true.
+* Processing File : &amp;1
+      MESSAGE i012 WITH &lt;f&gt;-name.
+    ELSE.
+* Processing object : &amp;2 (&amp;1)
+      MESSAGE i012 WITH &lt;f&gt;-name INTO msg.
+      IF d_t_count &gt; 0.
+        _pos = 100 * sy-tabix / d_t_count.
+      ELSE.
+        _pos = sy-tabix.
+      ENDIF.
+      CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
+        EXPORTING
+          percentage = _pos
+          text       = msg.
+    ENDIF.
+
+    s_my_file = load_file( &lt;f&gt;-name ).
+    CHECK s_my_file-o_raw_base IS BOUND.
+    lmac_create_data o_data s_my_file.
+    CHECK o_data-&gt;type IN type AND o_data-&gt;name IN name.
+    CHECK s_my_file-o_raw_base-&gt;directory-devclass IN t_ext_pack OR
+          ( o_data-&gt;type = &apos;DEVC&apos; AND o_data-&gt;name IN t_ext_pack ).
+    CREATE OBJECT o_comp.
+    o_comp-&gt;set_add_object( o_data ).
+    o_comp-&gt;set_type( o_data-&gt;type ).    o_comp-&gt;set_name( o_data-&gt;name ).    o_comp-&gt;set_checksum( o_data-&gt;checksum ).
+    o_comp-&gt;set_devclass( s_my_file-o_raw_base-&gt;directory-devclass ).   o_comp-&gt;set_src_sys( s_my_file-o_raw_base-&gt;directory-srcsystem ).
+    o_file_list-&gt;add( o_comp ).
+  ENDLOOP.
+
+* SAP repository
   t_keys = zaplink_tools=&gt;get_keys_from_tadir( srcsystem = srcsystem
                                                    type  = type
                                                     name = name
@@ -536,10 +586,10 @@ END-OF-DEFINITION.</MACROS>
                                                   author = author ).
 
 *  CHECK NOT t_keys IS INITIAL.         &quot; Issue 115
-  IF NOT t_keys IS INITIAL.             &quot; Issue 115
+  IF NOT t_keys IS INITIAL.                                 &quot; Issue 115
     TRY.
 *      CREATE OBJECT working_list.      &quot; Issue 115
-        working_list-&gt;clear( ).         &quot; Issue 115
+        working_list-&gt;clear( ).                             &quot; Issue 115
         working_list-&gt;add_keys( t_keys ).
         working_list-&gt;select_default( zaplink_list=&gt;sel_actions-export ).
         working_list-&gt;reverse_selection( ).
@@ -567,10 +617,22 @@ END-OF-DEFINITION.</MACROS>
                 CATCH cx_root.
               ENDTRY.
 *            o_raw-&gt;set_checksum( ).   &quot; no longer needed done in Anonymize
-              s_my_file-o_raw = o_raw.
+              clear s_my_file.    s_my_file-o_raw = o_raw.
               lmac_create_data o_data s_my_file.
               o_comp-&gt;set_add_object( o_data ).
               o_comp-&gt;set_checksum( o_data-&gt;checksum ).   o_comp-&gt;set_code_signature( o_data-&gt;signature ).
+
+              o_srch_c = o_file_list-&gt;search( o_comp ).
+              IF o_srch_c IS INITIAL.     &quot; won&apos;t be handld by match list
+                s_key = get_directory_key( o_raw ).     s_data = zaplink_directory=&gt;get_directory( s_key ).
+                IF s_data-checksum IS INITIAL.    &quot; File and Directory are equal
+                  o_comp-&gt;set_action( actions-export ).
+                ELSEIF s_data-checksum = o_data-&gt;checksum.
+                  o_comp-&gt;set_action( actions-uninstall ).
+                ELSE.     &quot; All 3 differents
+                  o_comp-&gt;set_action( actions-unreplicable ).
+                ENDIF.
+              ENDIF.
 
             CATCH zaplink_cx_connector INTO _cx_cnx.
               o_comp-&gt;set_exception( _cx_cnx ).
@@ -602,54 +664,24 @@ END-OF-DEFINITION.</MACROS>
         o_mycx-&gt;update( ).
         RAISE EXCEPTION o_mycx.
     ENDTRY.
-  ENDIF.            &quot; Issue 115
+  ENDIF.                                                    &quot; Issue 115
 
 * Searching in file repository
+  o_file_list-&gt;init_iter( ).
+  o_file_list-&gt;display_progress = abap_true.
+  o_comp_n = o_file_list-&gt;get_next( ).
 
-  CONCATENATE &apos;*&apos; ext_sep file_ext INTO d_mask.
-  CREATE OBJECT o_file.
-  o_file-&gt;set_filetype( zaplink_file=&gt;filetypes-local ).
-  t_filelist = o_file-&gt;search( mask = d_mask
-                           root_dir = target_dir ).
-  DELETE t_filelist WHERE kind &lt;&gt; zaplink_file=&gt;filedirkinds-file.
-
-  d_t_count = LINES( t_filelist ).
-* looking for file to import
-  LOOP AT t_filelist ASSIGNING &lt;f&gt;.
-
-    IF sy-batch = abap_true.
-* Processing File : &amp;1
-      MESSAGE i012 WITH &lt;f&gt;-name.
-    ELSE.
-* Processing object : &amp;2 (&amp;1)
-      MESSAGE i012 WITH &lt;f&gt;-name INTO msg.
-      IF d_t_count &gt; 0.
-        _pos = 100 * sy-tabix / d_t_count.
-      ELSE.
-        _pos = sy-tabix.
-      ENDIF.
-      CALL FUNCTION &apos;SAPGUI_PROGRESS_INDICATOR&apos;
-        EXPORTING
-          percentage = _pos
-          text       = msg.
-    ENDIF.
-
-    s_my_file = load_file( &lt;f&gt;-name ).
-    CHECK s_my_file-o_raw_base IS BOUND.
-    lmac_create_data o_data s_my_file.
-    CHECK o_data-&gt;type IN type AND o_data-&gt;name IN name.
-    CHECK s_my_file-o_raw_base-&gt;directory-devclass IN t_ext_pack OR
-          ( o_data-&gt;type = &apos;DEVC&apos; AND o_data-&gt;name IN t_ext_pack ).
-    CREATE OBJECT o_comp.
-    o_comp-&gt;set_add_object( o_data ).
-    o_comp-&gt;set_type( o_data-&gt;type ).    o_comp-&gt;set_name( o_data-&gt;name ).    o_comp-&gt;set_checksum( o_data-&gt;checksum ).
-    o_comp-&gt;set_devclass( s_my_file-o_raw_base-&gt;directory-devclass ).   o_comp-&gt;set_src_sys( s_my_file-o_raw_base-&gt;directory-srcsystem ).
-
+  WHILE o_comp_n IS BOUND.
+    o_comp = o_comp_n.    o_comp_n = o_file_list-&gt;get_next( ).
+    s_my_file-checksum = o_comp-&gt;get_checksum( ).   o_data ?= o_comp-&gt;get_add_object( ).
     s_key = o_data-&gt;get_key( ).   s_data = zaplink_directory=&gt;get_directory( s_key ).
     o_srch_c = working_list-&gt;search( o_comp ).
+
     IF NOT o_srch_c IS BOUND.     &quot; update data or list
-      working_list-&gt;add( o_comp ).      &quot; component do not exists in list
+      CLEAR sap_data.     working_list-&gt;add( o_comp ).      &quot; component do not exists in list
     ELSE.
+      sap_data-checksum = o_srch_c-&gt;get_checksum( ).
+      sap_data-signature = o_srch_c-&gt;get_code_signature( ).
       o_comp = o_srch_c.
       o_data_tmp ?= o_srch_c-&gt;get_add_object( ).
       IF NOT o_data_tmp IS BOUND.
@@ -662,30 +694,28 @@ END-OF-DEFINITION.</MACROS>
     IF s_data-checksum = s_my_file-checksum.        &quot; File and last loaded are the same
       IF NOT o_srch_c IS BOUND.                         &quot; however component do not exists within SAP : deletion handled manualy
 *        o_comp-&gt;set_action( actions-unreplicable ).
-        o_comp-&gt;set_action( actions-uninstall ).
+*        o_comp-&gt;set_action( actions-uninstall ).
+        o_comp-&gt;set_action( actions-delete_file ).
       ELSEIF s_data-checksum = o_srch_c-&gt;get_checksum( ).    &quot; No change at all
         o_comp-&gt;set_action( actions-none ).
       ELSE.                                             &quot; Default action is allready export
       ENDIF.
     ELSE.   &quot; File different than last load
-      IF NOT o_srch_c IS BOUND.                         &quot; New component in SAP
-        o_comp-&gt;set_action( actions-import ).
-      ELSEIF s_data-checksum = o_srch_c-&gt;get_checksum( ).    &quot; not change within SAP
+      IF s_data-checksum = sap_data-checksum.       &quot; no change within SAP
         o_comp-&gt;set_action( actions-import ).     o_comp-&gt;set_checksum( s_my_file-checksum ).
         o_comp-&gt;set_devclass( o_data-&gt;o_raw_base-&gt;directory-devclass ).   o_comp-&gt;set_src_sys( o_data-&gt;o_raw_base-&gt;directory-srcsystem ).
-      ELSEIF s_my_file-checksum = o_srch_c-&gt;get_checksum( ).   &quot; file and SAP are identical =&gt; Update DB
+      ELSEIF s_my_file-checksum = sap_data-checksum.   &quot; file and SAP are identical =&gt; Update DB
         o_data-&gt;checksum = s_my_file-checksum.
         o_data-&gt;signature = o_comp-&gt;get_code_signature( ).
         s_data-change = o_data-&gt;get_sap_data( ).
         zaplink_directory=&gt;set_directory( key = s_key
                                          data = s_data-change ).
         o_comp-&gt;set_action( actions-none ).
-      ELSE.
-* Replication conflict
+      ELSE.     &quot; All 3 diffrents =&gt; Replication conflict
         o_comp-&gt;set_action( actions-unreplicable ).
       ENDIF.
     ENDIF.
-  ENDLOOP.
+  ENDWHILE.
 
   working_list-&gt;select_by_action( ).</SOURCE>
    </ITEM>
