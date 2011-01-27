@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="E53904CF65BA8089948EC5B1A26783CF" CODE_SIGNATURE="8FBAE45E836ED9152AF59110FC2EC8D9" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
+<ZL_OBJECT CHECKSUM="D454A717900090D84EC4ADCB6B4CD6F1" CODE_SIGNATURE="17EA0381E4740D2AAA5D371E7D70221D" CONNECTOR="39AC0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_EXTRACTOR" TYPE="CLAS" VERSION="1.01">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VERSION="1" LANGU="E" EXPOSURE="2" STATE="1" CLSCCINCL="X" FIXPT="X" UNICODE="X" MSG_ID="ZAPLINK_DEVTOOLS">
@@ -122,6 +122,7 @@ B2My uncle : Jacky BEDU (1934-2009) who died during the completion of this
    <ITEM CMPNAME="DIRHIERACHIES" EXPOSURE="2" STATE="1" ATTDECLTYP="2" TYPTYPE="4">begin of dirhierachies,
        type type td_dirhierarchy value &apos;T&apos;,  &quot;#EC NOTEXT
        devc type td_dirhierarchy value &apos;D&apos;,  &quot;#EC NOTEXT
+       dcty type td_dirhierarchy value &apos;x&apos;,  &quot;#EC NOTEXT  Package + Object Type
      end of dirhierachies
 `</ITEM>
    <ITEM CMPNAME="FILE_SEP" EXPOSURE="2" STATE="1" ATTDECLTYP="1" ATTRDONLY="X" TYPTYPE="1" TYPE="C">
@@ -457,7 +458,7 @@ END-OF-DEFINITION.</MACROS>
     CONCATENATE directory filename INTO result.
   ENDIF.</SOURCE>
    </ITEM>
-   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" MTDTYPE="2" MTDNEWEXC="X">
+   <ITEM CMPNAME="CONSTRUCTOR" EXPOSURE="2" STATE="1" MTDTYPE="2">
     <TEXTS>
      <ITEM LANG="E" TEXT="CONSTRUCTOR"/>
     </TEXTS>
@@ -510,6 +511,10 @@ END-OF-DEFINITION.</MACROS>
     WHEN dirhierachies-devc.
       result = create_fullpath_by_devc( directory = directory
                                         comp      = comp ).
+    WHEN dirhierachies-dcty.
+      result = create_fullpath_by_devc( directory = directory
+                                        with_type = abap_true
+                                        comp      = comp ).
   ENDCASE.</SOURCE>
    </ITEM>
    <ITEM CMPNAME="CREATE_FULLPATH_BY_DEVC" EXPOSURE="1" STATE="1" MTDNEWEXC="X">
@@ -524,6 +529,7 @@ END-OF-DEFINITION.</MACROS>
       </TEXTS>
      </ITEM>
      <ITEM SCONAME="RESULT" CMPTYPE="1" PARDECLTYP="3" TYPTYPE="1" TYPE="TD_FILENAME"/>
+     <ITEM SCONAME="WITH_TYPE" CMPTYPE="1" PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL" PAROPTIONL="X"/>
     </PARAMETERS>
     <EXCEPTIONS>
      <ITEM SCONAME="ZAPLINK_CX" LANGU="E">
@@ -539,6 +545,7 @@ END-OF-DEFINITION.</MACROS>
   DATA _directory  TYPE td_directoryname.
   DATA rc          TYPE sy-subrc.
   DATA len TYPE i.
+  DATA type        TYPE td_directoryname.
 
   CHECK comp IS BOUND.
 
@@ -548,6 +555,11 @@ END-OF-DEFINITION.</MACROS>
                               name = _comp-name ).
   _directory = get_devc_path( directory = directory
                                devclass = d_devc ).
+  IF NOT with_type IS INITIAL.
+    type = _comp-type.
+    _directory = concatenate_path( directory = _directory
+                                    filename = type ).
+  ENDIF.
   _directory = concatenate_path( directory = directory
                                   filename = _directory ).
 
@@ -1179,17 +1191,17 @@ END-OF-DEFINITION.</MACROS>
    <ITEM TYPEGROUP="ABAP" EXPLICIT="X"/>
   </TYPEGROUPS>
   <TYPES>
-   <ITEM CMPNAME="TD_DIRECTORYNAME" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="TD_FILENAME">
+   <ITEM CMPNAME="TD_DIRECTORYNAME" EXPOSURE="2" STATE="1" EDITORDER="1 " TYPTYPE="1" TYPE="TD_FILENAME">
     <TEXTS>
      <ITEM LANG="E" TEXT="Client Directory"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TD_DIRHIERARCHY" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="CHAR01">
+   <ITEM CMPNAME="TD_DIRHIERARCHY" EXPOSURE="2" STATE="1" EDITORDER="2 " TYPTYPE="1" TYPE="CHAR01">
     <TEXTS>
      <ITEM LANG="E" TEXT="Directory Hierarchy types"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TD_PACKAGE" EXPOSURE="2" STATE="1" TYPTYPE="1" TYPE="DEVCLASS">
+   <ITEM CMPNAME="TD_PACKAGE" EXPOSURE="2" STATE="1" EDITORDER="3 " TYPTYPE="1" TYPE="DEVCLASS">
     <TEXTS>
      <ITEM LANG="E" TEXT="Package"/>
     </TEXTS>
@@ -1204,7 +1216,7 @@ END-OF-DEFINITION.</MACROS>
      <ITEM LANG="E" TEXT="ZAPLink Connector : Cleanning interface"/>
     </TEXTS>
    </ITEM>
-   <ITEM CMPNAME="TO_EZ_XML" EXPOSURE="2" STATE="1" TYPTYPE="3" TYPE="ZAPLINK_EASYXML">
+   <ITEM CMPNAME="TO_EZ_XML" EXPOSURE="2" STATE="1" EDITORDER="4 " TYPTYPE="3" TYPE="ZAPLINK_EASYXML">
     <TEXTS>
      <ITEM LANG="E" TEXT="ZAPLink Easy XML Tools"/>
     </TEXTS>
