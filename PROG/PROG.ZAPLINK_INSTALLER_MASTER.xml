@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<ZL_OBJECT CHECKSUM="2CAFF4071A7053A4DF6D9AE687695521" CODE_SIGNATURE="C47E411405873FA3D9A2602F549F9514" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
+<ZL_OBJECT CHECKSUM="F8C1B9695AA832FD910A6F6302B55A5D" CODE_SIGNATURE="7D7C5EAFC5C7BC5F5947732CDB119AA7" CONNECTOR="AAAD0A4B07A5A05AE1000000AC120173" NAME="ZAPLINK_INSTALLER_MASTER" TYPE="PROG" VERSION="1.0">
  <DIRECTORY DEVCLASS="ZAPLINK-DEVTOOLS-INSTALLER" MASTERLANG="E"/>
  <RAW>
   <A0_MAINDATA VARCL="X" SUBC="1" RSTAT="K" RMAND="200" RLOAD="E" FIXPT="X" UCCHECK="X"/>
@@ -26,6 +26,7 @@ SELECTION-SCREEN END OF LINE.
 SELECTION-SCREEN BEGIN OF LINE.
 SELECTION-SCREEN COMMENT 1(30) t_inst FOR FIELD p_inst.
 PARAMETERS p_inst TYPE flag RADIOBUTTON GROUP mod.
+SELECTION-SCREEN COMMENT 35(60) t_conf.
 SELECTION-SCREEN END OF LINE.
 
 SELECTION-SCREEN BEGIN OF LINE.
@@ -201,6 +202,7 @@ FORM on_initialization .
   t_file = &apos;Container&apos;&apos;s file&apos;.                             &quot;#EC NOTEXT
   t_dsp = &apos;Display container&apos;&apos;s containt&apos;.                  &quot;#EC NOTEXT
   t_inst = &apos;Install container&apos;.                             &quot;#EC NOTEXT
+  t_conf = &apos;Confirm Selection with OK Code &quot;CONFIRM&quot; in the next screen&apos;.       &quot;#EC NOTEXT
   t_uninst = &apos;Uninstall container&apos;.                         &quot;#EC NOTEXT
   t_action = &apos;Action :&apos;.                                    &quot;#EC NOTEXT
   t_devc = &apos;Package :&apos;.                                     &quot;#EC NOTEXT
